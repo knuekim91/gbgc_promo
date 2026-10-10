@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#2f5bd8">
-<title>입학 홍보 현황</title>
+<title>경북여상 원서접수현황</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--bg:#f4f6fb;--card:#fff;--tx:#1f2937;--mu:#6b7280;--pr:#2f5bd8;--ok:#16a34a;--wa:#d97706;--er:#dc2626;--bd:#e5e7eb}
@@ -67,7 +67,7 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 <script src="config.js"></script>
 </head>
 <body>
-<header><b>입학 홍보 현황</b><span id="who"></span></header>
+<header><b>경북여상 원서접수현황</b><span id="who"></span></header>
 <nav id="nav"></nav>
 <main id="main">불러오는 중…</main>
 <div class="msg" id="msg"></div>
@@ -107,7 +107,7 @@ function load() {
 function loginView(err) {
   $('nav').innerHTML = ''; $('who').textContent = '';
   document.querySelector('header').classList.add('hide');
-  $('main').innerHTML = '<div class="login"><div class="brand"><div class="logo">입</div><h1>입학 홍보 현황</h1>' +
+  $('main').innerHTML = '<div class="login"><div class="brand"><div class="logo">원</div><h1>경북여상 원서접수현황</h1>' +
     '<p class="sub">경북여상 · 중학교 홍보 교사용</p></div>' +
     '<form class="box" id="lf" autocomplete="off">' +
     (err ? '<div class="err">' + esc(err) + '</div>' : '') +
@@ -171,7 +171,7 @@ function viewForm() {
     '<label>전형</label><select id="f_전형">' + opt(TRACKS, '전형') + '</select>' +
     '<div class="two"><div><label>중학교</label><input id="f_중학교" value="' + v('중학교') + '" placeholder="예: 경일여중"></div>' +
     '<div><label>학생 이름</label><input id="f_이름" value="' + v('이름') + '"></div></div>' +
-    '<div class="two"><div><label>학생 연락처</label><input id="f_학생연락처" type="tel" value="' + v('학생연락처') + '" placeholder="010-0000-0000"></div>' +
+    '<div class="two"><div><label>학생 연락처 (선택)</label><input id="f_학생연락처" type="tel" value="' + v('학생연락처') + '" placeholder="010-0000-0000"></div>' +
     '<div><label>보호자 연락처 (선택)</label><input id="f_보호자연락처" type="tel" value="' + v('보호자연락처') + '"></div></div>' +
     '<div class="two"><div><label>중학교 담임 성함</label><input id="f_담임성함" value="' + v('담임성함') + '"></div>' +
     '<div><label>담임 연락처 (선택)</label><input id="f_담임연락처" type="tel" value="' + v('담임연락처') + '"></div></div>' +
