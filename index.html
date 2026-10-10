@@ -73,7 +73,7 @@ function toast(t) { var m = $('msg'); m.textContent = t; m.style.display = 'bloc
 function call(fn) {
   var args = [].slice.call(arguments, 1);
   var url = (window.PROMO_CONFIG || {}).apiUrl || '';
-  if (url.indexOf('/exec') < 0) return Promise.reject(new Error('config.js 의 apiUrl 에 웹앱 주소(/exec)를 넣어야 합니다.'));
+  if (url.indexOf('https://script.google.com/') !== 0 || url.slice(-5) !== '/exec') return Promise.reject(new Error('config.js 의 apiUrl 에 웹앱 주소(/exec)를 넣어야 합니다.'));
   return fetch(url, { method: 'POST', body: JSON.stringify({ fn: fn, cred: CODE, args: args }) })
     .then(function (r) { return r.json(); })
     .then(function (j) { if (!j.ok) throw new Error(j.error); return j.data; });
