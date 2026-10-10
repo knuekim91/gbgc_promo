@@ -50,6 +50,19 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top}
 .wrap{overflow-x:auto}
 .hide{display:none!important}
+.login{max-width:420px;margin:7vh auto 0}
+.login .brand{text-align:center;margin-bottom:22px}
+.login .logo{width:64px;height:64px;margin:0 auto 14px;border-radius:18px;background:linear-gradient(135deg,var(--pr),#6d8cff);display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;font-weight:800;box-shadow:0 8px 20px rgba(47,91,216,.28)}
+.login h1{margin:0;font-size:22px;letter-spacing:-.3px}
+.login .sub{margin:6px 0 0;color:var(--mu);font-size:14px}
+.login .box{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px 20px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.login label{margin-top:0;margin-bottom:6px;font-weight:600;color:var(--tx);font-size:13px}
+.login .f{margin-bottom:16px}
+.login input{padding:13px;font-size:16px}
+.login .hint{margin:4px 0 0;color:var(--mu);font-size:12px}
+.login .err{background:#fee2e2;color:#991b1b;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:14px}
+@media (prefers-color-scheme:dark){.login .err{background:#3b1d1d;color:#fecaca}}
+.login .foot{text-align:center;margin-top:16px;color:var(--mu);font-size:12px}
 </style>
 <script src="config.js"></script>
 </head>
@@ -93,11 +106,19 @@ function load() {
 }
 function loginView(err) {
   $('nav').innerHTML = ''; $('who').textContent = '';
-  $('main').innerHTML = '<div class="card"><h3>처음 한 번만 확인합니다</h3>' +
-    (err ? '<p style="color:var(--er)">' + esc(err) + '</p>' : '') +
-    '<label>이름</label><input id="ln" autocomplete="off" placeholder="예: 홍길동" value="' + esc(CODE.n) + '">' +
-    '<label>접속코드 (교사: 교무실에서 안내 / 관리자: 개인 코드)</label><input id="lc" type="password" inputmode="numeric" autocomplete="off">' +
-    '<button class="btn" onclick="doLogin()">확인</button></div>';
+  document.querySelector('header').classList.add('hide');
+  $('main').innerHTML = '<div class="login"><div class="brand"><div class="logo">입</div><h1>입학 홍보 현황</h1>' +
+    '<p class="sub">경북여상 · 중학교 홍보 교사용</p></div>' +
+    '<form class="box" id="lf" autocomplete="off">' +
+    (err ? '<div class="err">' + esc(err) + '</div>' : '') +
+    '<div class="f"><label for="ln">이름</label><input id="ln" placeholder="예: 홍길동" value="' + esc(CODE.n) + '" enterkeyhint="next"></div>' +
+    '<div class="f"><label for="lc">접속코드</label><input id="lc" type="password" inputmode="numeric" placeholder="숫자 6자리" enterkeyhint="go">' +
+    '<p class="hint">교사: 교무실에서 안내받은 코드 · 관리자: 관리자 코드</p></div>' +
+    '<button class="btn" type="submit" style="margin-top:6px">확인</button></form>' +
+    '<p class="foot">처음 한 번만 입력하면 이 기기에 저장됩니다.</p></div>';
+  $('lf').onsubmit = function (e) { e.preventDefault(); doLogin(); };
+  $('ln').onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); if ($('ln').value.trim()) $('lc').focus(); } };
+  ($('ln').value ? $('lc') : $('ln')).focus();
 }
 function doLogin() {
   var n = $('ln').value.replace(/\s+/g, ''), c = $('lc').value.trim();
@@ -109,6 +130,7 @@ function doLogin() {
 function logout() { CODE = { n: CODE.n, c: '' }; try { localStorage.removeItem('hb_cred'); } catch (e) {} D = null; loginView(''); }
 
 function render() {
+  document.querySelector('header').classList.remove('hide');
   var r = D.me.role;
   $('who').innerHTML = esc(D.me.name) + ' · ' + r + ' <a href="#" onclick="logout();return false">다른 이름</a>';
   var tabs = [['status', '현황']];
