@@ -63,6 +63,12 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 .login .err{background:#fee2e2;color:#991b1b;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:14px}
 @media (prefers-color-scheme:dark){.login .err{background:#3b1d1d;color:#fecaca}}
 .login .foot{text-align:center;margin-top:16px;color:var(--mu);font-size:12px}
+#busy{position:fixed;inset:0;z-index:20;background:rgba(17,24,39,.45);display:flex;align-items:center;justify-content:center;padding:16px}
+#busy .bx{background:var(--card);color:var(--tx);border-radius:14px;padding:20px 26px;display:flex;align-items:center;gap:14px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.spin{width:22px;height:22px;border:3px solid var(--bd);border-top-color:var(--pr);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
+.btn:disabled{opacity:.6}
 </style>
 <script src="config.js"></script>
 </head>
@@ -71,6 +77,7 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 <nav id="nav"></nav>
 <main id="main">불러오는 중…</main>
 <div class="msg" id="msg"></div>
+<div id="busy" class="hide" role="status" aria-live="polite"><div class="bx"><span class="spin"></span><span id="busyt">처리 중…</span></div></div>
 
 <script>
 var CODE = { n: '', c: '' };   // 이름 + 접속코드 (이 폰에만 저장)
@@ -82,6 +89,8 @@ var FORM = {};
 
 function $(id) { return document.getElementById(id); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function busy(t) { $('busyt').textContent = t || '처리 중…'; $('busy').classList.remove('hide'); }
+function idle() { $('busy').classList.add('hide'); }
 function toast(t) { var m = $('msg'); m.textContent = t; m.style.display = 'block'; setTimeout(function () { m.style.display = 'none'; }, 2600); }
 function call(fn) {
   var args = [].slice.call(arguments, 1);
@@ -98,8 +107,11 @@ function adjTag(a) {
 }
 
 function load() {
-  if (!CODE.n || !CODE.c) return loginView('');
-  call('getData').then(function (d) { D = d; render(); }).catch(function (e) {
+  if (!CODE.n || !CODE.c) { loginView(''); return Promise.resolve(); }
+  return call('getData').then(function (d) {
+    if (TAB === 'form' && $('f_이름')) readForm();   // 입력 중인 내용 보존
+    D = d; render();
+  }).catch(function (e) {
     if (String(e.message || e).indexOf('NOAUTH') >= 0) loginView('이름 또는 접속코드가 맞지 않습니다.');
     else $('main').innerHTML = '<div class="card">오류: ' + esc(e.message || e) + '</div>';
   });
@@ -125,7 +137,8 @@ function doLogin() {
   if (!n || !c) return toast('이름과 접속코드를 입력하세요.');
   CODE = { n: n, c: c };
   try { localStorage.setItem('hb_cred', JSON.stringify(CODE)); } catch (e) {}
-  load();
+  busy('확인 중입니다…');
+  load().then(idle, idle);
 }
 function logout() { CODE = { n: CODE.n, c: '' }; try { localStorage.removeItem('hb_cred'); } catch (e) {} D = null; loginView(''); }
 
@@ -194,23 +207,30 @@ function readForm() {
     var el = $('f_' + k); if (el) FORM[k] = el.value;
   });
 }
+var SAVING = false;
 function save(force) {
+  if (SAVING) return;
   readForm();
   if (!FORM.단계) return toast('단계(고민/확정)를 선택하세요.');
   var o = JSON.parse(JSON.stringify(FORM)); if (EDIT) o.ID = EDIT;
-  $('saveBtn').disabled = true;
+  SAVING = true; $('saveBtn').disabled = true; $('saveBtn').textContent = '저장 중…';
+  busy('저장 중입니다. 잠시만 기다려 주세요…');
   call('saveStudent', o, force).then(function (r) {
-    $('saveBtn').disabled = false;
+    SAVING = false; idle();
     if (r.duplicate) {
+      $('saveBtn').disabled = false; $('saveBtn').textContent = EDIT ? '수정 저장' : '저장';
       if (confirm('이미 입력된 학생입니다.\n입력 교사: ' + r.입력교사 + ' / ' + r.전형 + ' / ' + r.단계 + ' (' + r.입력일시 + ')\n\n그래도 새로 저장할까요?')) save(true);
       return;
     }
-    toast('저장했습니다.');
+    toast('✓ 저장했습니다.');
     var keep = { 전형: FORM.전형, 중학교: FORM.중학교, 담임성함: FORM.담임성함, 담임연락처: FORM.담임연락처, 단계: FORM.단계 };
     FORM = EDIT ? {} : keep;   // 새 입력이면 같은 중학교 연속 입력 편의를 위해 학교·담임은 유지
-    EDIT = null;
-    TAB = 'form'; load();
-  }).catch(function (e) { $('saveBtn').disabled = false; toast(e.message || e); });
+    EDIT = null; TAB = 'form'; render();   // 폼을 바로 비우고, 현황은 뒤에서 갱신
+    load();
+  }).catch(function (e) {
+    SAVING = false; idle(); $('saveBtn').disabled = false; $('saveBtn').textContent = EDIT ? '수정 저장' : '저장';
+    toast(e.message || e);
+  });
 }
 
 /* ---- 목록 ---- */
@@ -259,12 +279,14 @@ function edit(id) {
 }
 function del(id) {
   if (!confirm('이 학생 기록을 삭제할까요?')) return;
-  call('removeStudent', id).then(function () { toast('삭제했습니다.'); load(); }).catch(function (e) { toast(e.message || e); });
+  busy('삭제 중입니다…');
+  call('removeStudent', id).then(function () { toast('삭제했습니다.'); return load(); }).then(idle, function (e) { idle(); toast(e.message || e); });
 }
 function applyAdj() {
   var ids = Object.keys(SEL).filter(function (k) { return SEL[k]; });
   if (!ids.length) return toast('학생을 먼저 체크하세요.');
-  call('setAdjust', ids, $('adj').value, $('amemo').value).then(function (r) { SEL = {}; toast(r.count + '명 적용'); load(); }).catch(function (e) { toast(e.message || e); });
+  busy('적용 중입니다…');
+  call('setAdjust', ids, $('adj').value, $('amemo').value).then(function (r) { SEL = {}; toast(r.count + '명 적용'); return load(); }).then(idle, function (e) { idle(); toast(e.message || e); });
 }
 
 FORM = { 단계: '' };
