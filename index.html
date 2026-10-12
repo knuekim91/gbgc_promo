@@ -241,7 +241,7 @@ function statusTable() {
     '<span class="chips"><button class="' + (VIEW2 ? '' : 'on') + '" onclick="VIEW2=false;render()">1지망 ' + n1 + '</button>' +
     '<button class="' + (VIEW2 ? 'on' : '') + '" onclick="VIEW2=true;render()">2지망 ' + n2 + '</button></span></h3>';
   if (!rows.length) return h + '<div class="empty">아직 지원한 학생이 없습니다.</div></div>';
-  h += '<div class="wrap"><table><thead><tr><th>순위</th><th>이름</th><th>중학교</th><th>내신</th><th>' + (VIEW2 ? '1지망' : '2지망') + '</th><th>단계</th><th>상태</th><th>입력교사</th><th>학생 연락처</th><th>담임</th></tr></thead><tbody>';
+  h += '<div class="wrap"><table><thead><tr><th>순위</th><th>이름</th><th>중학교</th><th>내신</th><th>' + (VIEW2 ? '1지망' : '2지망') + '</th><th>단계</th><th>상태</th><th>담당교사</th><th>학생 연락처</th><th>담임</th></tr></thead><tbody>';
   rows.forEach(function (r) {
     var out = !VIEW2 && r.순위 && sum.정원 && r.순위 > sum.정원;
     h += '<tr' + (out ? ' class="out"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 ? '-' : r.순위) + '</td>' +
@@ -249,7 +249,7 @@ function statusTable() {
       '<td>' + esc(r.중학교) + '</td><td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td>' +
       '<td>' + esc((VIEW2 ? r['1지망'] : r['2지망']) || '-') + '</td>' +
       '<td><span class="tag ' + (r.단계 === '확정' ? 'ok' : 'wa') + '">' + r.단계 + '</span>' + (out ? ' <span class="tag er">정원 밖</span>' : '') + '</td>' +
-      '<td>' + (adjTag(r.조정상태) || '<span class="mut">-</span>') + '</td><td>' + esc(r.입력교사) + '</td>' +
+      '<td>' + (adjTag(r.조정상태) || '<span class="mut">-</span>') + '</td><td>' + esc(r.담당교사) + '</td>' +
       '<td>' + (r.full ? tel(r.학생연락처) : '<span class="mut">-</span>') + '</td>' +
       '<td>' + (r.full ? esc(r.담임성함) + (r.담임연락처 ? ' ' + tel(r.담임연락처) : '') : '<span class="mut">-</span>') + '</td></tr>';
   });
@@ -421,7 +421,7 @@ function save(force) {
     SAVING = false; idle();
     if (r.duplicate) {
       $('saveBtn').disabled = false; $('saveBtn').textContent = EDIT ? '수정 저장' : '저장';
-      if (confirm('이미 입력된 학생입니다.\n입력 교사: ' + r.입력교사 + ' / ' + r.전형 + ' / ' + r.단계 + ' (' + r.입력일시 + ')\n\n그래도 새로 저장할까요?')) save(true);
+      if (confirm('이미 입력된 학생입니다.\n담당교사: ' + r.담당교사 + ' / ' + r.전형 + ' / ' + r.단계 + ' (' + r.입력일시 + ')\n\n그래도 새로 저장할까요?')) save(true);
       return;
     }
     toast('✓ 저장했습니다.');
@@ -438,7 +438,7 @@ function save(force) {
 /* ---- 목록 ---- */
 function viewList() {
   var admin = D.me.role === '관리자';
-  var rows = D.rows.filter(function (r) { return !FILTER || [r.중학교, r.이름, r['1지망'], r.단계, r.조정상태, r.입력교사].join(' ').indexOf(FILTER) >= 0; });
+  var rows = D.rows.filter(function (r) { return !FILTER || [r.중학교, r.이름, r['1지망'], r.단계, r.조정상태, r.담당교사].join(' ').indexOf(FILTER) >= 0; });
   var h = '<div class="card"><input id="flt" placeholder="검색 (학교·이름·계열·교사…)" value="' + esc(FILTER) + '" onchange="FILTER=this.value;render()">';
   if (admin) {
     h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center"><select id="adj" style="width:auto">' + ADJ.map(function (a) { return '<option>' + a + '</option>'; }).join('') + '</select>' +
@@ -461,7 +461,7 @@ function viewList() {
       (admin ? '<input type="checkbox" style="width:auto;margin-right:8px" ' + (SEL[r.ID] ? 'checked' : '') + ' onchange="SEL[\'' + r.ID + '\']=this.checked">' : '') +
       (r.순위 ? '<b>' + r.순위 + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span></div><div>' +
       (out ? '<span class="tag er">정원 밖</span> ' : '') + '<span class="tag ' + (r.단계 === '확정' ? 'ok' : 'wa') + '">' + r.단계 + '</span> ' + adjTag(r.조정상태) + '</div></div>' +
-      '<div class="s">내신 ' + esc(r.내신 === '' || r.내신 == null ? '-' : r.내신) + (r['2지망'] ? ' · 2지망 ' + esc(r['2지망']) : '') + ' · 입력 ' + esc(r.입력교사) +
+      '<div class="s">내신 ' + esc(r.내신 === '' || r.내신 == null ? '-' : r.내신) + (r['2지망'] ? ' · 2지망 ' + esc(r['2지망']) : '') + ' · 담당 ' + esc(r.담당교사) +
       '</div>';
     if (r.full) {
       h += '<div class="s">학생 ' + tel(r.학생연락처) + (r.보호자연락처 ? ' · 보호자 ' + tel(r.보호자연락처) : '') +
