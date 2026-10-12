@@ -246,7 +246,7 @@ function statusTable() {
       '<td>' + esc(r.중학교) + '</td><td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td>' +
       (one ? '' : '<td>' + esc((VIEW2 ? r['1지망'] : r['2지망']) || '-') + '</td>') +
       '<td>' + stageTag(r.단계) + (out ? ' <span class="tag er">정원 밖</span>' : '') + '</td>' +
-      '<td>' + (adjTag(r.원서접수) || '<span class="mut">-</span>') + '</td><td>' + esc(r.담당교사) + '</td>' +
+      '<td>' + recBtn(r) + '</td><td>' + esc(r.담당교사) + '</td>' +
       '<td>' + (r.full ? tel(r.학생연락처) : '<span class="mut">-</span>') + '</td>' +
       '<td>' + (r.full ? esc(r.담임성함) + (r.담임연락처 ? ' ' + tel(r.담임연락처) : '') : '<span class="mut">-</span>') + '</td></tr>';
   });
@@ -387,10 +387,28 @@ function myListHtml() {
     h += '<tr' + (EDIT === r.ID ? ' style="background:var(--selbg)"' : '') + '><td>' + esc(r.중학교) + '</td><td><b>' + esc(r.이름) + '</b></td>' +
       '<td>' + (r.전형 === '취업희망자' ? '취업' : '일반') + '</td><td>' + esc(r['1지망']) + '</td>' +
       '<td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td><td class="rk">' + (r.순위 || '-') + '</td>' +
-      '<td>' + stageTag(r.단계) + '</td><td>' + (adjTag(r.원서접수) || '<span class="mut">-</span>') + '</td>' +
+      '<td>' + stageTag(r.단계) + '</td><td>' + recBtn(r) + '</td>' +
       '<td><button class="btn s" onclick="edit(\'' + r.ID + '\')">수정</button></td></tr>';
   });
   return h + '</tbody></table></div></div>';
+}
+
+
+/* ---- 원서접수 처리: 담당교사 본인, 접수 도우미(문정혜·김재홍) ---- */
+function recBtn(r, quiet) {
+  var tag = adjTag(r.원서접수);
+  if (!r.canReceipt || r.단계 === '타교지원') return tag || (quiet ? '' : '<span class="mut">-</span>');
+  if (r.원서접수 === '접수') return tag + ' <button class="btn s g" type="button" onclick="receipt(\'' + r.ID + '\',\'미접수\')">취소</button>';
+  return '<button class="btn s" type="button" onclick="receipt(\'' + r.ID + '\',\'접수\')">접수</button>';
+}
+function receipt(id, status) {
+  var r = D.rows.filter(function (x) { return x.ID === id; })[0] || {};
+  var who = (r.full && r.이름 ? r.이름 : '이') + ' 학생';
+  if (!confirm(who + '의 원서를 ' + (status === '접수' ? '접수 처리할까요?' : '접수 취소할까요?'))) return;
+  busy(status === '접수' ? '접수 처리 중입니다…' : '접수를 취소하는 중입니다…');
+  call('setAdjust', [id], status, '').then(function () {
+    toast(status === '접수' ? '✓ 접수 처리했습니다.' : '접수를 취소했습니다.'); return load();
+  }).then(idle, function (e) { idle(); toast(e.message || e); });
 }
 
 /* ---- 입력 ---- */
@@ -492,7 +510,7 @@ function viewList() {
     '<div class="pchips">' + DEPTS.concat(['전체']).map(function (d) {
       return '<button class="' + (LDEPT === d ? 'on' : '') + '" onclick="LDEPT=\'' + d + '\';render()">' + d + ' ' + cnt(d) + '</button>'; }).join('') + '</div>' +
     '<div class="card"><input id="flt" type="search" placeholder="검색 (이름·중학교·담임·연락처·담당교사)" value="' + esc(FILTER) + '" oninput="FILTER=this.value;listBody()" autocomplete="off">';
-  if (admin) {
+  if (D.me.helper) {
     h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center"><b style="font-size:13px">원서접수</b> <select id="adj" style="width:auto">' + ADJ.map(function (a) { return '<option>' + a + '</option>'; }).join('') + '</select>' +
       '<input id="amemo" placeholder="관리자 메모(선택)" style="flex:1;min-width:140px">' +
       '<button class="btn s" onclick="applyAdj()">선택 학생에 적용</button></div>';
@@ -511,10 +529,10 @@ function listBodyHtml() {
     var cap = (D.summary.filter(function (s) { return s.전형 === r.전형 && s.계열 === r['1지망']; })[0] || {}).정원 || 0;
     var out = r.순위 && cap && r.순위 > cap;
     h += '<div class="card' + (r.단계 === '타교지원' ? ' gone' : '') + '" style="padding:10px 14px"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
-      (admin ? '<input type="checkbox" style="width:auto;margin-right:8px" ' + (SEL[r.ID] ? 'checked' : '') + ' onchange="SEL[\'' + r.ID + '\']=this.checked">' : '') +
+      (D.me.helper ? '<input type="checkbox" style="width:auto;margin-right:8px" ' + (SEL[r.ID] ? 'checked' : '') + ' onchange="SEL[\'' + r.ID + '\']=this.checked">' : '') +
       (r.순위 ? '<b>' + r.순위 + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span>' +
       (LDEPT === '전체' ? ' <span class="tag pr">' + esc(r['1지망']) + '</span>' : '') + '</div><div>' +
-      (out ? '<span class="tag er">정원 밖</span> ' : '') + stageTag(r.단계) + ' ' + adjTag(r.원서접수) + '</div></div>' +
+      (out ? '<span class="tag er">정원 밖</span> ' : '') + stageTag(r.단계) + ' ' + recBtn(r, true) + '</div></div>' +
       '<div class="s">내신 ' + esc(r.내신 === '' || r.내신 == null ? '-' : r.내신) + (r['2지망'] && r.전형 !== '취업희망자' ? ' · 2지망 ' + esc(r['2지망']) : '') + ' · 담당 ' + esc(r.담당교사) +
       '</div>';
     if (r.full) {
