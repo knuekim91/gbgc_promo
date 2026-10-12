@@ -381,15 +381,20 @@ document.addEventListener('keydown', function (e) {
 
 /* ---- 입력 ---- */
 function viewForm() {
-  var f = FORM, e = EDIT;
+  var f = FORM, e = EDIT, mine = D.mySchools || [];
+  if (!e && !f.중학교 && mine.length === 1) f.중학교 = mine[0];   // 담당 학교가 하나면 미리 채움
   function v(k) { return esc(f[k] || ''); }
   function opt(list, k, blank) { return (blank ? '<option value="">선택 안 함</option>' : '') + list.map(function (x) { return '<option' + (f[k] === x ? ' selected' : '') + '>' + x + '</option>'; }).join(''); }
   return '<div class="card"><h3>' + (e ? '학생 정보 수정' : '학생 입력') + '</h3>' +
     '<label>단계</label><div class="seg" id="stg">' + (e ? ['고민', '확정', '이탈'] : ['고민', '확정']).map(function (st) {
       return '<button type="button" data-v="' + st + '" class="' + (f.단계 === st ? 'on ' + (st === '확정' ? 'ok' : st === '이탈' ? 'gone' : '') : '') + '">' + (st === '고민' ? '고민 중' : st) + '</button>'; }).join('') + '</div>' +
     '<label>전형</label><select id="f_전형">' + opt(TRACKS, '전형') + '</select>' +
-    '<div class="two"><div><label>중학교</label><input id="f_중학교" value="' + v('중학교') + '" placeholder="예: 경일여중"></div>' +
-    '<div><label>학생 이름</label><input id="f_이름" value="' + v('이름') + '"></div></div>' +
+    '<label>중학교' + (mine.length ? ' <span style="color:var(--mu);font-weight:400">· 내 담당 학교를 누르면 입력됩니다</span>' : '') + '</label>' +
+    '<input id="f_중학교" list="schoolList" autocomplete="off" value="' + v('중학교') + '" placeholder="학교 이름을 입력하거나 선택">' +
+    '<datalist id="schoolList">' + (D.schools || []).map(function (x) { return '<option value="' + esc(x.s) + '">' + (x.t ? esc(x.t) : '') + '</option>'; }).join('') + '</datalist>' +
+    (mine.length ? '<div class="pchips" style="margin:8px 0 0">' + mine.map(function (s2) {
+      return '<button type="button" class="' + (f.중학교 === s2 ? 'on' : '') + '" onclick="pickSchool(this.textContent)">' + esc(s2) + '</button>'; }).join('') + '</div>' : '') +
+    '<label>학생 이름</label><input id="f_이름" value="' + v('이름') + '">' +
     '<div class="two"><div><label>학생 연락처 (선택)</label><input id="f_학생연락처" type="tel" value="' + v('학생연락처') + '" placeholder="010-0000-0000"></div>' +
     '<div><label>보호자 연락처 (선택)</label><input id="f_보호자연락처" type="tel" value="' + v('보호자연락처') + '"></div></div>' +
     '<div class="two"><div><label>중학교 담임 성함</label><input id="f_담임성함" value="' + v('담임성함') + '"></div>' +
@@ -401,6 +406,7 @@ function viewForm() {
     '<button class="btn" id="saveBtn">' + (e ? '수정 저장' : '저장') + '</button>' +
     (e ? '<button class="btn g" onclick="EDIT=null;FORM={};render()">취소</button>' : '') + '</div>';
 }
+function pickSchool(name) { readForm(); FORM.중학교 = name; render(); }
 function bindForm() {
   Array.prototype.forEach.call(document.querySelectorAll('#stg button'), function (b) {
     b.onclick = function () { FORM.단계 = b.dataset.v; readForm(); render(); };
