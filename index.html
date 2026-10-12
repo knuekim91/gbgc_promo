@@ -124,6 +124,25 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 .card.dept .rcv{font-size:13px;font-weight:700;color:var(--tx);white-space:nowrap}
 .card.dept .rcv b{font-size:30px;line-height:1;font-weight:800;color:var(--er);margin-left:2px}
 @media (prefers-color-scheme:dark){:root{--er:#f87171}}
+.bdg{display:inline-block;min-width:18px;padding:0 6px;border-radius:99px;background:var(--er);color:#fff;font-size:12px;line-height:18px;text-align:center;margin-left:4px;vertical-align:1px}
+nav button.on .bdg{background:#fff;color:var(--er)}
+.qtop{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.qform{margin-top:6px;padding-top:2px;border-top:1px solid var(--bd)}
+.qform textarea,.qd-f textarea{resize:vertical;min-height:84px}
+.qfilter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.qna table{min-width:820px}
+.qna td{white-space:normal;vertical-align:top}
+.qna td.q{min-width:240px;max-width:340px;font-weight:600}
+.qna td.a{min-width:200px;max-width:300px;color:var(--tx)}
+.qna tr.qrow{cursor:pointer}
+.qna tr.qrow:hover td{background:var(--bg)}
+.qna tr.qrow.open td{background:var(--selbg)}
+.qna tr.qdet td{background:var(--bg);padding:0}
+.qd{padding:12px 14px;display:grid;gap:10px;max-width:760px}
+.qd-q,.qd-a{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+.qd-q>div,.qd-a>div{margin-top:4px;line-height:1.55}
+.qd-a{border-left:4px solid var(--pr)}
+.qd-b{display:flex;gap:8px;margin-top:8px}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -194,7 +213,7 @@ function doLogin() {
   busy('확인 중입니다…');
   load().then(idle, idle);
 }
-function logout() { CODE = { n: CODE.n, c: '' }; try { localStorage.removeItem('hb_cred'); } catch (e) {} D = null; loginView(''); }
+function logout() { CODE = { n: CODE.n, c: '' }; try { localStorage.removeItem('hb_cred'); } catch (e) {} D = null; QNA = null; QOPEN = ''; loginView(''); }
 
 function render() {
   document.querySelector('header').classList.remove('hide');
@@ -202,11 +221,12 @@ function render() {
   $('who').innerHTML = esc(D.me.name) + ' · ' + r + ' <a href="#" onclick="logout();return false">다른 이름</a>';
   var tabs = [['status', '현황']];
   if (r !== '열람') tabs.push(['form', '입력'], ['list', r === '관리자' ? '전체 관리' : '학생 목록']);
-  tabs.push(['promo', '홍보자료']);
+  tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()]);
   $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + '</button>'; }).join('');
   if (TAB === 'status') $('main').innerHTML = viewStatus();
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
   else if (TAB === 'promo') { $('main').innerHTML = viewPromo(); bindPromo(); }
+  else if (TAB === 'qna') { $('main').innerHTML = viewQna(); bindQna(); if (!QNA) loadQna(); }
   else $('main').innerHTML = viewList();
 }
 
@@ -416,6 +436,131 @@ function receipt(id, status) {
   call('setAdjust', [id], status, '').then(function () {
     toast(status === '접수' ? '✓ 접수 처리했습니다.' : '접수를 취소했습니다.'); return load();
   }).then(idle, function (e) { idle(); toast(e.message || e); });
+}
+
+/* ---- QnA: 현장에서 받은 질문과 답변 ---- */
+var QNA = null, QLOAD = false, QOPEN = '', QNEW = false, QDRAFT = {}, QF = { st: '전체', cat: '전체', q: '' };
+function qnaBadge() {
+  if (!QNA) return '';
+  var n = QNA.items.filter(function (i) { return i.status === '답변대기'; }).length;
+  return n ? ' <b class="bdg">' + n + '</b>' : '';
+}
+function nl2br(t) { return esc(t).replace(/\n/g, '<br>'); }
+function qCanWrite() { return D.me.role !== '열람'; }
+function qCanDel(by) { return D.me.role === '관리자' || by === D.me.name; }
+
+function viewQna() {
+  var mine = D.mySchools || [], cats = (QNA && QNA.cats) || ['입학전형', '학과·진로', '취업·진학', '학교생활·시설', '장학·기타'], askers = (QNA && QNA.askers) || ['학생', '학부모', '중학교 선생님', '기타'];
+  var h = '<div class="card"><div class="qtop"><div><h3 style="margin:0 0 4px">현장 질문과 답변 (QnA)</h3><div id="qcount" class="mut" style="color:var(--mu);font-size:13px">불러오는 중…</div></div>' +
+    (qCanWrite() ? '<button class="btn s" type="button" id="qnew">' + (QNEW ? '입력창 닫기' : '+ 질문 등록') + '</button>' : '') + '</div>';
+  if (QNEW && qCanWrite()) {
+    h += '<div class="qform"><div class="two"><div><label for="qn_cat">분류</label><select id="qn_cat">' + cats.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('') + '</select></div>' +
+      '<div><label for="qn_asker">질문한 사람</label><select id="qn_asker"><option value="">선택 안 함</option>' + askers.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('') + '</select></div></div>' +
+      '<label for="qn_school">질문을 받은 중학교</label><input id="qn_school" list="qnaSchools" autocomplete="off" placeholder="학교 이름 (선택)" value="' + (mine.length === 1 ? esc(mine[0]) : '') + '">' +
+      '<datalist id="qnaSchools">' + (D.schools || []).map(function (x) { return '<option value="' + esc(x.s) + '"></option>'; }).join('') + '</datalist>' +
+      (mine.length > 1 ? '<div class="pchips" style="margin:8px 0 0">' + mine.map(function (s2) { return '<button type="button" onclick="$(\'qn_school\').value=this.textContent">' + esc(s2) + '</button>'; }).join('') + '</div>' : '') +
+      '<label for="qn_q">받은 질문</label><textarea id="qn_q" rows="4" maxlength="1000" placeholder="현장에서 받은 질문을 그대로 적어 주세요"></textarea>' +
+      '<button class="btn" type="button" id="qsave">질문 등록</button></div>';
+  }
+  h += '</div><div class="card" id="qlist"></div>';
+  return h;
+}
+
+function bindQna() {
+  var b = $('qnew'); if (b) b.onclick = function () { QNEW = !QNEW; $('main').innerHTML = viewQna(); bindQna(); qnaDraw(); if (QNEW && $('qn_q')) $('qn_q').focus(); };
+  var s = $('qsave'); if (s) s.onclick = qnaAdd;
+  qnaDraw();
+}
+
+function loadQna() {
+  if (QLOAD) return Promise.resolve();
+  QLOAD = true;
+  return call('getQna').then(function (d) { QNA = d; QLOAD = false; if (TAB === 'qna') { qnaDraw(); qnaNavBadge(); } }).catch(function (e) {
+    QLOAD = false; if (TAB === 'qna' && $('qcount')) $('qcount').textContent = '불러오지 못했습니다: ' + (e.message || e);
+  });
+}
+function qnaNavBadge() {
+  var btns = document.querySelectorAll('#nav button');
+  Array.prototype.forEach.call(btns, function (b) { if (/^QnA/.test(b.textContent)) b.innerHTML = 'QnA' + qnaBadge(); });
+}
+
+function qnaFiltered() {
+  var q = QF.q.replace(/\s+/g, '').toLowerCase();
+  return QNA.items.filter(function (i) {
+    if (QF.st !== '전체' && i.status !== QF.st) return false;
+    if (QF.cat !== '전체' && i.cat !== QF.cat) return false;
+    if (!q) return true;
+    return [i.q, i.school, i.by, i.cat, i.asker, i.answers.map(function (a) { return a.text + a.by; }).join(' ')].join(' ').replace(/\s+/g, '').toLowerCase().indexOf(q) >= 0;
+  });
+}
+
+function qnaDraw() {
+  var box = $('qlist'); if (!box) return;
+  if (!QNA) { box.innerHTML = '<div class="empty" style="padding:18px;text-align:center;color:var(--mu)">불러오는 중…</div>'; return; }
+  var all = QNA.items, wait = all.filter(function (i) { return i.status === '답변대기'; }).length;
+  $('qcount').innerHTML = '전체 <b>' + all.length + '</b>건 · 답변대기 <b style="color:var(--er)">' + wait + '</b>건 · 답변완료 <b>' + (all.length - wait) + '</b>건';
+  var rows = qnaFiltered(), cats = QNA.cats;
+  var h = '<div class="qfilter"><span class="chips">' + ['전체', '답변대기', '답변완료'].map(function (st) {
+    return '<button type="button" class="' + (QF.st === st ? 'on' : '') + '" onclick="QF.st=\'' + st + '\';qnaDraw()">' + st + '</button>'; }).join('') + '</span>' +
+    '<select id="qf_cat" onchange="QF.cat=this.value;qnaDraw()" style="width:auto"><option>전체</option>' + cats.map(function (c) { return '<option' + (QF.cat === c ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select>' +
+    '<input id="qf_q" type="search" placeholder="질문·답변·학교·이름 검색" value="' + esc(QF.q) + '" oninput="QF.q=this.value;qnaDrawKeep()" autocomplete="off" style="flex:1;min-width:150px">' +
+    '<button class="btn s g" type="button" onclick="qnaCopy()">표 복사</button></div>';
+  if (!rows.length) return void (box.innerHTML = h + '<div class="empty" style="padding:22px;text-align:center;color:var(--mu)">' + (all.length ? '조건에 맞는 질문이 없습니다.' : '아직 등록된 질문이 없습니다. 현장에서 받은 질문을 등록해 보세요.') + '</div>');
+  h += '<div class="wrap qna"><table><thead><tr><th>번호</th><th>분류</th><th>질문</th><th>받은 학교</th><th>질문자</th><th>등록</th><th>상태</th><th>최신 답변</th></tr></thead><tbody>';
+  rows.forEach(function (i) {
+    var no = all.length - all.indexOf(i), open = QOPEN === i.id, last = i.answers[i.answers.length - 1];
+    h += '<tr class="qrow' + (open ? ' open' : '') + '" onclick="qToggle(\'' + i.id + '\')"><td class="rk">' + no + '</td><td>' + esc(i.cat) + '</td><td class="q">' + nl2br(i.q) + '</td><td>' + esc(i.school || '-') + '</td><td>' + esc(i.asker || '-') + '</td>' +
+      '<td>' + esc(i.by) + '<div class="mut" style="color:var(--mu);font-size:12px">' + esc(i.time) + '</div></td>' +
+      '<td><span class="tag ' + (i.status === '답변완료' ? 'ok' : 'wa') + '">' + i.status + (i.answers.length > 1 ? ' ' + i.answers.length : '') + '</span></td>' +
+      '<td class="a">' + (last ? nl2br(last.text) + '<div class="mut" style="color:var(--mu);font-size:12px">' + esc(last.by) + ' · ' + esc(last.time) + '</div>' : '<span class="mut" style="color:var(--mu)">-</span>') + '</td></tr>';
+    if (open) {
+      h += '<tr class="qdet"><td colspan="8"><div class="qd"><div class="qd-q"><b>질문</b> <span class="mut" style="color:var(--mu);font-size:12px">' + esc(i.by) + ' · ' + esc(i.time) + (i.school ? ' · ' + esc(i.school) : '') + '</span><div>' + nl2br(i.q) + '</div></div>' +
+        (i.answers.length ? i.answers.map(function (a) {
+          return '<div class="qd-a"><b>' + esc(a.by) + '</b> <span class="mut" style="color:var(--mu);font-size:12px">' + esc(a.time) + '</span>' +
+            (qCanDel(a.by) ? ' <button class="btn s g" type="button" onclick="event.stopPropagation();qDel(\'a\',\'' + a.id + '\')">삭제</button>' : '') + '<div>' + nl2br(a.text) + '</div></div>'; }).join('') : '<div class="qd-a mut" style="color:var(--mu)">아직 답변이 없습니다.</div>') +
+        (qCanWrite() ? '<div class="qd-f"><textarea id="qa_' + i.id + '" rows="3" maxlength="2000" placeholder="답변을 입력하세요 (본교 선생님 누구나 답변할 수 있습니다)" oninput="QDRAFT[\'' + i.id + '\']=this.value" onclick="event.stopPropagation()">' + esc(QDRAFT[i.id] || '') + '</textarea>' +
+          '<div class="qd-b"><button class="btn s" type="button" onclick="event.stopPropagation();qAnswer(\'' + i.id + '\')">답변 등록</button>' +
+          (qCanDel(i.by) ? '<button class="btn s g" type="button" onclick="event.stopPropagation();qDel(\'q\',\'' + i.id + '\')">이 질문 삭제</button>' : '') + '</div></div>' : '') +
+        '</div></td></tr>';
+    }
+  });
+  box.innerHTML = h + '</tbody></table></div>';
+}
+function qnaDrawKeep() {   // 검색 입력 중에는 입력칸의 커서를 유지한다
+  var el = $('qf_q'), pos = el ? el.selectionStart : 0;
+  qnaDraw();
+  var e2 = $('qf_q'); if (e2) { e2.focus(); try { e2.setSelectionRange(pos, pos); } catch (x) {} }
+}
+function qToggle(id) { QOPEN = QOPEN === id ? '' : id; qnaDraw(); }
+
+function qnaAdd() {
+  var q = $('qn_q').value.trim();
+  if (!q) return toast('질문 내용을 입력하세요.');
+  busy('질문을 등록하는 중입니다…');
+  call('addQuestion', { q: q, cat: $('qn_cat').value, school: $('qn_school').value.trim(), asker: $('qn_asker').value }).then(function (r) {
+    toast('✓ 질문을 등록했습니다.'); QNEW = false; QOPEN = r.id; $('main').innerHTML = viewQna(); bindQna(); return loadQna();
+  }).then(idle, function (e) { idle(); toast(e.message || e); });
+}
+function qAnswer(id) {
+  var el = $('qa_' + id), t = el ? el.value.trim() : '';
+  if (!t) return toast('답변 내용을 입력하세요.');
+  busy('답변을 등록하는 중입니다…');
+  call('addAnswer', id, t).then(function () { delete QDRAFT[id]; toast('✓ 답변을 등록했습니다.'); return loadQna(); }).then(idle, function (e) { idle(); toast(e.message || e); });
+}
+function qDel(type, id) {
+  if (!confirm(type === 'q' ? '이 질문과 달린 답변을 모두 삭제할까요?' : '이 답변을 삭제할까요?')) return;
+  busy('삭제 중입니다…');
+  call('deleteQna', type, id).then(function () { if (type === 'q') QOPEN = ''; toast('삭제했습니다.'); return loadQna(); }).then(idle, function (e) { idle(); toast(e.message || e); });
+}
+function qnaCopy() {
+  var rows = qnaFiltered(), all = QNA.items;
+  function c(t) { return String(t == null ? '' : t).replace(/[\t\r\n]+/g, ' ').trim(); }
+  var lines = [['번호', '등록일시', '등록자', '분류', '질문', '받은 학교', '질문자', '상태', '답변']].concat(rows.map(function (i) {
+    return [all.length - all.indexOf(i), i.time, i.by, i.cat, i.q, i.school, i.asker, i.status, i.answers.map(function (a) { return a.by + ': ' + a.text; }).join(' / ')].map(c);
+  })).map(function (r) { return r.join('\t'); }).join('\n');
+  function ok() { toast('✓ 표를 복사했습니다. 엑셀이나 구글 시트에 붙여넣으세요.'); }
+  function fb() { var ta = document.createElement('textarea'); ta.value = lines; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy') ? ok() : toast('복사하지 못했습니다.'); } catch (e) { toast('복사하지 못했습니다.'); } document.body.removeChild(ta); }
+  try { navigator.clipboard.writeText(lines).then(ok, fb); } catch (e) { fb(); }
 }
 
 /* ---- 입력 ---- */
