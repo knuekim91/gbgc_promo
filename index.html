@@ -448,10 +448,11 @@ function recBtn(r, quiet) {
 function receipt(id, status) {
   var r = D.rows.filter(function (x) { return x.ID === id; })[0] || {};
   var who = (r.full && r.이름 ? r.이름 : '이') + ' 학생';
-  if (!confirm(who + '의 원서를 ' + (status === '접수' ? '접수 처리할까요?' : '접수 취소할까요?'))) return;
+  var auto = status === '접수' && r.단계 === '고민';   // 고민 중인 학생은 접수하면 확정으로 바뀜
+  if (!confirm(who + '의 원서를 ' + (status === '접수' ? '접수 처리할까요?' : '접수 취소할까요?') + (auto ? '\n(고민 중 → 확정으로 바뀝니다)' : ''))) return;
   busy(status === '접수' ? '접수 처리 중입니다…' : '접수를 취소하는 중입니다…');
   call('setAdjust', [id], status, '').then(function () {
-    toast(status === '접수' ? '✓ 접수 처리했습니다.' : '접수를 취소했습니다.'); return load();
+    toast(status === '접수' ? (auto ? '✓ 접수 처리했습니다. 단계를 확정으로 바꿨어요.' : '✓ 접수 처리했습니다.') : '접수를 취소했습니다.'); return load();
   }).then(idle, function (e) { idle(); toast(e.message || e); });
 }
 
