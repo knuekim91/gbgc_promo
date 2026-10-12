@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2f5bd8">
+<title>경북여상 2027 신입생 안내</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1f2937;--mu:#6b7280;--pr:#2f5bd8;--prbg:#e7eeff;--ac:#e8508a;--acbg:#fde8f1;--ok:#16a34a;--bd:#e5e7eb;--er:#dc2626}
+@media (prefers-color-scheme:dark){:root{--bg:#111827;--card:#1f2937;--tx:#f3f4f6;--mu:#9ca3af;--pr:#7b9cff;--prbg:#25325c;--ac:#f472b6;--acbg:#4a2236;--bd:#374151;--er:#f87171}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 system-ui,'Malgun Gothic',sans-serif}
+header{background:linear-gradient(135deg,#2f5bd8,#6d8cff);color:#fff;padding:18px 16px 14px}
+header .in{max-width:900px;margin:auto;display:flex;gap:12px;align-items:center}
+header .lg{width:48px;height:48px;border-radius:14px;background:#fff;color:#2f5bd8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex:none}
+header h1{margin:0;font-size:19px;letter-spacing:-.3px;line-height:1.25}
+header p{margin:2px 0 0;font-size:13px;opacity:.9}
+nav{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--bd);overflow-x:auto;white-space:nowrap;padding:8px 10px;display:flex;gap:6px;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:none;border:0;background:transparent;color:var(--mu);font:inherit;font-size:15px;font-weight:700;padding:9px 14px;border-radius:99px;cursor:pointer}
+nav button.on{background:var(--pr);color:#fff}
+main{max-width:900px;margin:auto;padding:16px 16px 60px}
+section{display:none}
+section.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px}
+h2{margin:0 0 6px;font-size:20px;letter-spacing:-.3px}
+h3{margin:0 0 8px;font-size:16px}
+.lead{margin:0 0 14px;color:var(--mu);font-size:14px}
+button{font:inherit}
+.btn{display:inline-block;border:0;border-radius:10px;background:var(--pr);color:#fff;font-weight:700;padding:11px 18px;cursor:pointer;text-decoration:none}
+.btn.g{background:var(--bd);color:var(--tx)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.chips button{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:7px 14px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.chips button.on{background:var(--pr);border-color:var(--pr);color:#fff}
+/* 책자 뷰어 */
+.pv{position:relative;background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.pv .sc{overflow:auto;max-height:78vh;-webkit-overflow-scrolling:touch}
+.pv img{display:block;width:100%;height:auto;cursor:zoom-in}
+.pv.zoom img{width:210%;max-width:none;cursor:zoom-out}
+.pnav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:42px;height:64px;border:0;border-radius:10px;background:rgba(17,24,39,.55);color:#fff;font-size:28px;cursor:pointer}
+.pnav.p{left:6px}.pnav.n{right:6px}.pnav:disabled{opacity:.25}
+.ptitle{margin:10px 2px 4px;font-weight:800}
+.psub{margin:0 2px 8px;color:var(--mu);font-size:13px}
+.thumbs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px}
+.thumbs img{flex:none;width:70px;height:auto;border:2px solid var(--bd);border-radius:6px;cursor:pointer;opacity:.75}
+.thumbs img.on{border-color:var(--pr);opacity:1}
+/* D-day */
+.dd{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.dday{border-radius:14px;padding:14px 16px;background:var(--prbg)}
+.dday.pk{background:var(--acbg)}
+.dday .t{font-size:13px;color:var(--mu);font-weight:700}
+.dday .n{font-size:34px;font-weight:800;line-height:1.1;color:var(--pr)}
+.dday.pk .n{color:var(--ac)}
+.dday .d{font-size:13px;color:var(--mu)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 8px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:top}
+th{color:var(--mu);font-size:13px;background:var(--bg)}
+.wrap{overflow-x:auto}
+.mut{color:var(--mu)}
+.past{opacity:.5;text-decoration:line-through}
+/* 계산기 */
+label{display:block;font-weight:700;margin:12px 0 6px}
+input[type=number]{width:100%;font:inherit;font-size:20px;padding:12px 14px;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx)}
+.res{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-top:14px}
+.res .b{background:var(--prbg);border-radius:12px;padding:12px 14px}
+.res .b .k{font-size:12px;color:var(--mu);font-weight:700}
+.res .b .v{font-size:26px;font-weight:800;color:var(--pr)}
+.res .b .v small{font-size:13px;color:var(--mu);font-weight:600}
+.note{font-size:13px;color:var(--mu);margin:10px 0 0}
+/* 퀴즈 */
+.q{border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.q b{display:block;margin-bottom:6px}
+.q label{display:flex;gap:10px;align-items:flex-start;margin:6px 0;font-weight:500;cursor:pointer}
+.q input{margin-top:5px;width:18px;height:18px;flex:none}
+.result{border-radius:14px;padding:16px;background:var(--acbg);margin-top:12px}
+.result h3{font-size:20px;color:var(--ac);margin-bottom:6px}
+/* FAQ */
+details{border:1px solid var(--bd);border-radius:12px;padding:0;margin-bottom:8px;background:var(--card)}
+summary{cursor:pointer;padding:13px 14px;font-weight:700;list-style:none;display:flex;gap:10px;align-items:flex-start}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'Q';flex:none;width:24px;height:24px;border-radius:50%;background:var(--pr);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+details[open] summary{border-bottom:1px solid var(--bd)}
+details .a{padding:12px 14px 14px 48px}
+details .a p{margin:0 0 8px}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--prbg);color:var(--pr);font-weight:700;margin-right:6px}
+footer{max-width:900px;margin:0 auto;padding:0 16px 40px;color:var(--mu);font-size:13px}
+a{color:var(--pr)}
+[hidden]{display:none!important}
+</style>
+<script src="../config.js"></script>
+<script src="../promo-data.js"></script>
+</head>
+<body>
+<header><div class="in"><div class="lg">여</div><div><h1>경북여자상업고등학교<br>2027 신입생 안내</h1><p>궁금한 것을 직접 찾아보세요</p></div></div></header>
+<nav id="nav"></nav>
+<main>
+
+<section id="s-book">
+  <div class="card"><h2>학교 소개 책자</h2><p class="lead">학교와 학과, 취업 이야기를 책자로 넘겨 보세요. 사진을 누르면 글자를 크게 볼 수 있어요.</p>
+    <div class="chips" id="bchips"></div>
+    <div class="pv" id="pv"><button class="pnav p" id="pp" aria-label="이전">‹</button><button class="pnav n" id="pn" aria-label="다음">›</button><div class="sc" id="psc"><img id="pimg" alt="" draggable="false"></div></div>
+    <div class="ptitle" id="ptt"></div><div class="psub" id="pst"></div>
+    <div class="thumbs" id="thumbs"></div>
+  </div>
+</section>
+
+<section id="s-admit">
+  <div class="card"><h2>입학 안내</h2><p class="lead">다가오는 일정을 확인하세요.</p><div class="dd" id="dd"></div></div>
+  <div class="card"><h3>2027학년도 모집 일정</h3><div class="wrap"><table>
+    <thead><tr><th>구분</th><th>취업희망자 전형</th><th>일반전형·기타 특별전형</th></tr></thead>
+    <tbody>
+    <tr><td>원서접수</td><td>2026.11.25(수) ~ 11.26(목)<br><span class="mut">09:00~17:00</span></td><td>2026.12.2(수) ~ 12.3(목)<br><span class="mut">09:00~17:00</span></td></tr>
+    <tr><td>면접</td><td>2026.11.30(월) 14:00</td><td>2026.12.7(월) 14:00</td></tr>
+    <tr><td>합격자 발표</td><td>2026.12.1(화) 14:00</td><td>2026.12.8(화) 10:00</td></tr>
+    <tr><td>예비소집</td><td colspan="2">2026.12.8(화) 14:00 (본교 강당)</td></tr>
+    <tr><td>합격자 등록</td><td colspan="2">2027.1.4(월) ~ 1.6(수)</td></tr>
+    </tbody></table></div>
+    <p class="note">일정은 바뀔 수 있어요. 바뀌면 학교 홈페이지(www.gbgc.kr)에 안내합니다.</p></div>
+  <div class="card"><h3>입학설명회</h3><div id="orient"></div></div>
+  <div class="card"><h3>모집 인원 (여학생 192명)</h3><div class="wrap"><table>
+    <thead><tr><th>계열·학과</th><th>학급</th><th>취업희망자</th><th>일반·특별</th><th>합계</th></tr></thead>
+    <tbody>
+    <tr><td>상업정보계열</td><td>4</td><td>67명</td><td>29명</td><td><b>96명</b></td></tr>
+    <tr><td>보건행정코디네이터과</td><td>2</td><td>33명</td><td>15명</td><td><b>48명</b></td></tr>
+    <tr><td>3D융합콘텐츠과</td><td>2</td><td>33명</td><td>15명</td><td><b>48명</b></td></tr>
+    <tr><td><b>합계</b></td><td>8</td><td>133명</td><td>59명</td><td><b>192명</b></td></tr>
+    </tbody></table></div>
+    <p class="note">학급당 24명. 모집 인원은 대구광역시 고등학교 학생 배치계획에 따라 바뀔 수 있어요. 상업정보계열은 입학 후 2학년 때 경영사무과 또는 금융회계과를 고릅니다.</p></div>
+  <div class="card"><h3>어떻게 뽑나요?</h3>
+    <p><span class="tag">취업희망자 전형</span>1차 서류(취업희망서 10점 + 내신 70점) → 2차 면접(취업희망 면접 10점 + 심층 면접 10점) = 100점. 1개 계열 또는 학과만 지원할 수 있어요.</p>
+    <p><span class="tag">일반전형</span>1, 2순위로 복수 지원할 수 있고, 내신 성적(석차백분율)이 높은 순으로 뽑아요.</p>
+    <button class="btn g" onclick="openBook(21)">입학전형 요강 책자 보기</button></div>
+</section>
+
+<section id="s-calc">
+  <div class="card"><h2>내신 점수 계산기</h2><p class="lead">취업희망자 전형의 서류 점수를 미리 계산해 볼 수 있어요. 입력한 값은 이 폰 안에서만 계산되고 어디에도 저장되지 않아요.</p>
+    <label for="pct">내 석차백분율 (전 학년, 숫자만)</label>
+    <input id="pct" type="number" inputmode="decimal" min="0" max="100" step="0.001" placeholder="예: 28.04">
+    <p class="note">석차백분율은 낮을수록 성적이 높아요. (상위 10% → 10)</p>
+    <div class="res" id="res" hidden>
+      <div class="b"><div class="k">내신 점수</div><div class="v" id="r1">0 <small>/ 70점</small></div></div>
+      <div class="b"><div class="k">서류 점수 (취업희망서 10점 포함)</div><div class="v" id="r2">0 <small>/ 80점</small></div></div>
+      <div class="b"><div class="k">면접 점수</div><div class="v">20 <small>점 만점</small></div></div>
+    </div>
+    <p class="note" id="calcnote" hidden></p>
+  </div>
+  <div class="card"><h3>계산 방법</h3>
+    <p>우리 학교 내신 점수 = 기본점수 30점 + 0.4 × (100 − 내 석차백분율)</p>
+    <p class="note">소수 넷째 자리에서 반올림해 소수 셋째 자리까지 구해요. 예) 석차백분율 28.04 → 30 + 0.4 × 71.96 = 58.784.<br>취업희망자 전형 최종 점수는 서류(80점) + 면접(20점) = 100점이고, 면접에 오지 않았거나 면접 점수가 40% 이하이면 불합격이에요.<br>이 계산기는 이해를 돕기 위한 참고용이에요. 합격 여부는 그 해 지원 인원에 따라 달라집니다.</p></div>
+</section>
+
+<section id="s-quiz">
+  <div class="card"><h2>나에게 맞는 학과 찾기</h2><p class="lead">5가지 질문에 답하면 어울리는 학과를 알려줘요. 재미로 해 보는 참고용이에요.</p><div id="quiz"></div>
+    <button class="btn" id="qgo">결과 보기</button> <button class="btn g" id="qreset">다시 하기</button>
+    <div id="qres"></div></div>
+</section>
+
+<section id="s-faq">
+  <div class="card"><h2>자주 묻는 질문</h2><p class="lead">입학전형 요강을 바탕으로 정리했어요. 더 궁금하면 교무실로 전화해 주세요.</p><div id="faq"></div></div>
+  <div class="card" id="livecard" hidden><h3>선생님들이 현장에서 받은 질문</h3><p class="lead">중학교를 찾아가 받은 질문 중에서 답변한 내용을 소개해요.</p><div id="live"></div></div>
+  <div class="card"><h3>더 궁금하세요?</h3>
+    <p>교무실 <a href="tel:0532359398">053-235-9398</a>, <a href="tel:0532359302">9302</a> / 행정실 <a href="tel:0532359404">053-235-9404</a></p>
+    <p class="mut" style="margin:0">홈페이지 <a href="http://www.gbgc.kr" target="_blank" rel="noopener">www.gbgc.kr</a> → 입학안내 · 대구광역시 남구 효성로 35</p></div>
+</section>
+
+</main>
+<footer>경북여자상업고등학교 · 2027학년도 신입생 모집 안내 자료입니다.</footer>
+
+<script>
+var TABS = [['s-book', '학교 소개'], ['s-admit', '입학 안내'], ['s-calc', '점수 계산'], ['s-quiz', '학과 찾기'], ['s-faq', '질문과 답변']];
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+/* ---- 탭 ---- */
+function showTab(id) {
+  TABS.forEach(function (t) { $(t[0]).classList.toggle('on', t[0] === id); });
+  $('nav').innerHTML = TABS.map(function (t) { return '<button class="' + (t[0] === id ? 'on' : '') + '" onclick="showTab(\'' + t[0] + '\')">' + t[1] + '</button>'; }).join('');
+  window.scrollTo(0, 0);
+}
+
+/* ---- 책자 뷰어 ---- */
+var SEC = 0, IDX = 0;
+function order() { var o = []; PROMO.sections.forEach(function (s, si) { s.pages.forEach(function (p, pi) { o.push([si, pi, p]); }); }); return o; }
+function pos() { var o = order(); for (var i = 0; i < o.length; i++) if (o[i][0] === SEC && o[i][1] === IDX) return i; return 0; }
+function bookShow() {
+  var sec = PROMO.sections[SEC], pg = sec.pages[IDX], info = PROMO.pages[pg] || { t: '' }, o = order(), p = pos();
+  $('bchips').innerHTML = PROMO.sections.map(function (s, i) { return '<button class="' + (i === SEC ? 'on' : '') + '" onclick="SEC=' + i + ';IDX=0;bookShow()">' + esc(s.t) + '</button>'; }).join('');
+  $('pv').classList.remove('zoom'); $('psc').scrollTop = 0; $('psc').scrollLeft = 0;
+  $('pimg').src = '../promo/p' + pad2(pg) + '.jpg'; $('pimg').alt = info.t;
+  $('ptt').textContent = info.t; $('pst').textContent = sec.t + ' · ' + (IDX + 1) + ' / ' + sec.pages.length;
+  $('pp').disabled = p === 0; $('pn').disabled = p === o.length - 1;
+  $('thumbs').innerHTML = sec.pages.map(function (q, i) { return '<img class="' + (i === IDX ? 'on' : '') + '" src="../promo/t' + pad2(q) + '.jpg" alt="" onclick="IDX=' + i + ';bookShow()">'; }).join('');
+  [p + 1, p - 1].forEach(function (i) { if (o[i]) { var im = new Image(); im.src = '../promo/p' + pad2(o[i][2]) + '.jpg'; } });
+}
+function bookMove(d) { var o = order(), p = pos() + d; if (p < 0 || p >= o.length) return; SEC = o[p][0]; IDX = o[p][1]; bookShow(); }
+function openBook(page) {
+  var o = order();
+  for (var i = 0; i < o.length; i++) if (o[i][2] === page) { SEC = o[i][0]; IDX = o[i][1]; }
+  showTab('s-book'); bookShow();
+}
+(function () {
+  var x0 = null, y0 = 0;
+  $('pp').onclick = function () { bookMove(-1); };
+  $('pn').onclick = function () { bookMove(1); };
+  $('pimg').onclick = function () { $('pv').classList.toggle('zoom'); $('psc').scrollTop = 0; $('psc').scrollLeft = 0; };
+  $('psc').addEventListener('touchstart', function (e) { x0 = e.touches.length === 1 ? e.touches[0].clientX : null; y0 = e.touches[0].clientY; }, { passive: true });
+  $('psc').addEventListener('touchend', function (e) {
+    if (x0 === null || $('pv').classList.contains('zoom')) return;
+    var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) bookMove(dx < 0 ? 1 : -1);
+    x0 = null;
+  }, { passive: true });
+  document.addEventListener('keydown', function (e) { if (!$('s-book').classList.contains('on')) return; if (e.key === 'ArrowRight') bookMove(1); else if (e.key === 'ArrowLeft') bookMove(-1); });
+})();
+
+/* ---- 입학 안내: D-day와 설명회 ---- */
+var EVENTS = [
+  ['입학설명회 3차', new Date(2026, 10, 14, 10, 0), '11월 14일(토) 10:00'],
+  ['원서접수 시작 (취업희망자 전형)', new Date(2026, 10, 25, 9, 0), '11월 25일(수) 09:00'],
+  ['원서접수 시작 (일반전형)', new Date(2026, 11, 2, 9, 0), '12월 2일(수) 09:00']
+];
+function dday() {
+  var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate()), up = EVENTS.filter(function (e) { return e[1] >= now; }).slice(0, 2);
+  if (!up.length) { $('dd').innerHTML = '<div class="dday"><div class="t">모집 일정</div><div class="n">종료</div><div class="d">2027학년도 신입생 모집 일정이 끝났어요.</div></div>'; return; }
+  $('dd').innerHTML = up.map(function (e, i) {
+    var d = Math.round((new Date(e[1].getFullYear(), e[1].getMonth(), e[1].getDate()) - today) / 86400000);
+    return '<div class="dday' + (i ? ' pk' : '') + '"><div class="t">' + e[0] + '</div><div class="n">' + (d === 0 ? 'D-DAY' : 'D-' + d) + '</div><div class="d">' + e[2] + '</div></div>';
+  }).join('');
+}
+var ORIENT = [['1차', new Date(2026, 8, 11, 16, 30), '9월 11일(금) 16:30'], ['2차', new Date(2026, 9, 7, 15, 30), '10월 7일(수) 15:30'], ['3차', new Date(2026, 10, 14, 10, 0), '11월 14일(토) 10:00']];
+function orient() {
+  var now = new Date();
+  $('orient').innerHTML = '<div class="wrap"><table><tbody>' + ORIENT.map(function (o) {
+    return '<tr class="' + (o[1] < now ? 'past' : '') + '"><td><b>' + o[0] + '</b></td><td>' + o[2] + '</td><td>' + (o[1] < now ? '지났어요' : '<b style="color:var(--pr)">예정</b>') + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+    '<p class="note">장소와 신청 방법은 학교 홈페이지 입학안내에서 확인하세요.</p>';
+}
+
+/* ---- 내신 점수 계산기 ---- */
+function calc() {
+  var v = parseFloat($('pct').value);
+  if (isNaN(v) || v < 0 || v > 100) { $('res').hidden = true; $('calcnote').hidden = true; return; }
+  var s = 30 + 0.4 * (100 - v); s = Math.round(s * 1000) / 1000;
+  $('r1').innerHTML = s.toFixed(3) + ' <small>/ 70점</small>';
+  $('r2').innerHTML = (s + 10).toFixed(3) + ' <small>/ 80점</small>';
+  $('res').hidden = false;
+  $('calcnote').textContent = '여기에 면접 점수(최대 20점)가 더해져요. 면접 점수가 8점 이하이면 불합격이라서, 면접을 잘 준비하는 것도 중요해요!';
+  $('calcnote').hidden = false;
+}
+$('pct').oninput = calc;
+
+/* ---- 학과 찾기 ---- */
+var DEPT = { biz: { n: '상업정보계열', pg: 4, d: '회계·세무·금융·사무를 배우고 공무원, 공기업, 금융기관, 대기업 사무직으로 취업해요. 2학년 때 경영사무과 또는 금융회계과를 고를 수 있어요.' },
+  med: { n: '보건행정코디네이터과', pg: 6, d: '의학용어와 병원 행정을 배워 병원 원무·의무기록, 보건직 공무원, 건강보험 관련 기관 등으로 취업해요. 간호·보건 계열 대학으로 진학하는 길도 있어요.' },
+  cont: { n: '3D융합콘텐츠과', pg: 5, d: '만화·영상·캐릭터·광고 콘텐츠를 만들며 방송·게임·웹툰·디자인 회사에 취업하거나, 크리에이터로 창업하고 디자인·영상 계열 대학으로 진학해요.' } };
+var QUIZ = [
+  ['내가 좋아하는 활동은?', [['biz', '숫자를 정리하고 계획을 세우는 것'], ['med', '사람 이야기를 듣고 돕는 것'], ['cont', '그림을 그리거나 영상·콘텐츠를 만드는 것']]],
+  ['친구들이 말하는 나는?', [['biz', '꼼꼼하고 책임감 있다'], ['med', '친절하고 배려심이 많다'], ['cont', '아이디어가 많고 창의적이다']]],
+  ['졸업하고 하고 싶은 일은?', [['biz', '공무원·은행·공기업에서 일하기'], ['med', '병원·보건 기관에서 일하기'], ['cont', '방송·게임·웹툰 등 콘텐츠 분야에서 일하기']]],
+  ['더 배우고 싶은 것은?', [['biz', '회계·세무·금융'], ['med', '의학용어와 병원 행정'], ['cont', '캐릭터·영상 제작과 디자인']]],
+  ['나에게 더 끌리는 모습은?', [['biz', '안정적인 직장에 일찍 취업하는 나'], ['med', '사람들의 건강과 편의를 돕는 나'], ['cont', '내 작품으로 인정받는 나']]]
+];
+function iga(w) { var c = w.charCodeAt(w.length - 1); return (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28) ? '이' : '가'; }
+function quizInit() {
+  $('quiz').innerHTML = QUIZ.map(function (q, i) {
+    return '<div class="q"><b>' + (i + 1) + '. ' + q[0] + '</b>' + q[1].map(function (o) { return '<label><input type="radio" name="q' + i + '" value="' + o[0] + '"><span>' + o[1] + '</span></label>'; }).join('') + '</div>';
+  }).join('');
+  $('qres').innerHTML = '';
+}
+$('qgo').onclick = function () {
+  var score = { biz: 0, med: 0, cont: 0 }, n = 0;
+  QUIZ.forEach(function (q, i) { var c = document.querySelector('input[name=q' + i + ']:checked'); if (c) { score[c.value]++; n++; } });
+  if (n < QUIZ.length) { $('qres').innerHTML = '<p class="note">모든 질문에 답해 주세요. (' + n + ' / ' + QUIZ.length + ')</p>'; return; }
+  var max = Math.max(score.biz, score.med, score.cont), top = Object.keys(score).filter(function (k) { return score[k] === max; });
+  $('qres').innerHTML = '<div class="result"><h3>' + top.map(function (k) { return DEPT[k].n; }).join(' + ') + (top.length > 1 ? ' 둘 다 어울려요!' : iga(DEPT[top[0]].n) + ' 어울려요!') + '</h3>' +
+    top.map(function (k) { return '<p><b>' + DEPT[k].n + '</b><br>' + DEPT[k].d + '</p><button class="btn" onclick="openBook(' + DEPT[k].pg + ')">' + DEPT[k].n + ' 책자 보기</button> '; }).join('') +
+    '<p class="note">재미로 해 보는 참고용이에요. 학과마다 더 많은 이야기는 책자에서 확인하세요.</p></div>';
+};
+$('qreset').onclick = quizInit;
+
+/* ---- 자주 묻는 질문 ---- */
+var FAQ = [
+  ['취업희망자 전형과 일반전형은 무엇이 다른가요?', '<p><b>취업희망자 전형</b>은 졸업 후 특정 분야에 취업하거나 창업하려는 뜻과 계획이 분명하고 보호자의 동의를 받은 학생이 지원해요. 1개 계열 또는 학과만 지원할 수 있고, 서류(취업희망서 10점 + 내신 70점)와 면접(20점)을 합쳐 100점으로 뽑아요.</p><p><b>일반전형</b>은 1, 2순위로 복수 지원할 수 있고 내신 성적(석차백분율)이 높은 순으로 뽑아요.</p>'],
+  ['취업희망자 전형에서 떨어지면 어떻게 되나요?', '<p>불합격이 확인되면 일반전형에 다시 지원할 수 있어요.</p>'],
+  ['원서는 어디서 어떻게 내나요?', '<p>대구광역시 소재 중학교 졸업예정자는 다니는 중학교에서 나이스로 한꺼번에 지원해요. 타 시·도 중학교 졸업자와 동등 학력 인정자는 우리 학교에 직접 지원합니다.</p>'],
+  ['전형료가 있나요?', '<p>전형료는 없어요.</p>'],
+  ['면접은 어떻게 보나요?', '<p>취업희망자 전형과 일반전형 모두 면접을 해요. 취업희망자 전형은 취업희망 면접(10점)과 심층 면접(10점)을 보고, 면접에 오지 않거나 면접 점수가 40% 이하이면 불합격이에요. 일반전형의 면접은 점수에 넣지 않고 합격 여부만 정해요.</p>'],
+  ['상업정보계열은 입학한 뒤에 어떻게 학과를 정하나요?', '<p>계열로 뽑아서 1학년은 공통으로 배우고, 2학년으로 올라갈 때 본인 희망에 따라 경영사무과 또는 금융회계과를 골라요. 특정 학과에 지원자가 너무 많으면 학교 기준에 따라 조정될 수 있어요.</p>'],
+  ['몇 명을 뽑나요?', '<p>8학급 192명이에요. (취업희망자 전형 133명, 일반·특별 전형 59명) 학급당 24명이고, 대구광역시 학생 배치계획에 따라 바뀔 수 있어요.</p>'],
+  ['준비할 서류가 있나요?', '<p>입학원서(사진 부착)와 지원자 구분에 따라 주민등록등본, 생활기록부Ⅱ 사본, 성적증명서 등이 필요해요. 취업희망자 전형은 학교 홈페이지에서 내려받은 <b>취업희망서</b>를 직접 손으로 써서 내야 하고, 내지 않으면 탈락이에요.</p>'],
+  ['다른 고등학교에도 같이 지원할 수 있나요?', '<p>전기 고등학교는 1개 학교만 지원할 수 있어요. 불합격이 확인된 경우에 한해 예외가 있으니 요강 23쪽을 확인하세요.</p>'],
+  ['졸업하면 취업이 잘 되나요?', '<p>최근(2020~2026년) 공무원·부사관·공기업·금융기관·대기업 취업자가 101명이에요. 공공행정반, 금융·공기업반 같은 취업 지원 프로그램이 있어요. 자세한 취업처는 책자 3쪽을 보세요.</p>'],
+  ['장학금이 있나요?', '<p>입학성적 우수 장학금(검정고시 합격자 제외)이 있고, 재학생을 대상으로 학교 성적과 환경 등을 살펴 선정하는 장학금도 여러 종류 있어요.</p>'],
+  ['학교는 어디에 있고 어떻게 가나요?', '<p>대구광역시 남구 효성로 35예요. 시내버스는 240, 410(410-1), 349, 730, 남구1(남구1-1), 달서6번을 타요.</p>']
+];
+function faqInit() {
+  $('faq').innerHTML = FAQ.map(function (f) { return '<details><summary>' + f[0] + '</summary><div class="a">' + f[1] + '</div></details>'; }).join('');
+}
+function liveFaq() {
+  var url = (window.PROMO_CONFIG || {}).apiUrl || '';
+  if (url.indexOf('https://script.google.com/') !== 0) return;
+  fetch(url, { method: 'POST', body: JSON.stringify({ fn: 'getPublicFaq' }) }).then(function (r) { return r.json(); }).then(function (j) {
+    if (!j.ok || !j.data || !j.data.items.length) return;
+    $('live').innerHTML = j.data.items.map(function (i) {
+      return '<details><summary><span><span class="tag">' + esc(i.cat) + '</span>' + esc(i.q) + '</span></summary><div class="a">' + i.a.map(function (t) { return '<p>' + esc(t).replace(/\n/g, '<br>') + '</p>'; }).join('') + '</div></details>';
+    }).join('');
+    $('livecard').hidden = false;
+  }).catch(function () {});
+}
+
+showTab('s-book'); bookShow(); dday(); orient(); quizInit(); faqInit(); liveFaq();
+</script>
+</body>
+</html>

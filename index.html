@@ -146,6 +146,19 @@ nav button.on .bdg{background:#fff;color:var(--er)}
 .qd-q>div,.qd-a>div{margin-top:4px;line-height:1.55}
 .qd-a{border-left:4px solid var(--pr)}
 .qd-b{display:flex;gap:8px;margin-top:8px}
+.stu .qrbox{background:#fff;border-radius:16px;padding:14px;max-width:420px;margin:0 auto;box-shadow:0 6px 24px rgba(0,0,0,.12)}
+.stu .qrbox img{display:block;width:100%;height:auto}
+.stu .qrurl{text-align:center;margin:12px 0;font-size:14px;word-break:break-all}
+.stu .qract{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.stu .qract .btn{width:auto;margin:0;padding:12px 18px;text-decoration:none;display:inline-block}
+.stuul{margin:0;padding-left:20px;display:grid;gap:8px;font-size:14px;line-height:1.55}
+a.btn{text-decoration:none;display:inline-block;width:auto}
+#qrfull{position:fixed;inset:0;z-index:30;background:#fff;display:flex;align-items:center;justify-content:center;padding:16px}
+#qrfull .qrfi{text-align:center;color:#111827;max-width:min(92vw,86vh)}
+#qrfull img{display:block;width:min(88vw,70vh);height:auto;margin:0 auto}
+#qrfull .qrft{font-size:clamp(20px,4vw,34px);font-weight:800;margin-top:10px}
+#qrfull .qrfu{font-size:clamp(13px,2.4vw,20px);color:#4b5563;margin:4px 0 14px;word-break:break-all}
+.tag.pub{background:#dbe5ff;color:#1e3a8a}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -224,11 +237,12 @@ function render() {
   $('who').innerHTML = esc(D.me.name) + ' · ' + r + ' <a href="#" onclick="logout();return false">다른 이름</a>';
   var tabs = [['status', '현황']];
   if (r !== '열람') tabs.push(['form', '입력'], ['list', r === '관리자' ? '전체 관리' : '학생 목록']);
-  tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()]);
+  tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()], ['stu', '중학생용']);
   $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + '</button>'; }).join('');
   if (TAB === 'status') $('main').innerHTML = viewStatus();
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
   else if (TAB === 'promo') { $('main').innerHTML = viewPromo(); bindPromo(); }
+  else if (TAB === 'stu') { $('main').innerHTML = viewStu(); bindStu(); }
   else if (TAB === 'qna') { $('main').innerHTML = viewQna(); bindQna(); if (!QNA) loadQna(); }
   else $('main').innerHTML = viewList();
 }
@@ -514,7 +528,7 @@ function qnaDraw() {
     var no = all.length - all.indexOf(i), open = QOPEN === i.id, last = i.answers[i.answers.length - 1];
     h += '<tr class="qrow' + (open ? ' open' : '') + '" onclick="qToggle(\'' + i.id + '\')"><td class="rk">' + no + '</td><td>' + esc(i.cat) + '</td><td class="q">' + nl2br(i.q) + '</td><td>' + esc(i.school || '-') + '</td><td>' + esc(i.asker || '-') + '</td>' +
       '<td style="color:var(--mu)">' + esc(i.time) + '</td>' +
-      '<td><span class="tag ' + (i.status === '답변완료' ? 'ok' : 'wa') + '">' + i.status + (i.answers.length > 1 ? ' ' + i.answers.length : '') + '</span></td>' +
+      '<td><span class="tag ' + (i.status === '답변완료' ? 'ok' : 'wa') + '">' + i.status + (i.answers.length > 1 ? ' ' + i.answers.length : '') + '</span>' + (i.pub ? ' <span class="tag pub">학생용 공개</span>' : '') + '</td>' +
       '<td class="a">' + (last ? nl2br(last.text) + '<div class="mut" style="color:var(--mu);font-size:12px">' + esc(last.by) + ' · ' + esc(last.time) + '</div>' : '<span class="mut" style="color:var(--mu)">-</span>') + '</td></tr>';
     if (open) {
       h += '<tr class="qdet"><td colspan="8"><div class="qd"><div class="qd-q"><b>질문</b> <span class="mut" style="color:var(--mu);font-size:12px">' + esc(i.time) + (i.school ? ' · ' + esc(i.school) : '') + '</span><div>' + nl2br(i.q) + '</div></div>' +
@@ -523,7 +537,9 @@ function qnaDraw() {
             (qCanDel(a.by) ? ' <button class="btn s g" type="button" onclick="event.stopPropagation();qDel(\'a\',\'' + a.id + '\')">삭제</button>' : '') + '<div>' + nl2br(a.text) + '</div></div>'; }).join('') : '<div class="qd-a mut" style="color:var(--mu)">아직 답변이 없습니다.</div>') +
         (qCanWrite() ? '<div class="qd-f"><textarea id="qa_' + i.id + '" rows="3" maxlength="2000" placeholder="답변을 입력하세요 (본교 선생님 누구나 답변할 수 있습니다)" oninput="QDRAFT[\'' + i.id + '\']=this.value" onclick="event.stopPropagation()">' + esc(QDRAFT[i.id] || '') + '</textarea>' +
           '<div class="qd-b"><button class="btn s" type="button" onclick="event.stopPropagation();qAnswer(\'' + i.id + '\')">답변 등록</button>' +
-          (qCanDel(i.by) ? '<button class="btn s g" type="button" onclick="event.stopPropagation();qDel(\'q\',\'' + i.id + '\')">이 질문 삭제</button>' : '') + '</div></div>' : '') +
+          (qCanDel(i.by) ? '<button class="btn s g" type="button" onclick="event.stopPropagation();qDel(\'q\',\'' + i.id + '\')">이 질문 삭제</button>' : '') +
+          (D.me.role === '관리자' ? (i.pub ? '<button class="btn s g" type="button" onclick="event.stopPropagation();qPublic(\'' + i.id + '\',false)">학생용 공개 취소</button>' :
+            (i.answers.length ? '<button class="btn s" type="button" onclick="event.stopPropagation();qPublic(\'' + i.id + '\',true)">학생용 FAQ에 공개</button>' : '')) : '') + '</div></div>' : '') +
         '</div></td></tr>';
     }
   });
@@ -564,6 +580,41 @@ function qnaCopy() {
   function ok() { toast('✓ 표를 복사했습니다. 엑셀이나 구글 시트에 붙여넣으세요.'); }
   function fb() { var ta = document.createElement('textarea'); ta.value = lines; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy') ? ok() : toast('복사하지 못했습니다.'); } catch (e) { toast('복사하지 못했습니다.'); } document.body.removeChild(ta); }
   try { navigator.clipboard.writeText(lines).then(ok, fb); } catch (e) { fb(); }
+}
+
+/* ---- 중학생용: 학생용 안내 페이지 주소를 QR로 크게 보여주기 ---- */
+var STUDENT_URL = 'https://knuekim91.github.io/gbgc_promo/student/';
+function viewStu() {
+  return '<div class="card stu"><h3 style="margin:0 0 4px">중학생용 안내 페이지</h3>' +
+    '<p class="lead" style="margin:0 0 14px;color:var(--mu);font-size:14px">중학교 현장에서 이 QR을 보여주세요. 학생이 휴대폰 카메라로 찍으면 학교 소개 책자, 입학 일정, 내신 점수 계산기, 학과 찾기, 질문과 답변을 볼 수 있습니다.</p>' +
+    '<div class="qrbox"><img src="student/qr.svg" alt="중학생용 안내 페이지 QR 코드" id="qrimg"></div>' +
+    '<div class="qrurl"><a href="' + STUDENT_URL + '" target="_blank" rel="noopener">' + STUDENT_URL + '</a></div>' +
+    '<div class="qract"><button class="btn" type="button" id="qrfs">QR 크게 보기</button>' +
+    '<button class="btn g" type="button" id="qrcp">주소 복사</button>' +
+    '<a class="btn g" href="' + STUDENT_URL + '" target="_blank" rel="noopener">학생 화면 미리보기</a></div></div>' +
+    '<div class="card"><h3>QR 이미지 내려받기</h3><p class="note" style="color:var(--mu);font-size:13px;margin:0 0 10px">포스터, 명함, 홍보 책자에 넣을 때 쓰세요. PNG는 인쇄용(약 1000px), SVG는 크기를 마음대로 키워도 선명합니다.</p>' +
+    '<a class="btn s g" href="student/qr.png" download="경북여상_중학생용_QR.png">PNG 내려받기</a> <a class="btn s g" href="student/qr.svg" download="경북여상_중학생용_QR.svg">SVG 내려받기</a></div>' +
+    '<div class="card"><h3>안내</h3><ul class="stuul">' +
+    '<li>학생용 페이지는 <b>로그인 없이</b> 열리며, 지원 학생 정보는 전혀 들어 있지 않습니다.</li>' +
+    '<li>QnA에서 관리자가 <b>중학생용에 공개</b>한 질문과 답변만 학생용 페이지의 "질문과 답변"에 나타납니다.</li>' +
+    '<li><b>이 선생님용 화면(현황·입력·학생 목록)은 학생에게 보여주지 마세요.</b> 학생 이름과 연락처가 들어 있습니다.</li></ul></div>';
+}
+function bindStu() {
+  $('qrfs').onclick = function () {
+    var o = document.createElement('div'); o.id = 'qrfull'; o.setAttribute('role', 'dialog');
+    o.innerHTML = '<div class="qrfi"><img src="student/qr.svg" alt="QR 코드"><div class="qrft">휴대폰 카메라로 찍어 보세요</div><div class="qrfu">' + esc(STUDENT_URL.replace('https://', '')) + '</div><button class="btn g" type="button">닫기</button></div>';
+    o.onclick = function () { document.body.removeChild(o); };
+    document.body.appendChild(o);
+  };
+  $('qrcp').onclick = function () {
+    function ok() { toast('✓ 주소를 복사했습니다.'); }
+    function fb() { var ta = document.createElement('textarea'); ta.value = STUDENT_URL; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy') ? ok() : toast('복사하지 못했습니다.'); } catch (e) { toast('복사하지 못했습니다.'); } document.body.removeChild(ta); }
+    try { navigator.clipboard.writeText(STUDENT_URL).then(ok, fb); } catch (e) { fb(); }
+  };
+}
+function qPublic(id, flag) {
+  busy(flag ? '중학생용에 공개하는 중입니다…' : '공개를 취소하는 중입니다…');
+  call('setQnaPublic', id, flag).then(function () { toast(flag ? '✓ 중학생용 페이지에 공개했습니다.' : '공개를 취소했습니다.'); return loadQna(); }).then(idle, function (e) { idle(); toast(e.message || e); });
 }
 
 /* ---- 입력 ---- */
