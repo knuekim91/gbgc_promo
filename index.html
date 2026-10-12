@@ -217,6 +217,10 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 .bt{background:var(--pr);fill:var(--pr)}
 .bg{background:var(--ac);fill:var(--ac)}
 @media (max-width:520px){.gut th:nth-child(2),.gut td:nth-child(2){display:none}}
+#ver{text-align:center;color:var(--mu);font-size:11px;padding:0 0 20px}
+#upd{position:fixed;left:12px;right:12px;bottom:12px;z-index:25;background:#111827;color:#fff;border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+#upd button{border:0;border-radius:8px;background:#7b9cff;color:#0e1626;font:inherit;font-weight:700;padding:8px 14px;cursor:pointer}
+#upd.hide{display:none!important}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -227,6 +231,8 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 <nav id="nav"></nav>
 <main id="main">불러오는 중…</main>
 <div class="msg" id="msg"></div>
+<div id="upd" class="hide"><span>새 버전이 나왔어요.</span> <button type="button" onclick="location.href=location.pathname+'?r='+Date.now()">지금 새로고침</button></div>
+<div id="ver"></div>
 <div id="busy" class="hide" role="status" aria-live="polite"><div class="bx"><span class="spin"></span><span id="busyt">처리 중…</span></div></div>
 
 <script>
@@ -934,7 +940,19 @@ function applyAdj() {
 }
 
 FORM = { 단계: '' };
+/* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
+var APP_VER = '2026-10-12.9';
+function checkUpdate() {
+  try {
+    fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
+      var m = t.match(/var APP_VER = '([^']+)'/);
+      if (m && m[1] !== APP_VER) $('upd').classList.remove('hide');
+    }).catch(function () {});
+  } catch (e) {}
+}
+$('ver').textContent = '버전 ' + APP_VER;
 load();
+checkUpdate();
 </script>
 </body>
 </html>
