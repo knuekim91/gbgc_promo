@@ -193,9 +193,34 @@ details.qa[open] summary{border-bottom:1px solid var(--bd)}
 /* 입력 화면 단계 버튼: 너무 길지 않게 */
 #stg{gap:8px;flex-wrap:wrap}
 #stg button{flex:0 0 auto;min-width:92px;padding:10px 22px}
+:root{--ac:#e8508a}
+@media (prefers-color-scheme:dark){:root{--ac:#f472b6}}
+.gut td,.gut th,.bandt td,.bandt th{text-align:right}
+.gut td:first-child,.gut th:first-child,.bandt td:first-child,.bandt th:first-child{text-align:left}
+.gut tr.grow{cursor:pointer}
+.gut tr.grow:hover td{background:var(--bg)}
+.gut tr.grow.open td{background:var(--selbg)}
+.gut tr.sub td{color:var(--mu);font-size:12.5px;background:var(--bg)}
+.gut .caret{color:var(--mu);font-size:12px}
+.gut td.nb{position:relative;min-width:84px}
+.gut td.nb .bar{position:absolute;left:0;top:6px;bottom:6px;background:var(--prbg);border-radius:4px;z-index:0}
+.gut td.nb b{position:relative;z-index:1}
+td.acc{color:var(--ok);font-weight:800}
+.stbl tfoot td{font-weight:800;background:var(--bg);border-top:2px solid var(--bd)}
+.legend{display:flex;gap:16px;margin:10px 2px 0;font-size:13px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+svg.chart{display:block;width:100%;height:auto;margin-top:6px}
+svg.chart .grid{stroke:var(--bd);stroke-width:1}
+svg.chart .ax{fill:var(--mu);font-size:12px}
+svg.chart .lb{font-size:13px;fill:var(--tx);font-weight:700}
+svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
+.bt{background:var(--pr);fill:var(--pr)}
+.bg{background:var(--ac);fill:var(--ac)}
+@media (max-width:520px){.gut th:nth-child(2),.gut td:nth-child(2){display:none}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
+<script src="school-gu.js"></script>
 </head>
 <body>
 <header><b>경북여상 원서접수현황</b><span id="who"></span></header>
@@ -271,11 +296,12 @@ function render() {
   $('who').innerHTML = esc(D.me.name) + ' · ' + r + ' <a href="#" onclick="logout();return false">다른 이름</a>';
   var tabs = [['status', '현황']];
   if (r !== '열람') tabs.push(['form', '입력'], ['list', r === '관리자' ? '전체 관리' : '학생 목록']);
-  tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()], ['stu', '중학생용']);
+  tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()], ['stat', '통계'], ['stu', '중학생용']);
   $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + '</button>'; }).join('');
   if (TAB === 'status') $('main').innerHTML = viewStatus();
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
   else if (TAB === 'promo') { $('main').innerHTML = viewPromo(); bindPromo(); }
+  else if (TAB === 'stat') { $('main').innerHTML = viewStat(); }
   else if (TAB === 'stu') { $('main').innerHTML = viewStu(); bindStu(); }
   else if (TAB === 'qna') { $('main').innerHTML = viewQna(); bindQna(); if (!QNA) loadQna(); }
   else $('main').innerHTML = viewList();
@@ -618,6 +644,100 @@ function qnaCopy() {
   function ok() { toast('✓ 표를 복사했습니다. 엑셀이나 구글 시트에 붙여넣으세요.'); }
   function fb() { var ta = document.createElement('textarea'); ta.value = lines; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy') ? ok() : toast('복사하지 못했습니다.'); } catch (e) { toast('복사하지 못했습니다.'); } document.body.removeChild(ta); }
   try { navigator.clipboard.writeText(lines).then(ok, fb); } catch (e) { fb(); }
+}
+
+/* ---- 통계: 구별 지원·접수 현황, 내신 성적대별 인원 ---- */
+var STAT_VIEW = 'gu', STAT_TRK = '전체', STAT_OPEN = '';
+var GU_ORDER = ['중구', '동구', '서구', '남구', '북구', '수성구', '달서구', '달성군', '군위군'];
+var BANDS = [['1~50%', 0, 50], ['51~70%', 50, 70], ['71~80%', 70, 80], ['81~90%', 80, 90], ['91~100%', 90, 100.0001]];   // (아래, 위] 석차백분율
+function guOf(name) {
+  var n = String(name || '').trim(), m = window.SCHOOL_GU || {};
+  if (m[n]) return m[n];
+  var a = n.replace(/여자중학교$/, '여중').replace(/중학교$/, '중');
+  return m[a] || '';
+}
+function statRows() { return D.rows.filter(function (r) { return r.단계 !== '타교지원'; }); }   // 지원자: 타교지원 제외
+function bandOf(v) { return v <= 50 ? 0 : v <= 70 ? 1 : v <= 80 ? 2 : v <= 90 ? 3 : 4; }   // 석차백분율 → 성적대 번호
+function pct(a, b) { return b ? Math.round(a / b * 1000) / 10 : 0; }
+
+function viewStat() {
+  if (D.me.role === '열람') return '<div class="card"><div class="qempty">열람 권한은 통계를 볼 수 없습니다.</div></div>';
+  var h = '<div class="card"><div class="qtop"><div><h3 style="margin:0 0 4px">통계</h3><div class="mut" style="color:var(--mu);font-size:13px">지원자는 고민 중과 확정 학생이며, 타교지원 학생은 뺍니다.</div></div></div>' +
+    '<div class="chips" style="margin-top:10px"><button type="button" class="' + (STAT_VIEW === 'gu' ? 'on' : '') + '" onclick="STAT_VIEW=\'gu\';render()">중학교 소재 구별</button>' +
+    '<button type="button" class="' + (STAT_VIEW === 'band' ? 'on' : '') + '" onclick="STAT_VIEW=\'band\';render()">내신 성적대별</button></div></div>';
+  return h + (STAT_VIEW === 'gu' ? statGu() : statBand());
+}
+
+/* 1) 구별: 지원자 대비 접수자 */
+function statGu() {
+  var rows = statRows().filter(function (r) { return STAT_TRK === '전체' || r.전형 === STAT_TRK; });
+  var by = {}, unk = {};
+  function slot(g) { return by[g] = by[g] || { schools: {}, n: 0, ok: 0, go: 0, acc: 0 }; }
+  rows.forEach(function (r) {
+    var g = guOf(r.중학교), s = slot(g || '기타');
+    if (!g) unk[r.중학교 || '(학교 미입력)'] = 1;
+    var sc = s.schools[r.중학교] = s.schools[r.중학교] || { n: 0, ok: 0, go: 0, acc: 0 };
+    [s, sc].forEach(function (t) { t.n++; if (r.단계 === '확정') t.ok++; else t.go++; if (r.원서접수 === '접수') t.acc++; });
+  });
+  var order = GU_ORDER.concat(by['기타'] ? ['기타'] : []).filter(function (g) { return by[g]; });
+  var tot = { n: 0, ok: 0, go: 0, acc: 0, sch: 0 }, max = 0;
+  order.forEach(function (g) { var s = by[g]; tot.n += s.n; tot.ok += s.ok; tot.go += s.go; tot.acc += s.acc; tot.sch += Object.keys(s.schools).length; max = Math.max(max, s.n); });
+  var h = '<div class="card stbl"><h3><span>중학교 소재 구·군별 지원 현황</span><span class="chips">' + ['전체', '취업희망자', '일반(특별포함)'].map(function (t) {
+    return '<button type="button" class="' + (STAT_TRK === t ? 'on' : '') + '" onclick="STAT_TRK=\'' + t + '\';render()">' + t.replace('(특별포함)', '') + '</button>'; }).join('') + '</span></h3>';
+  if (!order.length) return h + '<div class="empty">아직 입력된 학생이 없습니다.</div></div>';
+  h += '<div class="wrap"><table class="gut"><thead><tr><th>구·군</th><th>학교 수</th><th>지원자</th><th>확정</th><th>고민 중</th><th>원서접수</th><th>접수율</th></tr></thead><tbody>';
+  order.forEach(function (g) {
+    var s = by[g], open = STAT_OPEN === g;
+    h += '<tr class="grow' + (open ? ' open' : '') + '" onclick="STAT_OPEN=STAT_OPEN===\'' + g + '\'?\'\':\'' + g + '\';render()"><td><b>' + g + '</b> <span class="caret">' + (open ? '▾' : '▸') + '</span></td><td>' + Object.keys(s.schools).length + '</td>' +
+      '<td class="nb"><span class="bar" style="width:' + Math.round(s.n / max * 100) + '%"></span><b>' + s.n + '</b></td><td>' + s.ok + '</td><td>' + s.go + '</td><td class="acc">' + s.acc + '</td><td>' + pct(s.acc, s.n) + '%</td></tr>';
+    if (open) {
+      Object.keys(s.schools).sort(function (a, b) { return s.schools[b].n - s.schools[a].n; }).forEach(function (n) {
+        var t = s.schools[n];
+        h += '<tr class="sub"><td>· ' + esc(n) + '</td><td></td><td>' + t.n + '</td><td>' + t.ok + '</td><td>' + t.go + '</td><td class="acc">' + t.acc + '</td><td>' + pct(t.acc, t.n) + '%</td></tr>';
+      });
+    }
+  });
+  h += '</tbody><tfoot><tr><td>합계</td><td>' + tot.sch + '</td><td>' + tot.n + '</td><td>' + tot.ok + '</td><td>' + tot.go + '</td><td class="acc">' + tot.acc + '</td><td>' + pct(tot.acc, tot.n) + '%</td></tr></tfoot></table></div>' +
+    '<p class="note" style="color:var(--mu);font-size:12px;margin:10px 2px 0">구·군 줄을 누르면 학교별 인원이 펼쳐집니다. 접수율 = 원서접수 ÷ 지원자. 구 구분은 위키백과 「대구광역시의 중학교 목록」 기준입니다.' +
+    (unk && Object.keys(unk).length ? '<br><b>구를 확인하지 못한 학교(기타):</b> ' + Object.keys(unk).map(esc).join(', ') : '') + '</p></div>';
+  return h;
+}
+
+/* 2) 내신 성적대별: 취업희망자·일반 인원 표와 그래프 */
+function statBand() {
+  var rows = statRows(), T = '취업희망자', G = '일반(특별포함)';
+  var cells = BANDS.map(function () { return { t: 0, g: 0, acc: 0 }; }), none = { t: 0, g: 0, acc: 0 };
+  rows.forEach(function (r) {
+    var v = r.내신 === '' || r.내신 == null ? NaN : Number(r.내신), c = isNaN(v) ? none : cells[bandOf(v)];
+    if (r.전형 === T) c.t++; else c.g++;
+    if (r.원서접수 === '접수') c.acc++;
+  });
+  var all = cells.concat(none.t + none.g ? [none] : []), names = BANDS.map(function (b) { return b[0]; }).concat(none.t + none.g ? ['내신 미입력'] : []);
+  var sum = { t: 0, g: 0, acc: 0 }; all.forEach(function (c) { sum.t += c.t; sum.g += c.g; sum.acc += c.acc; });
+  var total = sum.t + sum.g;
+  var h = '<div class="card stbl"><h3><span>내신 성적대별 지원 인원</span></h3>';
+  if (!total) return h + '<div class="empty">아직 입력된 학생이 없습니다.</div></div>';
+  h += '<div class="wrap"><table class="bandt"><thead><tr><th>내신(석차백분율)</th><th>취업희망자</th><th>일반전형</th><th>합계</th><th>비율</th><th>접수</th></tr></thead><tbody>';
+  all.forEach(function (c, i) { h += '<tr><td><b>' + names[i] + '</b></td><td>' + c.t + '</td><td>' + c.g + '</td><td><b>' + (c.t + c.g) + '</b></td><td>' + pct(c.t + c.g, total) + '%</td><td class="acc">' + c.acc + '</td></tr>'; });
+  h += '</tbody><tfoot><tr><td>합계</td><td>' + sum.t + '</td><td>' + sum.g + '</td><td>' + total + '</td><td>100%</td><td class="acc">' + sum.acc + '</td></tr></tfoot></table></div>';
+  // 막대그래프 (SVG)
+  var W = 640, Hh = 300, L = 40, B = 40, T0 = 24, max = 1;
+  all.forEach(function (c) { max = Math.max(max, c.t, c.g); });
+  var step = max <= 5 ? 1 : max <= 10 ? 2 : max <= 25 ? 5 : max <= 50 ? 10 : max <= 100 ? 20 : 50, top = Math.ceil(max / step) * step, ph = Hh - B - T0, gw = (W - L - 10) / all.length;
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + Hh + '" class="chart" role="img" aria-label="내신 성적대별 취업희망자와 일반전형 지원 인원 막대그래프">';
+  for (var v = 0; v <= top; v += step) { var y = T0 + ph - v / top * ph; svg += '<line x1="' + L + '" x2="' + (W - 10) + '" y1="' + y + '" y2="' + y + '" class="grid"/><text x="' + (L - 6) + '" y="' + (y + 4) + '" text-anchor="end" class="ax">' + v + '</text>'; }
+  all.forEach(function (c, i) {
+    var x0 = L + i * gw, bw = Math.min(gw * 0.34, 46);
+    [[c.t, 'bt', 0], [c.g, 'bg', 1]].forEach(function (p) {
+      var bh = p[0] / top * ph, x = x0 + gw / 2 - bw - 2 + p[2] * (bw + 4);
+      svg += '<rect x="' + x + '" y="' + (T0 + ph - bh) + '" width="' + bw + '" height="' + Math.max(bh, 0) + '" rx="3" class="' + p[1] + '"/><text x="' + (x + bw / 2) + '" y="' + (T0 + ph - bh - 5) + '" text-anchor="middle" class="val">' + p[0] + '</text>';
+    });
+    svg += '<text x="' + (x0 + gw / 2) + '" y="' + (Hh - 16) + '" text-anchor="middle" class="ax lb">' + names[i] + '</text>';
+  });
+  svg += '</svg>';
+  h += '<div class="legend"><span><i class="bt"></i>취업희망자</span><span><i class="bg"></i>일반전형(특별포함)</span></div>' + svg +
+    '<p class="note" style="color:var(--mu);font-size:12px;margin:6px 2px 0">내신은 석차백분율이며 낮을수록 성적이 높습니다. 1~50%는 50 이하, 51~70%는 50 초과 70 이하 …로 나눕니다. 타교지원 학생은 뺐습니다.</p></div>';
+  return h;
 }
 
 /* ---- 중학생용: 학생용 안내 페이지 주소를 QR로 크게 보여주기 ---- */
