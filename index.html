@@ -178,6 +178,21 @@ details.qa[open] summary{border-bottom:1px solid var(--bd)}
 .qah{font-size:13px;margin-bottom:3px}
 .qah span{color:var(--mu);font-size:12px;margin:0 4px}
 .qempty{padding:20px;text-align:center;color:var(--mu)}
+/* 원서접수 묶음 제목: 크고 진하게, 접수 완료는 초록, 접수 전은 주황 */
+:root{--gokbg:#dcfce7;--gokfg:#166534;--gwtbg:#fef3c7;--gwtfg:#92400e}
+@media (prefers-color-scheme:dark){:root{--gokbg:#14532d;--gokfg:#bbf7d0;--gwtbg:#4a3513;--gwtfg:#fde68a}}
+.stbl tr.grp td{font-size:15px;font-weight:800;padding:9px 10px;border-bottom:0;letter-spacing:-.2px}
+.stbl tr.grp.ok td{background:var(--gokbg);color:var(--gokfg);border-left:5px solid var(--ok)}
+.stbl tr.grp.wait td{background:var(--gwtbg);color:var(--gwtfg);border-left:5px solid var(--wa)}
+.stbl tr.grp b{font-size:20px;font-weight:800;margin:0 2px}
+.grph{margin:14px 2px 8px;padding:9px 14px;border-radius:10px;font-weight:800;font-size:15px}
+.grph.ok{background:var(--gokbg);color:var(--gokfg);border-left:5px solid var(--ok)}
+.grph.wait{background:var(--gwtbg);color:var(--gwtfg);border-left:5px solid var(--wa)}
+.grph b{font-size:20px;font-weight:800;margin:0 2px}
+.grph .mut,.stbl tr.grp .mut{font-weight:600;color:inherit;opacity:.7;font-size:12px}
+/* 입력 화면 단계 버튼: 너무 길지 않게 */
+#stg{gap:8px;flex-wrap:wrap}
+#stg button{flex:0 0 auto;min-width:92px;padding:10px 22px}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -306,8 +321,8 @@ function statusTable() {
   h += '<div class="wrap"><table><thead><tr><th>순위</th><th>이름</th><th>중학교</th><th>내신</th>' + (one ? '' : '<th>' + (VIEW2 ? '1지망' : '2지망') + '</th>') + '<th>단계</th><th>원서접수</th><th>담당교사</th><th>학생 연락처</th><th>담임</th></tr></thead><tbody>';
   var accN = rows.filter(isAcc).length, ncol = (h.match(/<th>/g) || []).length;
   rows.forEach(function (r, ri) {
-    if (accN > 0 && ri === 0) h += '<tr class="grp"><td colspan="' + ncol + '">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></td></tr>';
-    if (accN > 0 && accN < rows.length && ri === accN) h += '<tr class="grp"><td colspan="' + ncol + '">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></td></tr>';
+    if (accN > 0 && ri === 0) h += '<tr class="grp ok"><td colspan="' + ncol + '">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></td></tr>';
+    if (accN > 0 && accN < rows.length && ri === accN) h += '<tr class="grp wait"><td colspan="' + ncol + '">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></td></tr>';
     var out = !VIEW2 && r.순위 && sum.정원 && r.순위 > sum.정원;
     h += '<tr' + (out ? ' class="out"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 ? '-' : r.순위) + '</td>' +
       '<td>' + (r.full ? '<b>' + esc(r.이름) + '</b>' : '<span class="mut">비공개</span>') + '</td>' +
@@ -759,8 +774,8 @@ function listBodyHtml() {
     (gone ? ' <span class="tag">타교지원 ' + gone + '</span>' : '') + '</h3>';
   var accN = LDEPT === '전체' ? 0 : rows.filter(isAcc).length;
   rows.forEach(function (r, ri) {
-    if (accN > 0 && ri === 0) h += '<div class="grph">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></div>';
-    if (accN > 0 && accN < rows.length && ri === accN) h += '<div class="grph">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></div>';
+    if (accN > 0 && ri === 0) h += '<div class="grph ok">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></div>';
+    if (accN > 0 && accN < rows.length && ri === accN) h += '<div class="grph wait">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></div>';
     var cap = (D.summary.filter(function (s) { return s.전형 === r.전형 && s.계열 === r['1지망']; })[0] || {}).정원 || 0;
     var out = r.순위 && cap && r.순위 > cap;
     h += '<div class="card' + (r.단계 === '타교지원' ? ' gone' : '') + '" style="padding:10px 14px"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
