@@ -340,7 +340,7 @@ function viewStatus() {
       '<div class="kv"><span>확정 <b>' + s.확정 + '</b></span><span>고민 <b>' + s.고민 + '</b></span>' + (s.타교지원 ? '<span>타교지원 <b>' + s.타교지원 + '</b></span>' : '') + (s.전형 === '취업희망자' ? '' : '<span>2지망 <b>' + s.이지망 + '</b></span>') + '</div>' +
       (SELDEPT === s.계열 ? '<div class="pick">▼ 아래에 지원 학생 목록</div>' : '') + '</div>';
   });
-  return h + '</div>' + statusTable() + '<p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원 제외 · 순위는 내신(석차백분율)이 낮을수록 상위</p>';
+  return h + '</div>' + statusTable() + '<p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원 제외 · 순위는 접수 완료/접수 전을 따로 내신(석차백분율)이 낮은 순으로 매김</p>';
 }
 function pickDept(d) { SELDEPT = d; render(); }
 function statusTable() {
@@ -369,7 +369,7 @@ function statusTable() {
     if (accN > 0 && ri === 0) h += '<tr class="grp ok"><td colspan="' + ncol + '">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></td></tr>';
     if (accN > 0 && accN < rows.length && ri === accN) h += '<tr class="grp wait"><td colspan="' + ncol + '">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></td></tr>';
     var out = !VIEW2 && isOut(r);
-    h += '<tr' + (out ? ' class="out"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 ? '-' : r.순위) + '</td>' +
+    h += '<tr' + (out ? ' class="out"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 || r.단계 === '타교지원' ? '-' : grpRank(r)) + '</td>' +
       '<td>' + (r.full ? '<b>' + esc(r.이름) + '</b>' : '<span class="mut">비공개</span>') + '</td>' +
       '<td>' + esc(r.중학교) + '</td><td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td>' +
       (one ? '' : '<td>' + esc((VIEW2 ? r['1지망'] : r['2지망']) || '-') + '</td>') +
@@ -928,17 +928,21 @@ function viewList() {
   return h + '</div><div id="lbody">' + listBodyHtml() + '</div>';
 }
 function listBody() { $('lbody').innerHTML = listBodyHtml(); }
-/* 정원 밖: 접수 완료 학생이 먼저 자리를 차지하므로, 접수 전 학생은 (정원 - 접수 인원)번째까지만 안쪽 */
+/* 순위: 접수 완료 학생끼리, 접수 전 학생끼리 따로 1등부터 매긴다 (내신 순). 정원 밖: 접수 전 순위가 (정원 - 접수 인원)보다 크면 */
+function grpRank(r) {
+  if (!r.순위 || r.단계 === '타교지원') return 0;
+  var a = isAcc(r), n = 1;
+  D.rows.forEach(function (x) {
+    if (x.전형 === r.전형 && x['1지망'] === r['1지망'] && x.단계 !== '타교지원' && x.순위 && isAcc(x) === a && x.순위 < r.순위) n++;
+  });
+  return n;
+}
 function isOut(r) {
   if (!r.순위 || r.단계 === '타교지원' || isAcc(r)) return false;
   var cap = (D.summary.filter(function (s) { return s.전형 === r.전형 && s.계열 === r['1지망']; })[0] || {}).정원 || 0;
   if (!cap) return false;
-  var acc = 0, before = 1;
-  D.rows.forEach(function (x) {
-    if (x.전형 !== r.전형 || x['1지망'] !== r['1지망'] || x.단계 === '타교지원' || !x.순위) return;
-    if (isAcc(x)) acc++; else if (x.순위 < r.순위) before++;
-  });
-  return before > cap - acc;
+  var acc = D.rows.filter(function (x) { return x.전형 === r.전형 && x['1지망'] === r['1지망'] && isAcc(x); }).length;
+  return grpRank(r) > cap - acc;
 }
 function listBodyHtml() {
   var admin = D.me.role === '관리자', rows = listRows();
@@ -955,7 +959,7 @@ function listBodyHtml() {
     var out = isOut(r);
     h += '<div class="card' + (r.단계 === '타교지원' ? ' gone' : '') + '" style="padding:10px 14px"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
       (D.me.helper ? '<input type="checkbox" style="width:auto;margin-right:8px" ' + (SEL[r.ID] ? 'checked' : '') + ' onchange="SEL[\'' + r.ID + '\']=this.checked">' : '') +
-      (r.순위 ? '<b>' + r.순위 + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span>' +
+      (grpRank(r) ? '<b>' + grpRank(r) + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span>' +
       (LDEPT === '전체' ? ' <span class="tag pr">' + esc(r['1지망']) + '</span>' : '') + '</div><div>' +
       (out ? '<span class="tag er">정원 밖</span> ' : '') + stageTag(r.단계) + ' ' + recBtn(r, true) + '</div></div>' +
       '<div class="s">내신 ' + esc(r.내신 === '' || r.내신 == null ? '-' : r.내신) + (r['2지망'] && r.전형 !== '취업희망자' ? ' · 2지망 ' + esc(r['2지망']) : '') + ' · 담당 ' + esc(r.담당교사) +
@@ -990,7 +994,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-12.11';
+var APP_VER = '2026-10-12.12';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
