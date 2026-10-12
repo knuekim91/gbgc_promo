@@ -159,6 +159,9 @@ a.btn{text-decoration:none;display:inline-block;width:auto}
 #qrfull .qrft{font-size:clamp(20px,4vw,34px);font-weight:800;margin-top:10px}
 #qrfull .qrfu{font-size:clamp(13px,2.4vw,20px);color:#4b5563;margin:4px 0 14px;word-break:break-all}
 .tag.pub{background:#dbe5ff;color:#1e3a8a}
+.stbl tr.grp td{background:var(--prbg);font-weight:700;padding:6px 8px;border-bottom:1px solid var(--bd)}
+.grph{margin:12px 2px 6px;padding:6px 12px;border-radius:8px;background:var(--prbg);font-weight:700;font-size:14px}
+.grph .mut,.stbl tr.grp .mut{font-weight:400;color:var(--mu)}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -273,6 +276,8 @@ function statusTable() {
   if (one) VIEW2 = false;
   var n2 = all.filter(function (r) { return r['2지망'] === SELDEPT; }).length;
   var rows = all.filter(function (r) { return r[VIEW2 ? '2지망' : '1지망'] === SELDEPT; }).sort(function (a, b) {
+    var ga = isAcc(a) ? 0 : 1, gb = isAcc(b) ? 0 : 1;
+    if (ga !== gb) return ga - gb;   // 접수 완료 먼저
     var x = a.순위 === '' ? 9999 : a.순위, y = b.순위 === '' ? 9999 : b.순위;
     if (x !== y) return x - y;
     var p = a.내신 === '' || a.내신 == null ? 9999 : Number(a.내신), q = b.내신 === '' || b.내신 == null ? 9999 : Number(b.내신);
@@ -283,7 +288,10 @@ function statusTable() {
     '<button class="' + (VIEW2 ? 'on' : '') + '" onclick="VIEW2=true;render()">2지망 ' + n2 + '</button></span>') + '</h3>';
   if (!rows.length) return h + '<div class="empty">아직 지원한 학생이 없습니다.</div></div>';
   h += '<div class="wrap"><table><thead><tr><th>순위</th><th>이름</th><th>중학교</th><th>내신</th>' + (one ? '' : '<th>' + (VIEW2 ? '1지망' : '2지망') + '</th>') + '<th>단계</th><th>원서접수</th><th>담당교사</th><th>학생 연락처</th><th>담임</th></tr></thead><tbody>';
-  rows.forEach(function (r) {
+  var accN = rows.filter(isAcc).length, ncol = (h.match(/<th>/g) || []).length;
+  rows.forEach(function (r, ri) {
+    if (accN > 0 && ri === 0) h += '<tr class="grp"><td colspan="' + ncol + '">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></td></tr>';
+    if (accN > 0 && accN < rows.length && ri === accN) h += '<tr class="grp"><td colspan="' + ncol + '">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></td></tr>';
     var out = !VIEW2 && r.순위 && sum.정원 && r.순위 > sum.정원;
     h += '<tr' + (out ? ' class="out"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 ? '-' : r.순위) + '</td>' +
       '<td>' + (r.full ? '<b>' + esc(r.이름) + '</b>' : '<span class="mut">비공개</span>') + '</td>' +
@@ -688,6 +696,7 @@ function save(force) {
 
 /* ---- 목록 ---- */
 var LTRK = '취업희망자', LDEPT = '상업정보';
+function isAcc(r) { return r.원서접수 === '접수' && r.단계 !== '타교지원'; }   // 원서접수를 마친 학생
 function stageTag(st) { return '<span class="tag ' + (st === '확정' ? 'ok' : st === '타교지원' ? '' : 'wa') + '">' + esc(st) + '</span>'; }
 function listRows() {
   var q = String(FILTER || '').replace(/\s+/g, '').toLowerCase();
@@ -701,6 +710,8 @@ function listRows() {
     var ga = a.단계 === '타교지원' ? 1 : 0, gb = b.단계 === '타교지원' ? 1 : 0;
     if (ga !== gb) return ga - gb;
     if (a['1지망'] !== b['1지망']) return DEPTS.indexOf(a['1지망']) - DEPTS.indexOf(b['1지망']);
+    var ca = isAcc(a) ? 0 : 1, cb = isAcc(b) ? 0 : 1;
+    if (ca !== cb) return ca - cb;   // 접수 완료 먼저
     var x = a.순위 === '' ? 9999 : a.순위, y = b.순위 === '' ? 9999 : b.순위;
     if (x !== y) return x - y;
     var p = a.내신 === '' || a.내신 == null ? 9999 : Number(a.내신), r2 = b.내신 === '' || b.내신 == null ? 9999 : Number(b.내신);
@@ -732,7 +743,10 @@ function listBodyHtml() {
   var h = '<h3 style="margin:6px 0 8px">' + esc(LTRK) + ' · ' + esc(LDEPT) + ' <span class="tag pr">' + (rows.length - gone) + '명</span>' +
     (LDEPT === '전체' ? '' : ' <span class="mut" style="font-weight:400;color:var(--mu);font-size:13px">정원 ' + capSum + '</span>') +
     (gone ? ' <span class="tag">타교지원 ' + gone + '</span>' : '') + '</h3>';
-  rows.forEach(function (r) {
+  var accN = LDEPT === '전체' ? 0 : rows.filter(isAcc).length;
+  rows.forEach(function (r, ri) {
+    if (accN > 0 && ri === 0) h += '<div class="grph">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></div>';
+    if (accN > 0 && accN < rows.length && ri === accN) h += '<div class="grph">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></div>';
     var cap = (D.summary.filter(function (s) { return s.전형 === r.전형 && s.계열 === r['1지망']; })[0] || {}).정원 || 0;
     var out = r.순위 && cap && r.순위 > cap;
     h += '<div class="card' + (r.단계 === '타교지원' ? ' gone' : '') + '" style="padding:10px 14px"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
