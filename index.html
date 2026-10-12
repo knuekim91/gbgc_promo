@@ -116,6 +116,8 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 .pthumbs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px}
 .pthumbs img{flex:none;width:76px;height:auto;border:2px solid var(--bd);border-radius:6px;cursor:pointer;opacity:.75}
 .pthumbs img.on{border-color:var(--pr);opacity:1;box-shadow:0 0 0 3px var(--selring)}
+.seg button.on.gone{background:#6b7280;border-color:#6b7280}
+.card.gone{opacity:.62}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -219,7 +221,7 @@ function viewStatus() {
     h += '<div class="card dept' + (SELDEPT === s.계열 ? ' sel' : '') + '" tabindex="0" role="button" aria-pressed="' + (SELDEPT === s.계열) + '" onclick="pickDept(\'' + s.계열 + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();pickDept(\'' + s.계열 + '\')}"><h3>' + s.계열 + ' <span class="tag ' + (over ? 'er' : 'pr') + '">' + (over ? '정원 초과' : '정원 ' + s.정원) + '</span></h3>' +
       '<div style="font-size:22px;font-weight:800">' + s.합계 + ' <span style="font-size:13px;color:var(--mu);font-weight:400">/ ' + s.정원 + '명 (1지망)</span></div>' +
       '<div class="bar"><i class="' + (over ? 'f' : '') + '" style="width:' + pct + '%"></i></div>' +
-      '<div class="kv"><span>확정 <b>' + s.확정 + '</b></span><span>고민 <b>' + s.고민 + '</b></span><span>2지망 <b>' + s.이지망 + '</b></span></div>' +
+      '<div class="kv"><span>확정 <b>' + s.확정 + '</b></span><span>고민 <b>' + s.고민 + '</b></span>' + (s.이탈 ? '<span>이탈 <b>' + s.이탈 + '</b></span>' : '') + '<span>2지망 <b>' + s.이지망 + '</b></span></div>' +
       '<div class="kv" style="margin-top:4px"><span>지원요청 <b>' + s.지원요청 + '</b></span><span>지원대기 <b>' + s.지원대기 + '</b></span><span>지원확정 <b>' + s.지원확정 + '</b></span></div>' + (SELDEPT === s.계열 ? '<div class="pick">▼ 아래에 지원 학생 목록</div>' : '') + '</div>';
   });
   return h + '</div>' + statusTable() + '<p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원·포기 제외 · 순위는 내신(석차백분율)이 낮을수록 상위</p>';
@@ -248,7 +250,7 @@ function statusTable() {
       '<td>' + (r.full ? '<b>' + esc(r.이름) + '</b>' : '<span class="mut">비공개</span>') + '</td>' +
       '<td>' + esc(r.중학교) + '</td><td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td>' +
       '<td>' + esc((VIEW2 ? r['1지망'] : r['2지망']) || '-') + '</td>' +
-      '<td><span class="tag ' + (r.단계 === '확정' ? 'ok' : 'wa') + '">' + r.단계 + '</span>' + (out ? ' <span class="tag er">정원 밖</span>' : '') + '</td>' +
+      '<td>' + stageTag(r.단계) + (out ? ' <span class="tag er">정원 밖</span>' : '') + '</td>' +
       '<td>' + (adjTag(r.조정상태) || '<span class="mut">-</span>') + '</td><td>' + esc(r.담당교사) + '</td>' +
       '<td>' + (r.full ? tel(r.학생연락처) : '<span class="mut">-</span>') + '</td>' +
       '<td>' + (r.full ? esc(r.담임성함) + (r.담임연락처 ? ' ' + tel(r.담임연락처) : '') : '<span class="mut">-</span>') + '</td></tr>';
@@ -383,7 +385,8 @@ function viewForm() {
   function v(k) { return esc(f[k] || ''); }
   function opt(list, k, blank) { return (blank ? '<option value="">선택 안 함</option>' : '') + list.map(function (x) { return '<option' + (f[k] === x ? ' selected' : '') + '>' + x + '</option>'; }).join(''); }
   return '<div class="card"><h3>' + (e ? '학생 정보 수정' : '학생 입력') + '</h3>' +
-    '<label>단계</label><div class="seg" id="stg"><button type="button" data-v="고민" class="' + (f.단계 === '고민' ? 'on' : '') + '">고민 중</button><button type="button" data-v="확정" class="' + (f.단계 === '확정' ? 'on ok' : '') + '">확정</button></div>' +
+    '<label>단계</label><div class="seg" id="stg">' + (e ? ['고민', '확정', '이탈'] : ['고민', '확정']).map(function (st) {
+      return '<button type="button" data-v="' + st + '" class="' + (f.단계 === st ? 'on ' + (st === '확정' ? 'ok' : st === '이탈' ? 'gone' : '') : '') + '">' + (st === '고민' ? '고민 중' : st) + '</button>'; }).join('') + '</div>' +
     '<label>전형</label><select id="f_전형">' + opt(TRACKS, '전형') + '</select>' +
     '<div class="two"><div><label>중학교</label><input id="f_중학교" value="' + v('중학교') + '" placeholder="예: 경일여중"></div>' +
     '<div><label>학생 이름</label><input id="f_이름" value="' + v('이름') + '"></div></div>' +
@@ -413,7 +416,7 @@ var SAVING = false;
 function save(force) {
   if (SAVING) return;
   readForm();
-  if (!FORM.단계) return toast('단계(고민/확정)를 선택하세요.');
+  if (!FORM.단계) return toast('단계(고민 중 / 확정' + (EDIT ? ' / 이탈' : '') + ')를 선택하세요.');
   var o = JSON.parse(JSON.stringify(FORM)); if (EDIT) o.ID = EDIT;
   SAVING = true; $('saveBtn').disabled = true; $('saveBtn').textContent = '저장 중…';
   busy('저장 중입니다. 잠시만 기다려 주세요…');
@@ -436,31 +439,59 @@ function save(force) {
 }
 
 /* ---- 목록 ---- */
+var LTRK = '취업희망자', LDEPT = '상업정보';
+function stageTag(st) { return '<span class="tag ' + (st === '확정' ? 'ok' : st === '이탈' ? '' : 'wa') + '">' + esc(st) + '</span>'; }
+function listRows() {
+  var q = String(FILTER || '').replace(/\s+/g, '').toLowerCase();
+  var rows = D.rows.filter(function (r) {
+    if (r.전형 !== LTRK) return false;
+    if (LDEPT !== '전체' && r['1지망'] !== LDEPT) return false;
+    if (!q) return true;
+    return [r.중학교, r.이름, r.담임성함, r.학생연락처, r.보호자연락처, r.담당교사, r.단계, r.조정상태, r.메모, r['2지망']].join(' ').replace(/[\s-]+/g, '').toLowerCase().indexOf(q.replace(/-/g, '')) >= 0;
+  });
+  rows.sort(function (a, b) {
+    var ga = a.단계 === '이탈' ? 1 : 0, gb = b.단계 === '이탈' ? 1 : 0;
+    if (ga !== gb) return ga - gb;
+    if (a['1지망'] !== b['1지망']) return DEPTS.indexOf(a['1지망']) - DEPTS.indexOf(b['1지망']);
+    var x = a.순위 === '' ? 9999 : a.순위, y = b.순위 === '' ? 9999 : b.순위;
+    if (x !== y) return x - y;
+    var p = a.내신 === '' || a.내신 == null ? 9999 : Number(a.내신), r2 = b.내신 === '' || b.내신 == null ? 9999 : Number(b.내신);
+    return p - r2;
+  });
+  return rows;
+}
 function viewList() {
   var admin = D.me.role === '관리자';
-  var rows = D.rows.filter(function (r) { return !FILTER || [r.중학교, r.이름, r['1지망'], r.단계, r.조정상태, r.담당교사].join(' ').indexOf(FILTER) >= 0; });
-  var h = '<div class="card"><input id="flt" placeholder="검색 (학교·이름·계열·교사…)" value="' + esc(FILTER) + '" onchange="FILTER=this.value;render()">';
+  var inTrack = D.rows.filter(function (r) { return r.전형 === LTRK; });
+  function cnt(d) { return inTrack.filter(function (r) { return (d === '전체' || r['1지망'] === d) && r.단계 !== '이탈'; }).length; }
+  var h = '<div class="seg" style="margin-bottom:10px">' + TRACKS.map(function (t) {
+    return '<button class="' + (LTRK === t ? 'on' : '') + '" onclick="LTRK=\'' + t + '\';render()">' + t + '</button>'; }).join('') + '</div>' +
+    '<div class="pchips">' + DEPTS.concat(['전체']).map(function (d) {
+      return '<button class="' + (LDEPT === d ? 'on' : '') + '" onclick="LDEPT=\'' + d + '\';render()">' + d + ' ' + cnt(d) + '</button>'; }).join('') + '</div>' +
+    '<div class="card"><input id="flt" type="search" placeholder="검색 (이름·중학교·담임·연락처·담당교사)" value="' + esc(FILTER) + '" oninput="FILTER=this.value;listBody()" autocomplete="off">';
   if (admin) {
     h += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center"><select id="adj" style="width:auto">' + ADJ.map(function (a) { return '<option>' + a + '</option>'; }).join('') + '</select>' +
       '<input id="amemo" placeholder="관리자 메모(선택)" style="flex:1;min-width:140px">' +
       '<button class="btn s" onclick="applyAdj()">선택 학생에 적용</button></div>';
   }
-  h += '</div>';
-  var sorted = rows.slice().sort(function (a, b) {
-    if (a.전형 !== b.전형) return a.전형 < b.전형 ? -1 : 1;
-    if (a['1지망'] !== b['1지망']) return a['1지망'] < b['1지망'] ? -1 : 1;
-    return (a.순위 || 9999) - (b.순위 || 9999);
-  });
-  var cur = '';
-  sorted.forEach(function (r) {
-    var g = r.전형 + ' · ' + r['1지망'];
-    if (g !== cur) { cur = g; h += '<h3 style="margin:14px 0 6px">' + esc(g) + '</h3>'; }
+  return h + '</div><div id="lbody">' + listBodyHtml() + '</div>';
+}
+function listBody() { $('lbody').innerHTML = listBodyHtml(); }
+function listBodyHtml() {
+  var admin = D.me.role === '관리자', rows = listRows();
+  var sum = D.summary.filter(function (s) { return s.전형 === LTRK && (LDEPT === '전체' || s.계열 === LDEPT); });
+  var capSum = sum.reduce(function (a, s) { return a + (s.정원 || 0); }, 0), gone = rows.filter(function (r) { return r.단계 === '이탈'; }).length;
+  var h = '<h3 style="margin:6px 0 8px">' + esc(LTRK) + ' · ' + esc(LDEPT) + ' <span class="tag pr">' + (rows.length - gone) + '명</span>' +
+    (LDEPT === '전체' ? '' : ' <span class="mut" style="font-weight:400;color:var(--mu);font-size:13px">정원 ' + capSum + '</span>') +
+    (gone ? ' <span class="tag">이탈 ' + gone + '</span>' : '') + '</h3>';
+  rows.forEach(function (r) {
     var cap = (D.summary.filter(function (s) { return s.전형 === r.전형 && s.계열 === r['1지망']; })[0] || {}).정원 || 0;
     var out = r.순위 && cap && r.순위 > cap;
-    h += '<div class="card" style="padding:10px 14px"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
+    h += '<div class="card' + (r.단계 === '이탈' ? ' gone' : '') + '" style="padding:10px 14px"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
       (admin ? '<input type="checkbox" style="width:auto;margin-right:8px" ' + (SEL[r.ID] ? 'checked' : '') + ' onchange="SEL[\'' + r.ID + '\']=this.checked">' : '') +
-      (r.순위 ? '<b>' + r.순위 + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span></div><div>' +
-      (out ? '<span class="tag er">정원 밖</span> ' : '') + '<span class="tag ' + (r.단계 === '확정' ? 'ok' : 'wa') + '">' + r.단계 + '</span> ' + adjTag(r.조정상태) + '</div></div>' +
+      (r.순위 ? '<b>' + r.순위 + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span>' +
+      (LDEPT === '전체' ? ' <span class="tag pr">' + esc(r['1지망']) + '</span>' : '') + '</div><div>' +
+      (out ? '<span class="tag er">정원 밖</span> ' : '') + stageTag(r.단계) + ' ' + adjTag(r.조정상태) + '</div></div>' +
       '<div class="s">내신 ' + esc(r.내신 === '' || r.내신 == null ? '-' : r.내신) + (r['2지망'] ? ' · 2지망 ' + esc(r['2지망']) : '') + ' · 담당 ' + esc(r.담당교사) +
       '</div>';
     if (r.full) {
@@ -471,7 +502,7 @@ function viewList() {
     if (r.mine || admin) h += '<div style="margin-top:8px;display:flex;gap:6px"><button class="btn s" onclick="edit(\'' + r.ID + '\')">수정</button><button class="btn s g" onclick="del(\'' + r.ID + '\')">삭제</button></div>';
     h += '</div></div>';
   });
-  return h + (sorted.length ? '' : '<div class="card">표시할 학생이 없습니다.</div>');
+  return h + (rows.length ? '' : '<div class="card">표시할 학생이 없습니다.</div>');
 }
 function edit(id) {
   var r = D.rows.filter(function (x) { return x.ID === id; })[0];
