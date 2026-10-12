@@ -298,15 +298,14 @@ var FAQ = [
 function faqInit() {
   $('faq').innerHTML = FAQ.map(function (f) { return '<details><summary>' + f[0] + '</summary><div class="a">' + f[1] + '</div></details>'; }).join('');
 }
-function liveFaq() {
+function liveFaq() {   // 선생님용 QnA에서 공개한 질문이 있으면 그것을 보여준다(없거나 못 불러오면 위의 기본 질문 유지)
   var url = (window.PROMO_CONFIG || {}).apiUrl || '';
   if (url.indexOf('https://script.google.com/') !== 0) return;
   fetch(url, { method: 'POST', body: JSON.stringify({ fn: 'getPublicFaq' }) }).then(function (r) { return r.json(); }).then(function (j) {
     if (!j.ok || !j.data || !j.data.items.length) return;
-    $('live').innerHTML = j.data.items.map(function (i) {
+    $('faq').innerHTML = j.data.items.map(function (i) {
       return '<details><summary><span>' + (i.cat ? '<span class="tag">' + esc(i.cat) + '</span>' : '') + esc(i.q) + '</span></summary><div class="a">' + i.a.map(function (t) { return '<p>' + esc(t).replace(/\n/g, '<br>') + '</p>'; }).join('') + '</div></details>';
     }).join('');
-    $('livecard').hidden = false;
   }).catch(function () {});
 }
 
