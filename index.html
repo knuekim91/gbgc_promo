@@ -514,7 +514,7 @@ function myListHtml() {
   rows.forEach(function (r) {
     h += '<tr' + (EDIT === r.ID ? ' style="background:var(--selbg)"' : '') + '><td>' + esc(r.중학교) + '</td><td><b>' + esc(r.이름) + '</b></td>' +
       '<td>' + (r.전형 === '취업희망자' ? '취업' : '일반') + '</td><td>' + esc(r['1지망']) + '</td>' +
-      '<td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td><td class="rk">' + (r.순위 || '-') + '</td>' +
+      '<td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td><td class="rk">' + (grpRank(r) || '-') + '</td>' +
       '<td>' + stageTag(r.단계) + '</td><td>' + recBtn(r) + '</td>' +
       '<td><button class="btn s" onclick="edit(\'' + r.ID + '\')">수정</button></td></tr>';
   });
@@ -994,7 +994,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-12.12';
+var APP_VER = '2026-10-12.13';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
