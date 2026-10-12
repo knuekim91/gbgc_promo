@@ -7,7 +7,7 @@ window.PROMO = {
   sections: [
     { id: 'cover', t: '표지·목차', pages: [1, 2] },
     { id: 'intro', t: '학교·취업 현황', pages: [3] },
-    { id: 'dept', t: '학과 소개', pages: [4, 5, 6] },
+    { id: 'dept', t: '학과 소개', pages: [4, 6, 5] },
     { id: 'voice', t: '재학생이 본 경북여상', pages: [7] },
     { id: 'grow', t: '꿈을 키우는 학교', pages: [8, 9, 10, 11] },
     { id: 'achieve', t: '꿈을 이루는 학교', pages: [12, 13, 14, 15, 16] },
