@@ -69,6 +69,24 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 @keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
 .btn:disabled{opacity:.6}
+.card.dept{cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;border-width:2px;position:relative}
+.card.dept:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.card.dept:focus-visible{outline:3px solid var(--pr);outline-offset:2px}
+.card.dept.sel{border-color:var(--pr);background:linear-gradient(180deg,var(--selbg),var(--card) 70%);box-shadow:0 0 0 4px var(--selring),0 10px 26px var(--selsh)}
+.card.dept .pick{margin-top:8px;font-size:12px;font-weight:700;color:var(--pr)}
+:root{--selbg:#e7eeff;--selring:rgba(47,91,216,.18);--selsh:rgba(47,91,216,.18)}
+@media (prefers-color-scheme:dark){:root{--selbg:#25325c;--selring:rgba(123,156,255,.28);--selsh:rgba(123,156,255,.2)}}
+.stbl h3{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.stbl table{min-width:680px}
+.stbl th{background:var(--bg);color:var(--mu);font-size:12px;white-space:nowrap}
+.stbl td{white-space:nowrap}
+.stbl tr.out td{background:rgba(220,38,38,.06)}
+.stbl .mut{color:var(--mu)}
+.stbl .rk{font-weight:800;text-align:center}
+.stbl .empty{padding:22px;text-align:center;color:var(--mu)}
+.chips{display:flex;gap:6px}
+.chips button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:99px;padding:5px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.chips button.on{background:var(--pr);border-color:var(--pr);color:#fff}
 </style>
 <script src="config.js"></script>
 </head>
@@ -82,6 +100,7 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 <script>
 var CODE = { n: '', c: '' };   // 이름 + 접속코드 (이 폰에만 저장)
 try { CODE = JSON.parse(localStorage.getItem('hb_cred') || '') || CODE; } catch (e) {}
+var SELDEPT = '상업정보', VIEW2 = false;
 var D = null, TAB = 'status', TRK = '취업희망자', FILTER = '', SEL = {}, EDIT = null;
 var TRACKS = ['취업희망자', '일반(특별포함)'], DEPTS = ['상업정보', '3D융합콘텐츠', '보건행정코디'];
 var ADJ = ['미지정', '지원요청', '지원대기', '지원확정', '타교지원', '포기'];
@@ -165,13 +184,44 @@ function viewStatus() {
     return '<button class="' + (TRK === t ? 'on' : '') + '" onclick="TRK=\'' + t + '\';render()">' + t + '</button>'; }).join('') + '</div><div class="grid">';
   D.summary.filter(function (s) { return s.전형 === TRK; }).forEach(function (s) {
     var pct = s.정원 ? Math.min(100, Math.round(s.합계 / s.정원 * 100)) : 0, over = s.합계 > s.정원;
-    h += '<div class="card"><h3>' + s.계열 + ' <span class="tag ' + (over ? 'er' : 'pr') + '">' + (over ? '정원 초과' : '정원 ' + s.정원) + '</span></h3>' +
+    h += '<div class="card dept' + (SELDEPT === s.계열 ? ' sel' : '') + '" tabindex="0" role="button" aria-pressed="' + (SELDEPT === s.계열) + '" onclick="pickDept(\'' + s.계열 + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();pickDept(\'' + s.계열 + '\')}"><h3>' + s.계열 + ' <span class="tag ' + (over ? 'er' : 'pr') + '">' + (over ? '정원 초과' : '정원 ' + s.정원) + '</span></h3>' +
       '<div style="font-size:22px;font-weight:800">' + s.합계 + ' <span style="font-size:13px;color:var(--mu);font-weight:400">/ ' + s.정원 + '명 (1지망)</span></div>' +
       '<div class="bar"><i class="' + (over ? 'f' : '') + '" style="width:' + pct + '%"></i></div>' +
       '<div class="kv"><span>확정 <b>' + s.확정 + '</b></span><span>고민 <b>' + s.고민 + '</b></span><span>2지망 <b>' + s.이지망 + '</b></span></div>' +
-      '<div class="kv" style="margin-top:4px"><span>지원요청 <b>' + s.지원요청 + '</b></span><span>지원대기 <b>' + s.지원대기 + '</b></span><span>지원확정 <b>' + s.지원확정 + '</b></span></div></div>';
+      '<div class="kv" style="margin-top:4px"><span>지원요청 <b>' + s.지원요청 + '</b></span><span>지원대기 <b>' + s.지원대기 + '</b></span><span>지원확정 <b>' + s.지원확정 + '</b></span></div>' + (SELDEPT === s.계열 ? '<div class="pick">▼ 아래에 지원 학생 목록</div>' : '') + '</div>';
   });
-  return h + '</div><p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원·포기 제외 · 순위는 내신(석차백분율)이 낮을수록 상위</p>';
+  return h + '</div>' + statusTable() + '<p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원·포기 제외 · 순위는 내신(석차백분율)이 낮을수록 상위</p>';
+}
+function pickDept(d) { SELDEPT = d; render(); }
+function statusTable() {
+  var sum = D.summary.filter(function (x) { return x.전형 === TRK && x.계열 === SELDEPT; })[0] || { 정원: 0 };
+  if (D.me.role === '열람') return '<div class="card stbl"><div class="empty">열람 권한은 학생 목록을 볼 수 없습니다.</div></div>';
+  var all = D.rows.filter(function (r) { return r.전형 === TRK; });
+  var n1 = all.filter(function (r) { return r['1지망'] === SELDEPT; }).length;
+  var n2 = all.filter(function (r) { return r['2지망'] === SELDEPT; }).length;
+  var rows = all.filter(function (r) { return r[VIEW2 ? '2지망' : '1지망'] === SELDEPT; }).sort(function (a, b) {
+    var x = a.순위 === '' ? 9999 : a.순위, y = b.순위 === '' ? 9999 : b.순위;
+    if (x !== y) return x - y;
+    var p = a.내신 === '' || a.내신 == null ? 9999 : Number(a.내신), q = b.내신 === '' || b.내신 == null ? 9999 : Number(b.내신);
+    return p - q;
+  });
+  var h = '<div class="card stbl"><h3><span>' + esc(TRK) + ' · ' + esc(SELDEPT) + ' 지원 학생 <span class="tag pr">' + rows.length + '명</span></span>' +
+    '<span class="chips"><button class="' + (VIEW2 ? '' : 'on') + '" onclick="VIEW2=false;render()">1지망 ' + n1 + '</button>' +
+    '<button class="' + (VIEW2 ? 'on' : '') + '" onclick="VIEW2=true;render()">2지망 ' + n2 + '</button></span></h3>';
+  if (!rows.length) return h + '<div class="empty">아직 지원한 학생이 없습니다.</div></div>';
+  h += '<div class="wrap"><table><thead><tr><th>순위</th><th>이름</th><th>중학교</th><th>내신</th><th>인성</th><th>' + (VIEW2 ? '1지망' : '2지망') + '</th><th>단계</th><th>상태</th><th>입력교사</th><th>학생 연락처</th><th>담임</th></tr></thead><tbody>';
+  rows.forEach(function (r) {
+    var out = !VIEW2 && r.순위 && sum.정원 && r.순위 > sum.정원;
+    h += '<tr' + (out ? ' class="out"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 ? '-' : r.순위) + '</td>' +
+      '<td>' + (r.full ? '<b>' + esc(r.이름) + '</b>' : '<span class="mut">비공개</span>') + '</td>' +
+      '<td>' + esc(r.중학교) + '</td><td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td>' +
+      '<td>' + (r.full ? esc(r.인성 || '-') : '-') + '</td><td>' + esc((VIEW2 ? r['1지망'] : r['2지망']) || '-') + '</td>' +
+      '<td><span class="tag ' + (r.단계 === '확정' ? 'ok' : 'wa') + '">' + r.단계 + '</span>' + (out ? ' <span class="tag er">정원 밖</span>' : '') + '</td>' +
+      '<td>' + (adjTag(r.조정상태) || '<span class="mut">-</span>') + '</td><td>' + esc(r.입력교사) + '</td>' +
+      '<td>' + (r.full ? tel(r.학생연락처) : '<span class="mut">-</span>') + '</td>' +
+      '<td>' + (r.full ? esc(r.담임성함) + (r.담임연락처 ? ' ' + tel(r.담임연락처) : '') : '<span class="mut">-</span>') + '</td></tr>';
+  });
+  return h + '</tbody></table></div></div>';
 }
 
 /* ---- 입력 ---- */
