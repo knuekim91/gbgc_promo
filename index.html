@@ -77,7 +77,10 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 :root{--selbg:#e7eeff;--selring:rgba(47,91,216,.18);--selsh:rgba(47,91,216,.18)}
 @media (prefers-color-scheme:dark){:root{--selbg:#25325c;--selring:rgba(123,156,255,.28);--selsh:rgba(123,156,255,.2)}}
 .stbl h3{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
-.stbl table{min-width:680px}
+.stbl table{width:auto;min-width:0}   /* 열 너비는 글자 수에 맞게, 표를 억지로 늘리지 않는다 */
+.stbl th,.stbl td{padding:7px 12px 7px 8px}
+.stbl td .btn.s{padding:5px 10px}
+@media (max-width:520px){.stbl th,.stbl td{padding:6px 8px 6px 5px}.stbl td .btn.s{padding:4px 8px;font-size:12px}.stbl table{font-size:12.5px}}
 .stbl th{background:var(--bg);color:var(--mu);font-size:12px;white-space:nowrap}
 .stbl td{white-space:nowrap}
 .stbl tr.out td{background:rgba(220,38,38,.06)}
