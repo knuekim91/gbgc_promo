@@ -118,6 +118,12 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 .pthumbs img.on{border-color:var(--pr);opacity:1;box-shadow:0 0 0 3px var(--selring)}
 .seg button.on.gone{background:#6b7280;border-color:#6b7280}
 .card.gone{opacity:.62}
+.card.dept .big{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:2px 12px}
+.card.dept .n1{font-size:22px;font-weight:800}
+.card.dept .n1 span{font-size:13px;color:var(--mu);font-weight:400}
+.card.dept .rcv{font-size:13px;font-weight:700;color:var(--tx);white-space:nowrap}
+.card.dept .rcv b{font-size:30px;line-height:1;font-weight:800;color:var(--er);margin-left:2px}
+@media (prefers-color-scheme:dark){:root{--er:#f87171}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -212,10 +218,11 @@ function viewStatus() {
   D.summary.filter(function (s) { return s.전형 === TRK; }).forEach(function (s) {
     var pct = s.정원 ? Math.min(100, Math.round(s.합계 / s.정원 * 100)) : 0, over = s.합계 > s.정원;
     h += '<div class="card dept' + (SELDEPT === s.계열 ? ' sel' : '') + '" tabindex="0" role="button" aria-pressed="' + (SELDEPT === s.계열) + '" onclick="pickDept(\'' + s.계열 + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();pickDept(\'' + s.계열 + '\')}"><h3>' + s.계열 + ' <span class="tag ' + (over ? 'er' : 'pr') + '">' + (over ? '정원 초과' : '정원 ' + s.정원) + '</span></h3>' +
-      '<div style="font-size:22px;font-weight:800">' + s.합계 + ' <span style="font-size:13px;color:var(--mu);font-weight:400">/ ' + s.정원 + '명 (1지망)</span></div>' +
+      '<div class="big"><div class="n1">' + s.합계 + ' <span>/ ' + s.정원 + '명 (1지망)</span></div>' +
+      '<div class="rcv">원서접수 : <b>' + (s.접수 || 0) + '</b></div></div>' +
       '<div class="bar"><i class="' + (over ? 'f' : '') + '" style="width:' + pct + '%"></i></div>' +
       '<div class="kv"><span>확정 <b>' + s.확정 + '</b></span><span>고민 <b>' + s.고민 + '</b></span>' + (s.타교지원 ? '<span>타교지원 <b>' + s.타교지원 + '</b></span>' : '') + (s.전형 === '취업희망자' ? '' : '<span>2지망 <b>' + s.이지망 + '</b></span>') + '</div>' +
-      '<div class="kv" style="margin-top:4px"><span>원서접수 <b>' + (s.접수 || 0) + '</b></span></div>' + (SELDEPT === s.계열 ? '<div class="pick">▼ 아래에 지원 학생 목록</div>' : '') + '</div>';
+      (SELDEPT === s.계열 ? '<div class="pick">▼ 아래에 지원 학생 목록</div>' : '') + '</div>';
   });
   return h + '</div>' + statusTable() + '<p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원 제외 · 순위는 내신(석차백분율)이 낮을수록 상위</p>';
 }
