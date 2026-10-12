@@ -221,6 +221,16 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 #upd{position:fixed;left:12px;right:12px;bottom:12px;z-index:25;background:#111827;color:#fff;border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;box-shadow:0 6px 24px rgba(0,0,0,.3)}
 #upd button{border:0;border-radius:8px;background:#7b9cff;color:#0e1626;font:inherit;font-weight:700;padding:8px 14px;cursor:pointer}
 #upd.hide{display:none!important}
+#pchips{flex-wrap:wrap;overflow:visible;padding-bottom:4px}
+#pchips button{padding:7px 12px;font-size:13.5px}
+#ddbar{max-width:1100px;margin:10px auto 0;padding:0 16px}
+#ddbar .ddin{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;background:linear-gradient(135deg,#2f5bd8,#6d8cff);color:#fff;border-radius:12px;padding:10px 16px}
+#ddbar .ddl{font-weight:700;font-size:14px}
+#ddbar .ddo{background:#fff;color:#2f5bd8;border-radius:99px;padding:1px 8px;font-size:12px;margin-left:6px}
+#ddbar .ddn{font-size:30px;font-weight:800;line-height:1;letter-spacing:-.5px}
+#ddbar .ddn.hot{color:#ffe08a}
+#ddbar .ddt{font-size:12px;opacity:.9}
+#ddbar.hide{display:none!important}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -229,6 +239,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 <body>
 <header><b>경북여상 원서접수현황</b><span id="who"></span></header>
 <nav id="nav"></nav>
+<div id="ddbar" class="hide"></div>
 <main id="main">불러오는 중…</main>
 <div class="msg" id="msg"></div>
 <div id="upd" class="hide"><span>새 버전이 나왔어요.</span> <button type="button" onclick="location.href=location.pathname+'?r='+Date.now()">지금 새로고침</button></div>
@@ -273,6 +284,7 @@ function load() {
 function loginView(err) {
   $('nav').innerHTML = ''; $('who').textContent = '';
   document.querySelector('header').classList.add('hide');
+  if ($('ddbar')) $('ddbar').classList.add('hide');
   $('main').innerHTML = '<div class="login"><div class="brand"><div class="logo">원</div><h1>경북여상 원서접수현황</h1>' +
     '<p class="sub">경북여상 · 중학교 홍보 교사용</p></div>' +
     '<form class="box" id="lf" autocomplete="off">' +
@@ -298,6 +310,7 @@ function logout() { CODE = { n: CODE.n, c: '' }; try { localStorage.removeItem('
 
 function render() {
   document.querySelector('header').classList.remove('hide');
+  ddBar();
   var r = D.me.role;
   $('who').innerHTML = esc(D.me.name) + ' · ' + r + ' <a href="#" onclick="logout();return false">다른 이름</a>';
   var tabs = [['status', '현황']];
@@ -508,6 +521,30 @@ function myListHtml() {
   return h + '</tbody></table></div></div>';
 }
 
+
+
+/* ---- 원서접수 마감 디데이: 취업희망자 마감 전에는 취업희망자, 지난 뒤에는 일반전형 ---- */
+var DL = [
+  { name: '취업희망자 전형', open: new Date(2026, 10, 25, 9, 0), close: new Date(2026, 10, 26, 17, 0), range: '11월 25일(수)~26일(목) 09:00~17:00', closeText: '11월 26일(목) 17:00' },
+  { name: '일반전형', open: new Date(2026, 11, 2, 9, 0), close: new Date(2026, 11, 3, 17, 0), range: '12월 2일(수)~3일(목) 09:00~17:00', closeText: '12월 3일(목) 17:00' }
+];
+function deadline(now) {
+  now = now || new Date();
+  for (var i = 0; i < DL.length; i++) {
+    if (now <= DL[i].close) {
+      var c = DL[i].close, d = Math.round((new Date(c.getFullYear(), c.getMonth(), c.getDate()) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
+      return { name: DL[i].name, d: d, text: d === 0 ? 'D-DAY' : 'D-' + d, closeText: DL[i].closeText, range: DL[i].range, open: now >= DL[i].open };
+    }
+  }
+  return null;
+}
+function ddBar() {
+  var el = $('ddbar'); if (!el) return;
+  var x = deadline();
+  if (!x) { el.innerHTML = '<div class="ddin"><span class="ddl">2027학년도 신입생 원서접수가 모두 끝났습니다.</span></div>'; el.classList.remove('hide'); return; }
+  el.innerHTML = '<div class="ddin"><span class="ddl">' + x.name + ' 원서접수 마감' + (x.open ? ' <b class="ddo">접수 중</b>' : '') + '</span><span class="ddn' + (x.d <= 3 ? ' hot' : '') + '">' + x.text + '</span><span class="ddt">' + x.closeText + '</span></div>';
+  el.classList.remove('hide');
+}
 
 /* ---- 원서접수 처리: 담당교사 본인, 접수 도우미(문정혜·김재홍) ---- */
 function recBtn(r, quiet) {
@@ -941,7 +978,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-12.9';
+var APP_VER = '2026-10-12.10';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {

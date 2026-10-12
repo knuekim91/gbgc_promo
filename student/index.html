@@ -88,18 +88,25 @@ details .a p{margin:0 0 8px}
 footer{max-width:900px;margin:0 auto;padding:0 16px 40px;color:var(--mu);font-size:13px}
 a{color:var(--pr)}
 [hidden]{display:none!important}
+.chips.wrap{flex-wrap:wrap;overflow:visible;gap:6px}
+.chips.wrap button{padding:7px 12px;font-size:13.5px}
+.dl{max-width:900px;margin:12px auto 0;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;justify-content:space-between}
+.dl .a{font-size:14px;font-weight:700}
+.dl .a small{display:block;font-weight:400;opacity:.9;font-size:12px}
+.dl .n{font-size:34px;font-weight:800;line-height:1;letter-spacing:-.5px}
+.dl .n.hot{color:#ffe08a}
 </style>
 <script src="../config.js"></script>
 <script src="../promo-data.js"></script>
 </head>
 <body>
-<header><div class="in"><div class="lg">여</div><div><h1>경북여자상업고등학교<br>2027 신입생 안내</h1><p>궁금한 것을 직접 찾아보세요</p></div></div></header>
+<header><div class="in"><div class="lg">여</div><div><h1>경북여자상업고등학교<br>2027 신입생 안내</h1><p>궁금한 것을 직접 찾아보세요</p></div></div><div class="dl" id="dl" hidden></div></header>
 <nav id="nav"></nav>
 <main>
 
 <section id="s-book">
   <div class="card"><h2>학교 소개 책자</h2><p class="lead">학교와 학과, 취업 이야기를 책자로 넘겨 보세요. 사진을 누르면 글자를 크게 볼 수 있어요.</p>
-    <div class="chips" id="bchips"></div>
+    <div class="chips wrap" id="bchips"></div>
     <div class="pv" id="pv"><button class="pnav p" id="pp" aria-label="이전">‹</button><button class="pnav n" id="pn" aria-label="다음">›</button><div class="sc" id="psc"><img id="pimg" alt="" draggable="false"></div></div>
     <div class="ptitle" id="ptt"></div><div class="psub" id="pst"></div>
     <div class="thumbs" id="thumbs"></div>
@@ -217,18 +224,31 @@ function openBook(page) {
 })();
 
 /* ---- 입학 안내: D-day와 설명회 ---- */
-var EVENTS = [
-  ['입학설명회 3차', new Date(2026, 10, 14, 10, 0), '11월 14일(토) 10:00'],
-  ['원서접수 시작 (취업희망자 전형)', new Date(2026, 10, 25, 9, 0), '11월 25일(수) 09:00'],
-  ['원서접수 시작 (일반전형)', new Date(2026, 11, 2, 9, 0), '12월 2일(수) 09:00']
+var DL = [
+  { name: '취업희망자 전형', open: new Date(2026, 10, 25, 9, 0), close: new Date(2026, 10, 26, 17, 0), closeText: '11월 26일(목) 17:00', range: '11월 25일(수)~26일(목) 09:00~17:00' },
+  { name: '일반전형', open: new Date(2026, 11, 2, 9, 0), close: new Date(2026, 11, 3, 17, 0), closeText: '12월 3일(목) 17:00', range: '12월 2일(수)~3일(목) 09:00~17:00' }
 ];
+function daysTo(date, now) { return Math.round((new Date(date.getFullYear(), date.getMonth(), date.getDate()) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000); }
+function deadline(now) {   // 취업희망자 마감 전에는 취업희망자, 그 뒤에는 일반전형 마감을 돌려준다
+  now = now || new Date();
+  for (var i = 0; i < DL.length; i++) if (now <= DL[i].close) { var d = daysTo(DL[i].close, now); return { i: i, name: DL[i].name, d: d, text: d === 0 ? 'D-DAY' : 'D-' + d, closeText: DL[i].closeText, range: DL[i].range, open: now >= DL[i].open }; }
+  return null;
+}
 function dday() {
-  var now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate()), up = EVENTS.filter(function (e) { return e[1] >= now; }).slice(0, 2);
-  if (!up.length) { $('dd').innerHTML = '<div class="dday"><div class="t">모집 일정</div><div class="n">종료</div><div class="d">2027학년도 신입생 모집 일정이 끝났어요.</div></div>'; return; }
-  $('dd').innerHTML = up.map(function (e, i) {
-    var d = Math.round((new Date(e[1].getFullYear(), e[1].getMonth(), e[1].getDate()) - today) / 86400000);
-    return '<div class="dday' + (i ? ' pk' : '') + '"><div class="t">' + e[0] + '</div><div class="n">' + (d === 0 ? 'D-DAY' : 'D-' + d) + '</div><div class="d">' + e[2] + '</div></div>';
-  }).join('');
+  var now = new Date(), x = deadline(now), h = '';
+  if (x) {
+    $('dl').hidden = false;
+    $('dl').innerHTML = '<div class="a">' + x.name + ' 원서접수 마감' + (x.open ? ' · 접수 중' : '') + '<small>' + x.closeText + '</small></div><div class="n' + (x.d <= 3 ? ' hot' : '') + '">' + x.text + '</div>';
+    h += '<div class="dday"><div class="t">' + x.name + ' 원서접수 마감' + (x.open ? ' (접수 중)' : '') + '</div><div class="n">' + x.text + '</div><div class="d">' + x.closeText + '</div></div>';
+    var next = null;
+    if (x.i === 0) { var y = DL[1]; next = ['일반전형 원서접수 마감', daysTo(y.close, now), y.closeText]; }
+    var o3 = new Date(2026, 10, 14, 10, 0);
+    if (now < o3) next = ['입학설명회 3차', daysTo(o3, now), '11월 14일(토) 10:00'];
+    if (next) h += '<div class="dday pk"><div class="t">' + next[0] + '</div><div class="n">' + (next[1] === 0 ? 'D-DAY' : 'D-' + next[1]) + '</div><div class="d">' + next[2] + '</div></div>';
+  } else {
+    h = '<div class="dday"><div class="t">원서접수</div><div class="n">종료</div><div class="d">2027학년도 신입생 원서접수가 모두 끝났어요.</div></div>';
+  }
+  $('dd').innerHTML = h;
 }
 var ORIENT = [['1차', new Date(2026, 8, 11, 16, 30), '9월 11일(금) 16:30'], ['2차', new Date(2026, 9, 7, 15, 30), '10월 7일(수) 15:30'], ['3차', new Date(2026, 10, 14, 10, 0), '11월 14일(토) 10:00']];
 function orient() {
