@@ -368,7 +368,7 @@ function statusTable() {
   rows.forEach(function (r, ri) {
     if (accN > 0 && ri === 0) h += '<tr class="grp ok"><td colspan="' + ncol + '">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></td></tr>';
     if (accN > 0 && accN < rows.length && ri === accN) h += '<tr class="grp wait"><td colspan="' + ncol + '">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></td></tr>';
-    var out = !VIEW2 && r.순위 && sum.정원 && r.순위 > sum.정원;
+    var out = !VIEW2 && isOut(r);
     h += '<tr' + (out ? ' class="out"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 ? '-' : r.순위) + '</td>' +
       '<td>' + (r.full ? '<b>' + esc(r.이름) + '</b>' : '<span class="mut">비공개</span>') + '</td>' +
       '<td>' + esc(r.중학교) + '</td><td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td>' +
@@ -928,6 +928,18 @@ function viewList() {
   return h + '</div><div id="lbody">' + listBodyHtml() + '</div>';
 }
 function listBody() { $('lbody').innerHTML = listBodyHtml(); }
+/* 정원 밖: 접수 완료 학생이 먼저 자리를 차지하므로, 접수 전 학생은 (정원 - 접수 인원)번째까지만 안쪽 */
+function isOut(r) {
+  if (!r.순위 || r.단계 === '타교지원' || isAcc(r)) return false;
+  var cap = (D.summary.filter(function (s) { return s.전형 === r.전형 && s.계열 === r['1지망']; })[0] || {}).정원 || 0;
+  if (!cap) return false;
+  var acc = 0, before = 1;
+  D.rows.forEach(function (x) {
+    if (x.전형 !== r.전형 || x['1지망'] !== r['1지망'] || x.단계 === '타교지원' || !x.순위) return;
+    if (isAcc(x)) acc++; else if (x.순위 < r.순위) before++;
+  });
+  return before > cap - acc;
+}
 function listBodyHtml() {
   var admin = D.me.role === '관리자', rows = listRows();
   var sum = D.summary.filter(function (s) { return s.전형 === LTRK && (LDEPT === '전체' || s.계열 === LDEPT); });
@@ -940,7 +952,7 @@ function listBodyHtml() {
     if (accN > 0 && ri === 0) h += '<div class="grph ok">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></div>';
     if (accN > 0 && accN < rows.length && ri === accN) h += '<div class="grph wait">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></div>';
     var cap = (D.summary.filter(function (s) { return s.전형 === r.전형 && s.계열 === r['1지망']; })[0] || {}).정원 || 0;
-    var out = r.순위 && cap && r.순위 > cap;
+    var out = isOut(r);
     h += '<div class="card' + (r.단계 === '타교지원' ? ' gone' : '') + '" style="padding:10px 14px"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
       (D.me.helper ? '<input type="checkbox" style="width:auto;margin-right:8px" ' + (SEL[r.ID] ? 'checked' : '') + ' onchange="SEL[\'' + r.ID + '\']=this.checked">' : '') +
       (r.순위 ? '<b>' + r.순위 + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span>' +
@@ -978,7 +990,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-12.10';
+var APP_VER = '2026-10-12.11';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
