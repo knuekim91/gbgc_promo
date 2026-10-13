@@ -243,6 +243,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 .n2{font-size:11px;line-height:1.3;color:var(--mu);font-weight:400;max-width:130px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal;margin-top:2px}
 .n2.nm{color:var(--tx);font-size:12px;max-width:200px}
 td.nt{min-width:110px}
+#f_고민내용::placeholder{color:var(--mu);opacity:.45}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -841,7 +842,7 @@ function formCardHtml() {
   return '<div class="card" id="fcard"><h3>' + (e ? '학생 정보 수정' : '학생 입력') + '</h3>' +
     '<label>단계</label><div class="seg" id="stg">' + (e ? ['확정', '고민', '타교지원'] : ['확정', '고민']).map(function (st) {
       return '<button type="button" data-v="' + st + '" class="' + (f.단계 === st ? 'on ' + (st === '확정' ? 'ok' : st === '타교지원' ? 'gone' : '') : '') + '">' + (st === '고민' ? '고민 중' : st) + '</button>'; }).join('') + '</div>' +
-    (f.단계 === '고민' ? '<label>고민 내용 <span style="color:var(--mu);font-weight:400">· 어느 학교와 고민하는지 등</span></label><input id="f_고민내용" maxlength="60" value="' + v('고민내용') + '">' : '') +
+    (f.단계 === '고민' ? '<label>고민 내용 <span style="color:var(--mu);font-weight:400">· 어느 학교와 고민하는지 등</span></label><input id="f_고민내용" maxlength="60" placeholder="예: 제일여상과 고민중" value="' + v('고민내용') + '">' : '') +
     '<label>전형</label><select id="f_전형" onchange="readForm();render()">' + opt(TRACKS, '전형') + '</select>' +
     '<label>중학교' + (mine.length ? ' <span style="color:var(--mu);font-weight:400">· 내 담당 학교를 누르면 입력됩니다</span>' : '') + '</label>' +
     '<input id="f_중학교" list="schoolList" autocomplete="off" value="' + v('중학교') + '" placeholder="학교 이름을 입력하거나 선택">' +
@@ -864,7 +865,7 @@ function formCardHtml() {
 function pickSchool(name) { readForm(); FORM.중학교 = name; render(); }
 function bindForm() {
   Array.prototype.forEach.call(document.querySelectorAll('#stg button'), function (b) {
-    b.onclick = function () { readForm(); FORM.단계 = b.dataset.v; if (FORM.단계 === '고민' && !FORM.고민내용) FORM.고민내용 = '제일여상과 고민중'; render(); };
+    b.onclick = function () { readForm(); FORM.단계 = b.dataset.v; render(); };
   });
   $('saveBtn').onclick = function () { save(false); };
 }
@@ -901,7 +902,6 @@ function save(force) {
     }
     toast('✓ 저장했습니다.');
     var keep = { 전형: FORM.전형, 중학교: FORM.중학교, 담임성함: FORM.담임성함, 담임연락처: FORM.담임연락처, 단계: FORM.단계 };
-    if (keep.단계 === '고민') keep.고민내용 = '제일여상과 고민중';
     FORM = EDIT ? {} : keep;   // 새 입력이면 같은 중학교 연속 입력 편의를 위해 학교·담임은 유지
     EDIT = null; TAB = 'form'; render();   // 폼을 바로 비우고, 현황은 뒤에서 갱신
     load();
@@ -1019,7 +1019,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.3';
+var APP_VER = '2026-10-13.4';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
