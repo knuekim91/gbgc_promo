@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-13.10) ===== */
+/* ===== 움직임 (2026-10-13.11) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -321,6 +321,10 @@ td.nt{min-width:110px}
   .card.dept.fresh::before{background:var(--freshbd)}
   .burst,.fleft{display:none}
 }
+.live .feed{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 96%,transparent)}
+.live .trk{display:flex;gap:8px;width:max-content}
+.live .feed:hover .trk,.live .feed:active .trk{animation-play-state:paused!important}
+@keyframes liveRun{from{transform:translateX(0)}to{transform:translateX(var(--mw))}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1186,17 +1190,29 @@ function sparks() {
 var EV_LBL = { add: '새 입력', confirm: '확정', receipt: '원서접수' };
 function agoText(t) { var s = Math.round((Date.now() - t) / 1000); return s < 5 ? '방금' : s < 60 ? s + '초 전' : s < 3600 ? Math.floor(s / 60) + '분 전' : s < 86400 ? Math.floor(s / 3600) + '시간 전' : Math.floor(s / 86400) + '일 전'; }
 function liveHtml() {
-  var h = '<div class="live" aria-live="polite"><span class="dot"></span><span class="lb">실시간</span><div class="feed">';
+  var h = '<div class="live" aria-live="polite"><span class="dot"></span><span class="lb">실시간</span><div class="feed"><div class="trk">';
   if (!EVENTS.length) h += '<span class="none">다른 선생님이 입력하거나 확정하면 여기에 바로 보여요. (30초마다 확인)</span>';
   EVENTS.forEach(function (e) {
     var hot = Date.now() - e.t < FRESH_MS;
     h += '<span class="ev' + (hot ? ' hot' : '') + (e.isNew ? ' new' : '') + '"><b>' + esc(e.who) + '</b> ' + (e.trk === '취업희망자' ? '' : '일반 · ') + esc(e.dept) + ' ' + EV_LBL[e.type] + ' <span class="ago" data-t="' + e.t + '">' + agoText(e.t) + '</span></span>';
     e.isNew = false;
   });
-  return h + '</div></div>';
+  return h + '</div></div></div>';
 }
 /* 현황 화면을 그린 뒤: 숫자는 이전 값에서 새 값으로 올라가고, 막대는 이전 길이에서 새 길이로 늘어난다 */
+var MQ_T0 = Date.now();
+function liveRun() {   // 소식이 줄에 다 안 들어가면 오른쪽에서 왼쪽으로 계속 흘려보낸다
+  var f = document.querySelector('.live .feed'), t = f && f.querySelector('.trk');
+  if (!t || t.scrollWidth <= f.clientWidth + 2) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { f.style.overflowX = 'auto'; return; }
+  var w = t.scrollWidth + 8, dur = Math.max(18, Math.round(w / 45));   // 초당 약 45px
+  t.insertAdjacentHTML('beforeend', t.innerHTML);
+  t.style.setProperty('--mw', '-' + w + 'px');
+  t.style.animation = 'liveRun ' + dur + 's linear infinite';
+  t.style.animationDelay = '-' + (((Date.now() - MQ_T0) / 1000) % dur).toFixed(2) + 's';   // 다시 그려도 이어서 흐름
+}
 function animStatus() {
+  liveRun();
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   Array.prototype.forEach.call(document.querySelectorAll('.cnum'), function (n) {
     var k = n.dataset.k, to = Number(n.dataset.v), from = CSHOWN[k] == null ? 0 : CSHOWN[k], first = CSHOWN[k] == null;
@@ -1245,7 +1261,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.10';
+var APP_VER = '2026-10-13.11';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
