@@ -23,9 +23,10 @@ header .gem.g2{color:#e8508a;font-size:12px;animation-delay:1.2s}
 @keyframes shine{to{background-position:-250% 0}}
 @keyframes tw{0%,100%{transform:scale(.7) rotate(0);opacity:.6}50%{transform:scale(1.25) rotate(25deg);opacity:1}}
 @media (prefers-reduced-motion:reduce){header .brand .bt,header .gem{animation:none}}
-@media (max-width:480px){header .brand{font-size:19px}}
+@media (max-width:480px){header{padding:10px 12px}header .brand{font-size:17px}header .gem{display:none}header #who{font-size:12px;white-space:nowrap}}
 nav{display:flex;gap:6px;padding:10px 16px 0;overflow-x:auto}
 nav button{border:0;background:transparent;color:var(--mu);padding:8px 12px;border-radius:8px;font:inherit;font-weight:600;white-space:nowrap}
+nav .mlink{padding:8px 12px;border-radius:8px;font-weight:600;white-space:nowrap;color:var(--pr);text-decoration:none}
 nav button.on{background:var(--pr);color:#fff}
 main{padding:12px 16px 80px;max-width:1100px;margin:auto}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
@@ -331,7 +332,7 @@ function render() {
   var tabs = [['status', '현황']];
   if (r !== '열람') tabs.push(['form', '입력'], ['list', r === '관리자' ? '전체 관리' : '학생 목록']);
   tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()], ['stat', '통계'], ['stu', '중학생용']);
-  $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + '</button>'; }).join('');
+  $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + '</button>'; }).join('') + '<a class="mlink" href="manual/" target="_blank" rel="noopener">이용안내</a>';
   if (TAB === 'status') $('main').innerHTML = viewStatus();
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
   else if (TAB === 'promo') { $('main').innerHTML = viewPromo(); bindPromo(); }
@@ -1021,7 +1022,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.5';
+var APP_VER = '2026-10-13.6';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
