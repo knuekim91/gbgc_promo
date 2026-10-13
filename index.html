@@ -849,10 +849,10 @@ function formCardHtml() {
     (mine.length ? '<div class="pchips" style="margin:8px 0 0">' + mine.map(function (s2) {
       return '<button type="button" class="' + (f.중학교 === s2 ? 'on' : '') + '" onclick="pickSchool(this.textContent)">' + esc(s2) + '</button>'; }).join('') + '</div>' : '') +
     '<label>학생 이름</label><input id="f_이름" value="' + v('이름') + '">' +
-    '<div class="two"><div><label>학생 연락처 (선택)</label><input id="f_학생연락처" type="tel" value="' + v('학생연락처') + '" placeholder="010-0000-0000"></div>' +
-    '<div><label>보호자 연락처 (선택)</label><input id="f_보호자연락처" type="tel" value="' + v('보호자연락처') + '"></div></div>' +
+    '<div class="two"><div><label>학생 연락처 (선택)</label><input id="f_학생연락처" type="tel" onblur="this.value=fmtTel(this.value)" value="' + v('학생연락처') + '" placeholder="010-0000-0000"></div>' +
+    '<div><label>보호자 연락처 (선택)</label><input id="f_보호자연락처" type="tel" onblur="this.value=fmtTel(this.value)" value="' + v('보호자연락처') + '"></div></div>' +
     '<div class="two"><div><label>중학교 담임 성함</label><input id="f_담임성함" value="' + v('담임성함') + '"></div>' +
-    '<div><label>담임 연락처 (선택)</label><input id="f_담임연락처" type="tel" value="' + v('담임연락처') + '"></div></div>' +
+    '<div><label>담임 연락처 (선택)</label><input id="f_담임연락처" type="tel" onblur="this.value=fmtTel(this.value)" value="' + v('담임연락처') + '"></div></div>' +
     '<label>내신 (석차백분율, 낮을수록 상위)</label><input id="f_내신" type="number" step="0.001" inputmode="decimal" value="' + v('내신') + '" placeholder="예: 28.04">' +
     (oneDept ? '<label>지원 계열 <span style="color:var(--mu);font-weight:400">· 취업희망자 전형은 1개 계열만 지원합니다</span></label><select id="f_1지망">' + opt(DEPTS, '1지망') + '</select>' :
       '<div class="two"><div><label>1지망 계열</label><select id="f_1지망">' + opt(DEPTS, '1지망') + '</select></div>' +
@@ -868,6 +868,15 @@ function bindForm() {
   });
   $('saveBtn').onclick = function () { save(false); };
 }
+function fmtTel(v) {   // 숫자만 넣어도 010-1111-2222 형식으로
+  var d = String(v == null ? '' : v).replace(/\D/g, '');
+  if (!d) return String(v == null ? '' : v).trim();
+  if (d.length === 8) return d.slice(0, 4) + '-' + d.slice(4);
+  if (d.slice(0, 2) === '02') return d.length === 9 ? d.replace(/(\d{2})(\d{3})(\d{4})/, '$1-$2-$3') : d.length === 10 ? d.replace(/(\d{2})(\d{4})(\d{4})/, '$1-$2-$3') : v;
+  if (d.length === 10) return d.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+  if (d.length === 11) return d.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+  return String(v).trim();
+}
 function readForm() {
   ['전형', '중학교', '이름', '학생연락처', '보호자연락처', '담임성함', '담임연락처', '내신', '1지망', '2지망', '메모', '고민내용'].forEach(function (k) {
     var el = $('f_' + k); if (el) FORM[k] = el.value;
@@ -879,6 +888,7 @@ function save(force) {
   readForm();
   if (!FORM.단계) return toast('단계(고민 중 / 확정' + (EDIT ? ' / 타교지원' : '') + ')를 선택하세요.');
   var o = JSON.parse(JSON.stringify(FORM)); if (EDIT) o.ID = EDIT;
+  ['학생연락처', '보호자연락처', '담임연락처'].forEach(function (k) { o[k] = fmtTel(o[k]); });
   if ((o.전형 || TRACKS[0]) === '취업희망자') o['2지망'] = '';
   SAVING = true; $('saveBtn').disabled = true; $('saveBtn').textContent = '저장 중…';
   busy('저장 중입니다. 잠시만 기다려 주세요…');
@@ -1009,7 +1019,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.2';
+var APP_VER = '2026-10-13.3';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
