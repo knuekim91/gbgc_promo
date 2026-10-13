@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-13.18) ===== */
+/* ===== 움직임 (2026-10-13.19) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -509,8 +509,34 @@ function doLogin() {
 }
 function logout() { CODE = { n: CODE.n, c: '' }; try { localStorage.removeItem('hb_cred'); } catch (e) {} D = null; QNA = null; QOPEN = ''; loginView(''); }
 
+
+/* ---- 뒤로가기로 앱을 실수로 떠나지 않게: 뒤로가기는 앱 안에서 한 단계 되돌아가고, 첫 화면에서는 두 번 눌러야 나간다 ---- */
+var BACKG = false, BACK_AT = 0;
+function installBackGuard() {
+  if (BACKG) return; BACKG = true;
+  try {
+    history.replaceState({ g: 0 }, '');
+    history.pushState({ g: 1 }, '');
+    window.addEventListener('popstate', onBack);
+    window.addEventListener('beforeunload', function (e) {   // 입력 중인 내용이 있을 때만 새로고침·닫기 확인
+      var f = $('f_이름'); if (TAB === 'form' && f && (f.value || ($('f_중학교') || {}).value)) { e.preventDefault(); e.returnValue = ''; }
+    });
+  } catch (err) {}
+}
+function onBack() {
+  if (!D) { history.back(); return; }   // 로그인 전에는 그대로
+  var now = Date.now();
+  if ($('smodal')) { closeStu(); history.pushState({ g: 1 }, ''); return; }
+  if (document.fullscreenElement) { document.exitFullscreen(); history.pushState({ g: 1 }, ''); return; }
+  if (TAB === 'promo' && PMODE === 'book') { PMODE = 'hub'; render(); history.pushState({ g: 1 }, ''); return; }
+  if (TAB !== 'home') { TAB = 'home'; render(); window.scrollTo(0, 0); history.pushState({ g: 1 }, ''); return; }
+  if (now - BACK_AT < 2500) { history.back(); return; }   // 2.5초 안에 한 번 더 누르면 나감
+  BACK_AT = now; toast('한 번 더 뒤로가기를 누르면 나갑니다.');
+  history.pushState({ g: 1 }, '');
+}
 function render() {
   document.querySelector('header').classList.remove('hide');
+  installBackGuard();
   ddBar();
   var r = D.me.role;
   $('who').innerHTML = esc(D.me.name) + ' · ' + r + ' <a href="#" onclick="logout();return false">다른 이름</a>';
@@ -1510,7 +1536,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.18';
+var APP_VER = '2026-10-13.19';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
