@@ -248,32 +248,79 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* 현황 실시간 효과 */
-.live{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 12px;margin-bottom:12px;overflow:hidden}
-.lv-dot{flex:none;width:10px;height:10px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 0 rgba(22,163,74,.6);animation:lvp 1.8s infinite}
-.lv-t{flex:none;font-size:13px;font-weight:800;color:#16a34a}
-.lv-v{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 94%,transparent)}
-.lv-tr{display:flex;gap:8px;width:max-content}
-.lv-tr.run{animation:lvm 38s linear infinite}
-.lv-v:hover .lv-tr{animation-play-state:paused}
-.lv-c{flex:none;border:1px solid var(--bd);border-radius:99px;padding:3px 12px;font-size:13px;white-space:nowrap;background:var(--bg)}
-.lv-c b{font-weight:800}.lv-c i{font-style:normal;color:var(--mu);font-size:12px;margin-left:4px}
-.lv-c.hot{border-color:#16a34a;background:rgba(22,163,74,.10)}
-.bd{display:inline-block;border-radius:99px;padding:1px 9px;font-size:12px;font-weight:800;vertical-align:2px}
-.bd.new{background:#fde68a;color:#78350f;animation:bdp 1.6s ease-in-out infinite}
-.bd.ok{background:#bbf7d0;color:#14532d}
-.card.dept .n1 b{display:inline-block;font-weight:800}
-.card.dept .n1 b.bump{animation:bump .9s ease}
-.card.dept.sel{animation:glow 3s ease-in-out infinite}
-.bar i.f{background:repeating-linear-gradient(45deg,var(--er) 0 10px,#f87171 10px 20px);background-size:28px 28px;animation:stripe 1s linear infinite}
-.bar i{transition:width .8s ease}
-@keyframes lvp{0%{box-shadow:0 0 0 0 rgba(22,163,74,.55)}70%{box-shadow:0 0 0 9px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
-@keyframes lvm{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes bdp{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
-@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.35);color:var(--er)}100%{transform:scale(1)}}
-@keyframes stripe{to{background-position:28px 0}}
-@keyframes glow{0%,100%{box-shadow:0 0 0 4px var(--selring),0 10px 26px var(--selsh)}50%{box-shadow:0 0 0 6px var(--selring),0 0 34px rgba(232,80,138,.45)}}
-@media (prefers-reduced-motion:reduce){.lv-dot,.lv-tr.run,.bd.new,.card.dept.sel,.bar i.f,.card.dept .n1 b.bump{animation:none}}
+/* ===== 움직임 (2026-10-13.8) ===== */
+:root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
+@media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
+/* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
+#ddbar .ddin{position:relative;overflow:hidden;background:linear-gradient(120deg,#2f5bd8,#5a6ff0,#6d8cff,#4b63e6,#2f5bd8);background-size:300% 100%;animation:ddDrift 14s ease-in-out infinite}
+#ddbar .ddin::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%);transform:translateX(-120%);animation:ddSheen 7s ease-in-out 1.2s infinite}
+@keyframes ddDrift{50%{background-position:100% 0}}
+@keyframes ddSheen{0%{transform:translateX(-120%)}35%,100%{transform:translateX(120%)}}
+/* 계열 카드: 처음 볼 때 차례로 등장, 숫자는 올라가고 막대는 채워짐 */
+.card.dept{isolation:isolate}
+.card.dept.intro{animation:deptRise .55s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i,0) * 90ms)}
+@keyframes deptRise{from{transform:translateY(12px);opacity:.35}}
+.card.dept .bar{position:relative;height:9px;border-radius:5px}
+.card.dept .bar i{transition:width 1.1s cubic-bezier(.2,.8,.2,1);border-radius:5px;background:linear-gradient(90deg,var(--pr),#6d8cff)}
+.card.dept .bar i.f{background:repeating-linear-gradient(-45deg,#dc2626 0 10px,#ef4444 10px 20px);background-size:28px 100%;animation:barStripe 1.2s linear infinite}
+@keyframes barStripe{to{background-position:28px 0}}
+.card.dept .tag.er{animation:overBreathe 2.2s ease-in-out infinite}
+@keyframes overBreathe{50%{box-shadow:0 0 0 4px rgba(220,38,38,.16)}}
+.cnum{display:inline-block;font-variant-numeric:tabular-nums}
+.card.dept .n1 span.cnum{font-size:inherit;color:inherit;font-weight:inherit}
+.cnum.bump{animation:cBump .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes cBump{30%{transform:scale(1.35);color:var(--freshbd)}}
+.card.dept .pick i{display:inline-block;font-style:normal;animation:pkNudge 1.6s ease-in-out infinite}
+@keyframes pkNudge{50%{transform:translateY(3px)}}
+/* 실시간 소식 줄 */
+.live{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 12px;min-height:42px;margin-bottom:12px}
+.live .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--ok);animation:livePing 2s ease-out infinite}
+.live .lb{flex:none;font-size:12px;font-weight:800;color:var(--ok)}
+.live .feed{flex:1;min-width:0;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.live .ev{flex:none;display:flex;align-items:center;gap:6px;font-size:13px;padding:4px 10px;border-radius:99px;background:var(--bg);color:var(--mu);white-space:nowrap}
+.live .ev b{color:var(--tx)}
+.live .ev.hot{background:var(--fresh);color:var(--tx);box-shadow:0 0 0 1px var(--freshbd) inset}
+.live .ev.new{animation:evIn .5s cubic-bezier(.2,1.4,.4,1) both}
+.live .ago{font-size:11px;color:var(--mu);font-variant-numeric:tabular-nums}
+.live .none{font-size:13px;color:var(--mu)}
+@keyframes livePing{0%{box-shadow:0 0 0 0 rgba(22,163,74,.5)}70%,100%{box-shadow:0 0 0 8px rgba(22,163,74,0)}}
+@keyframes evIn{from{transform:translateY(10px) scale(.9);opacity:.3}}
+/* 다른 전형·현황 탭에 변화가 있으면 금색 점 */
+.seg button{position:relative}
+.fdot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--freshbd);margin-left:6px;vertical-align:1px;animation:dotPing 1.4s ease-out infinite}
+@keyframes dotPing{0%{box-shadow:0 0 0 0 var(--glow)}70%,100%{box-shadow:0 0 0 8px rgba(245,184,61,0)}}
+/* ★ 최근 1분: 카드 테두리에 빛이 돌고, 처음 3초는 크게 깜빡인 뒤 은은하게 남음 */
+@property --fa{syntax:'<angle>';inherits:false;initial-value:0deg}
+.card.dept.fresh{border-color:transparent}
+.card.dept.fresh::before{content:'';position:absolute;inset:-2px;z-index:-1;border-radius:12px;padding:2px;pointer-events:none;
+  background:conic-gradient(from var(--fa),#f5b83d,#e8508a,#2f5bd8,#f5b83d);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  animation:fSpin 2.2s linear infinite}
+.card.dept.fresh::after{content:'';position:absolute;inset:-2px;z-index:-2;border-radius:12px;pointer-events:none;
+  animation:fFlash .8s ease-in-out 4 var(--el,0s) both,fGlow 2.4s ease-in-out infinite calc(var(--el,0s) + 3.2s)}
+@keyframes fSpin{to{--fa:360deg}}
+@keyframes fFlash{0%,100%{box-shadow:0 0 0 0 var(--glow)}50%{box-shadow:0 0 22px 6px var(--glow),0 0 40px 10px var(--glow2)}}
+@keyframes fGlow{0%,100%{box-shadow:0 0 8px 1px var(--glow)}50%{box-shadow:0 0 16px 3px var(--glow)}}
+.nw{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:800;color:#3b2a00;background:linear-gradient(90deg,#ffd66b,#f5b83d);margin-left:4px;vertical-align:1px;white-space:nowrap;animation:nwPop .55s cubic-bezier(.2,1.6,.4,1) both var(--el,0s)}
+.nw.cf{color:#fff;background:linear-gradient(90deg,#22c55e,#16a34a)}
+@keyframes nwPop{from{transform:scale(.3);opacity:0}}
+.burst{position:absolute;left:50%;top:40%;width:0;height:0;pointer-events:none;z-index:3}
+.burst span{position:absolute;width:7px;height:7px;border-radius:2px;background:var(--c);opacity:0;animation:spark .9s cubic-bezier(.1,.8,.3,1) both}
+@keyframes spark{0%{opacity:1;transform:rotate(var(--r)) translateX(0)}100%{opacity:0;transform:rotate(var(--r)) translateX(var(--d)) scale(.4)}}
+/* ★ 최근 1분 학생 줄·카드: 금색으로 깜빡이고 남은 시간 막대가 줄어듦 */
+.stbl tr.fresh td{background:var(--fresh);animation:rowFlash .8s ease-in-out 4 var(--el,0s) both}
+.stbl tr.fresh td:first-child{box-shadow:inset 4px 0 0 var(--freshbd)}
+@keyframes rowFlash{50%{background:rgba(245,184,61,.55)}}
+.card.fresh:not(.dept){background:var(--fresh);box-shadow:0 0 0 2px var(--freshbd);animation:cardFlash .8s ease-in-out 4 var(--el,0s) both}
+@keyframes cardFlash{50%{box-shadow:0 0 0 2px var(--freshbd),0 0 18px 4px var(--glow)}}
+.fleft{display:block;height:3px;border-radius:2px;background:var(--freshbd);margin-top:3px;max-width:120px;transform-origin:left;animation:fShrink 60s linear both var(--el,0s)}
+@keyframes fShrink{to{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){
+  #ddbar .ddin,#ddbar .ddin::after,.card.dept.intro,.card.dept .bar i.f,.card.dept .tag.er,.cnum.bump,.card.dept .pick i,.live .dot,.live .ev.new,.fdot,.card.dept.fresh::before,.card.dept.fresh::after,.nw,.burst,.stbl tr.fresh td,.card.fresh:not(.dept){animation:none!important}
+  .card.dept .bar i{transition:none}
+  .card.dept.fresh::before{background:var(--freshbd)}
+  .burst,.fleft{display:none}
+}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -314,12 +361,15 @@ function call(fn) {
 function tel(n) { n = String(n || '').trim(); return n ? '<a href="tel:' + esc(n.replace(/[^0-9+]/g, '')) + '">' + esc(n) + '</a>' : '-'; }
 function adjTag(a) { return a === '접수' ? '<span class="tag ok">접수</span>' : ''; }
 
-function load() {
-  if (!CODE.n || !CODE.c) { loginView(''); return Promise.resolve(); }
+function load(soft) {
+  if (!CODE.n || !CODE.c) { if (!soft) loginView(''); return Promise.resolve(); }
   return call('getData').then(function (d) {
+    ingest(d.rows || []);
+    if (soft) { softApply(d); return; }
     if (TAB === 'form' && $('f_이름')) readForm();   // 입력 중인 내용 보존
     D = d; render();
   }).catch(function (e) {
+    if (soft) return;   // 자동 새로고침 실패는 조용히 넘기고 다음 차례에 다시 시도
     if (String(e.message || e).indexOf('NOAUTH') >= 0) loginView('이름 또는 접속코드가 맞지 않습니다.');
     else $('main').innerHTML = '<div class="card">오류: ' + esc(e.message || e) + '</div>';
   });
@@ -359,8 +409,9 @@ function render() {
   var tabs = [['status', '현황']];
   if (r !== '열람') tabs.push(['form', '입력'], ['list', r === '관리자' ? '전체 관리' : '학생 목록']);
   tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()], ['stat', '통계'], ['stu', '중학생용']);
-  $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + '</button>'; }).join('') + '<a class="mlink" href="manual/" target="_blank" rel="noopener">이용안내</a>';
-  if (TAB === 'status') { $('main').innerHTML = viewStatus(); animateCounts(); }
+  $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + (t[0] === 'status' && TAB !== 'status' && anyFresh() ? '<span class="fdot" title="최근 1분 사이 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '<a class="mlink" href="manual/" target="_blank" rel="noopener">이용안내</a>';
+  if (TAB !== 'status') STAT_KEY = '';   // 현황에 다시 들어오면 카드 등장 효과를 한 번 더
+  if (TAB === 'status') { $('main').innerHTML = viewStatus(); animStatus(); }
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
   else if (TAB === 'promo') { $('main').innerHTML = viewPromo(); bindPromo(); }
   else if (TAB === 'stat') { $('main').innerHTML = viewStat(); }
@@ -369,71 +420,25 @@ function render() {
   else $('main').innerHTML = viewList();
 }
 
-
-/* ---- 현황 실시간 효과: 최근 입력·변경 알림, 방금 배지, 자동 새로고침 ---- */
-function parseKST(t) {   // 'MM-dd HH:mm' (올해) -> Date
-  var m = /^(\d\d)-(\d\d) (\d\d):(\d\d)$/.exec(String(t || '')); if (!m) return null;
-  var now = new Date(), d = new Date(now.getFullYear(), +m[1] - 1, +m[2], +m[3], +m[4]);
-  if (d - now > 86400000) d.setFullYear(d.getFullYear() - 1);
-  return d;
-}
-function agoText(d) {
-  var mi = Math.floor((Date.now() - d) / 60000);
-  return mi < 1 ? '방금' : mi < 60 ? mi + '분 전' : mi < 1440 ? Math.floor(mi / 60) + '시간 전' : (d.getMonth() + 1) + '/' + d.getDate();
-}
-function recentEvents() {
-  var ev = [];
-  ((D && D.rows) || []).forEach(function (r) {
-    var c = parseKST(r.입력일시), m = parseKST(r.수정일시);
-    if (!c) return;
-    var t = m && m > c ? m : c, kind;
-    if (m && m - c > 90000) kind = r.원서접수 === '접수' ? '접수' : r.단계 === '확정' ? '확정' : r.단계 === '타교지원' ? '타교지원' : '수정';
-    else kind = '새 입력';
-    ev.push({ t: t, kind: kind, who: r.담당교사, dept: r['1지망'], trk: r.전형 });
-  });
-  ev.sort(function (a, b) { return b.t - a.t; });
-  return ev;
-}
-function liveBar() {
-  var ev = recentEvents().slice(0, 8);
-  var chip = function (e) { return '<span class="lv-c ' + (Date.now() - e.t < 1800000 ? 'hot' : '') + '"><b>' + esc(e.who || '') + '</b> ' + esc(e.dept) + ' ' + esc(e.kind) + ' 1명 <i>' + agoText(e.t) + '</i></span>'; };
-  var body = ev.length ? ev.map(chip).join('') : '<span class="lv-c">아직 입력된 학생이 없습니다</span>';
-  return '<div class="live"><span class="lv-dot"></span><span class="lv-t">실시간</span><div class="lv-v"><div class="lv-tr' + (ev.length > 3 ? ' run' : '') + '">' + body + (ev.length > 3 ? body : '') + '</div></div></div>';
-}
-function deptBadges(dept) {   // 최근 30분 안에 새로 입력·확정된 인원
-  var n = 0, c = 0, lim = Date.now() - 1800000;
-  recentEvents().forEach(function (e) { if (e.dept === dept && e.trk === TRK && e.t.getTime() >= lim) { if (e.kind === '새 입력') n++; else if (e.kind === '확정' || e.kind === '접수') c++; } });
-  return (n ? ' <span class="bd new">+' + n + ' 방금</span>' : '') + (c ? ' <span class="bd ok">확정 +' + c + '</span>' : '');
-}
-var PREVN = {};
-function animateCounts() {   // 숫자가 바뀐 카드만 위로 올라가며 바뀜
-  Array.prototype.forEach.call(document.querySelectorAll('.card.dept .n1 b'), function (el) {
-    var key = TRK + el.dataset.k, to = +el.dataset.to, from = PREVN[key];
-    PREVN[key] = to;
-    if (from === undefined || from === to || window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-    var t0 = Date.now();
-    (function step() { var p = Math.min(1, (Date.now() - t0) / 700); el.textContent = Math.round(from + (to - from) * p); if (p < 1) requestAnimationFrame(step); })();
-    el.classList.add('bump'); setTimeout(function () { el.classList.remove('bump'); }, 900);
-  });
-}
-setInterval(function () {   // 현황 화면을 보고 있을 때만 30초마다 조용히 새로 불러옴
-  if (document.hidden || !D || TAB !== 'status' || !CODE.n || !CODE.c) return;
-  call('getData').then(function (d) { if (TAB === 'status') { D = d; render(); } }).catch(function () {});
-}, 30000);
-
 /* ---- 현황 ---- */
 function viewStatus() {
-  var h = liveBar();
+  var h = liveHtml();
+  var key = 'status|' + TRK, intro = STAT_KEY !== key; STAT_KEY = key;
   h += '<div class="seg" style="margin-bottom:12px">' + TRACKS.map(function (t) {
-    return '<button class="' + (TRK === t ? 'on' : '') + '" onclick="TRK=\'' + t + '\';render()">' + t + '</button>'; }).join('') + '</div><div class="grid">';
-  D.summary.filter(function (s) { return s.전형 === TRK; }).forEach(function (s) {
+    return '<button class="' + (TRK === t ? 'on' : '') + '" onclick="TRK=\'' + t + '\';render()">' + t + (t !== TRK && anyFresh(t) ? '<span class="fdot" title="최근 1분 사이 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '</div><div class="grid">';
+  D.summary.filter(function (s) { return s.전형 === TRK; }).forEach(function (s, si) {
     var pct = s.정원 ? Math.min(100, Math.round(s.합계 / s.정원 * 100)) : 0, over = s.합계 > s.정원;
-    h += '<div class="card dept' + (SELDEPT === s.계열 ? ' sel' : '') + '" tabindex="0" role="button" aria-pressed="' + (SELDEPT === s.계열) + '" onclick="pickDept(\'' + s.계열 + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();pickDept(\'' + s.계열 + '\')}"><h3>' + s.계열 + ' <span class="tag ' + (over ? 'er' : 'pr') + '">' + (over ? '정원 초과' : '정원 ' + s.정원) + '</span>' + deptBadges(s.계열) + '</h3>' +
-      '<div class="big"><div class="n1"><b data-k="' + s.계열 + '" data-to="' + s.합계 + '">' + s.합계 + '</b> <span>/ ' + s.정원 + '명 (1지망)</span></div>' +
-      '<div class="rcv">원서접수 : <b>' + (s.접수 || 0) + '</b></div></div>' +
-      '<div class="bar"><i class="' + (over ? 'f' : '') + '" style="width:' + pct + '%"></i></div>' +
-      '<div class="kv"><span>확정 <b>' + s.확정 + '</b></span><span>고민 <b>' + s.고민 + '</b></span>' + (s.타교지원 ? '<span>타교지원 <b>' + s.타교지원 + '</b></span>' : '') + (s.전형 === '취업희망자' ? '' : '<span>2지망 <b>' + s.이지망 + '</b></span>') + '</div>' +
-      (SELDEPT === s.계열 ? '<div class="pick">▼ 아래에 지원 학생 목록</div>' : '') + '</div>';
+    var fz = deptFresh(s.전형, s.계열), ck = s.전형 + '|' + s.계열;
+    var badge = fz ? (fz.add ? '<span class="nw" style="' + elVar(fz.el) + '">+' + fz.add + ' 방금</span>' : '') + (fz.cf ? '<span class="nw cf" style="' + elVar(fz.el) + '">확정 +' + fz.cf + '</span>' : '') + (fz.rc ? '<span class="nw cf" style="' + elVar(fz.el) + '">접수 +' + fz.rc + '</span>' : '') : '';
+    function num(k, v) { return '<span class="cnum" data-k="' + ck + '|' + k + '" data-v="' + v + '">' + (CSHOWN[ck + '|' + k] == null ? v : CSHOWN[ck + '|' + k]) + '</span>'; }
+    var w0 = BARW[ck] == null ? (intro ? 0 : pct) : (intro ? 0 : BARW[ck]);
+    h += '<div class="card dept' + (SELDEPT === s.계열 ? ' sel' : '') + (intro ? ' intro' : '') + (fz ? ' fresh' : '') + '" style="--i:' + si + ';' + (fz ? elVar(fz.el) : '') + '" tabindex="0" role="button" aria-pressed="' + (SELDEPT === s.계열) + '" onclick="pickDept(\'' + s.계열 + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();pickDept(\'' + s.계열 + '\')}"><h3>' + s.계열 + ' <span class="tag ' + (over ? 'er' : 'pr') + '">' + (over ? '정원 초과' : '정원 ' + s.정원) + '</span>' + badge + '</h3>' +
+      '<div class="big"><div class="n1">' + num('h', s.합계) + ' <span>/ ' + s.정원 + '명 (1지망)</span></div>' +
+      '<div class="rcv">원서접수 : <b>' + num('r', s.접수 || 0) + '</b></div></div>' +
+      '<div class="bar"><i class="' + (over ? 'f' : '') + '" data-ck="' + ck + '" data-w="' + pct + '" style="width:' + w0 + '%"></i></div>' +
+      '<div class="kv"><span>확정 <b>' + num('c', s.확정) + '</b></span><span>고민 <b>' + num('g', s.고민) + '</b></span>' + (s.타교지원 ? '<span>타교지원 <b>' + s.타교지원 + '</b></span>' : '') + (s.전형 === '취업희망자' ? '' : '<span>2지망 <b>' + s.이지망 + '</b></span>') + '</div>' +
+      (SELDEPT === s.계열 ? '<div class="pick"><i>▼</i> 아래에 지원 학생 목록</div>' : '') +
+      (fz && fz.el < 1200 ? '<div class="burst">' + sparks() + '</div>' : '') + '</div>';
   });
   return h + '</div>' + statusTable() + '<p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원 제외 · 순위는 접수 완료/접수 전을 따로 내신(석차백분율)이 낮은 순으로 매김</p>';
 }
@@ -464,8 +469,9 @@ function statusTable() {
     if (accN > 0 && ri === 0) h += '<tr class="grp ok"><td colspan="' + ncol + '">원서접수 완료 <b>' + accN + '명</b> <span class="mut">(내신 순)</span></td></tr>';
     if (accN > 0 && accN < rows.length && ri === accN) h += '<tr class="grp wait"><td colspan="' + ncol + '">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></td></tr>';
     var out = !VIEW2 && isOut(r);
-    h += '<tr' + (out ? ' class="out"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 || r.단계 === '타교지원' ? '-' : grpRank(r)) + '</td>' +
-      '<td>' + (r.full ? '<b>' + esc(r.이름) + '</b>' : '<span class="mut">비공개</span>') + '</td>' +
+    var fz = freshOf(r.ID), trc = (out ? 'out' : '') + (fz ? ' fresh' : '');
+    h += '<tr' + (trc ? ' class="' + trc + '"' : '') + (fz ? ' style="' + elVar(fz.el) + '"' : '') + '><td class="rk">' + (VIEW2 || !r.순위 || r.단계 === '타교지원' ? '-' : grpRank(r)) + '</td>' +
+      '<td>' + (r.full ? '<b>' + esc(r.이름) + '</b>' : '<span class="mut">비공개</span>') + freshChip(fz) + '</td>' +
       '<td>' + esc(r.중학교) + '</td><td>' + (r.내신 === '' || r.내신 == null ? '-' : esc(r.내신)) + '</td>' +
       (one ? '' : '<td>' + esc((VIEW2 ? r['1지망'] : r['2지망']) || '-') + '</td>') +
       '<td>' + stageTag(r.단계) + (out ? ' <span class="tag er">정원 밖</span>' : '') + (r.full && r.단계 === '고민' && r.고민내용 ? '<div class="n2">' + esc(r.고민내용) + '</div>' : '') + '</td>' +
@@ -1064,9 +1070,10 @@ function listBodyHtml() {
     if (accN > 0 && accN < rows.length && ri === accN) h += '<div class="grph wait">접수 전 <b>' + (rows.length - accN) + '명</b> <span class="mut">(내신 순)</span></div>';
     var cap = (D.summary.filter(function (s) { return s.전형 === r.전형 && s.계열 === r['1지망']; })[0] || {}).정원 || 0;
     var out = isOut(r);
-    h += '<div class="card' + (r.단계 === '타교지원' ? ' gone' : '') + '" style="padding:10px 14px"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
+    var fz = freshOf(r.ID);
+    h += '<div class="card' + (r.단계 === '타교지원' ? ' gone' : '') + (fz ? ' fresh' : '') + '" style="padding:10px 14px;' + (fz ? elVar(fz.el) : '') + '"><div class="row" style="border:0;padding:0"><div class="t"><div>' +
       (D.me.helper ? '<input type="checkbox" style="width:auto;margin-right:8px" ' + (SEL[r.ID] ? 'checked' : '') + ' onchange="SEL[\'' + r.ID + '\']=this.checked">' : '') +
-      (grpRank(r) ? '<b>' + grpRank(r) + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span>' +
+      (grpRank(r) ? '<b>' + grpRank(r) + '위</b> ' : '') + (r.full ? '<b>' + esc(r.이름) + '</b> ' : '') + '<span style="color:var(--mu)">' + esc(r.중학교) + '</span>' + freshChip(fz) +
       (LDEPT === '전체' ? ' <span class="tag pr">' + esc(r['1지망']) + '</span>' : '') + '</div><div>' +
       (out ? '<span class="tag er">정원 밖</span> ' : '') + stageTag(r.단계) + ' ' + recBtn(r, true) + (r.full && r.단계 === '고민' && r.고민내용 ? '<div class="n2" style="margin-left:auto">' + esc(r.고민내용) + '</div>' : '') + '</div></div>' +
       '<div class="s">내신 ' + esc(r.내신 === '' || r.내신 == null ? '-' : r.내신) + (r['2지망'] && r.전형 !== '취업희망자' ? ' · 2지망 ' + esc(r['2지망']) : '') + ' · 담당 ' + esc(r.담당교사) +
@@ -1099,9 +1106,125 @@ function applyAdj() {
   call('setAdjust', ids, $('adj').value, $('amemo').value).then(function (r) { SEL = {}; toast(r.count + '명 적용'); return load(); }).then(idle, function (e) { idle(); toast(e.message || e); });
 }
 
+/* ---- 실시간: 30초마다 자동으로 다시 불러오고, 직전 목록과 비교해 최근 1분의 새 입력·확정·원서접수를 강조한다 ---- */
+var FRESH_MS = 60000, AUTO_MS = 30000;
+var FRESH = {}, EVENTS = [], PREVSNAP = null, STAT_KEY = '', CSHOWN = {}, BARW = {}, FRESH_TM = null;
+function diffRows(prev, next) {
+  var old = {}, out = [];
+  prev.forEach(function (r) { old[r.ID] = r; });
+  next.forEach(function (r) {
+    var o = old[r.ID];
+    if (!o) { if (r.단계 !== '타교지원') out.push({ id: r.ID, type: 'add', r: r }); }
+    else if (o.단계 !== '확정' && r.단계 === '확정') out.push({ id: r.ID, type: 'confirm', r: r });
+    else if (o.원서접수 !== '접수' && r.원서접수 === '접수') out.push({ id: r.ID, type: 'receipt', r: r });
+  });
+  return out;
+}
+function ingest(rows) {
+  var now = Date.now();
+  if (PREVSNAP) diffRows(PREVSNAP, rows).forEach(function (e) {
+    FRESH[e.id] = { type: e.type, t: now };
+    EVENTS.unshift({ type: e.type, t: now, who: e.r.담당교사, dept: e.r['1지망'], trk: e.r.전형, isNew: true });
+  });
+  EVENTS = EVENTS.slice(0, 8);
+  PREVSNAP = rows.map(function (r) { return { ID: r.ID, 단계: r.단계, 원서접수: r.원서접수 }; });
+  if (FRESH_TM) clearTimeout(FRESH_TM);
+  if (anyFresh()) FRESH_TM = setTimeout(function () { FRESH_TM = null; if (D) softApply(D); }, FRESH_MS + 100);   // 1분 지나면 빛을 끈다
+}
+function freshOf(id) {
+  var f = FRESH[id]; if (!f) return null;
+  var el = Date.now() - f.t;
+  if (el > FRESH_MS) { delete FRESH[id]; return null; }
+  return { type: f.type, el: el };
+}
+function anyFresh(trk) {
+  if (!D) return false;
+  return D.rows.some(function (r) { return (!trk || r.전형 === trk) && freshOf(r.ID); });
+}
+function deptFresh(trk, dept) {
+  var o = null;
+  D.rows.forEach(function (r) {
+    if (r.전형 !== trk || r['1지망'] !== dept) return;
+    var f = freshOf(r.ID); if (!f) return;
+    o = o || { add: 0, cf: 0, rc: 0, el: f.el };
+    if (f.type === 'add') o.add++; else if (f.type === 'confirm') o.cf++; else o.rc++;
+    o.el = Math.min(o.el, f.el);
+  });
+  return o;
+}
+function elVar(el) { return '--el:-' + (el / 1000).toFixed(2) + 's'; }   // 다시 그려도 깜빡임이 처음부터 시작하지 않게
+function freshChip(f) {
+  if (!f) return '';
+  return ' <span class="nw' + (f.type === 'add' ? '' : ' cf') + '" style="' + elVar(f.el) + '">' + (f.type === 'add' ? 'NEW' : f.type === 'confirm' ? '방금 확정' : '방금 접수') + '</span><span class="fleft" style="' + elVar(f.el) + '"></span>';
+}
+function sparks() {
+  var cs = ['#f5b83d', '#e8508a', '#2f5bd8', '#22c55e', '#ffd66b'], h = '';
+  for (var i = 0; i < 16; i++) h += '<span style="--r:' + (i * 22.5 + Math.random() * 10).toFixed(1) + 'deg;--d:' + Math.round(60 + Math.random() * 70) + 'px;--c:' + cs[i % 5] + ';animation-delay:' + Math.round(Math.random() * 80) + 'ms"></span>';
+  return h;
+}
+var EV_LBL = { add: '새 입력', confirm: '확정', receipt: '원서접수' };
+function agoText(t) { var s = Math.round((Date.now() - t) / 1000); return s < 5 ? '방금' : s < 60 ? s + '초 전' : Math.floor(s / 60) + '분 전'; }
+function liveHtml() {
+  var h = '<div class="live" aria-live="polite"><span class="dot"></span><span class="lb">실시간</span><div class="feed">';
+  if (!EVENTS.length) h += '<span class="none">다른 선생님이 입력하거나 확정하면 여기에 바로 보여요. (30초마다 확인)</span>';
+  EVENTS.forEach(function (e) {
+    var hot = Date.now() - e.t < FRESH_MS;
+    h += '<span class="ev' + (hot ? ' hot' : '') + (e.isNew ? ' new' : '') + '"><b>' + esc(e.who) + '</b> ' + (e.trk === '취업희망자' ? '' : '일반 · ') + esc(e.dept) + ' ' + EV_LBL[e.type] + ' <span class="ago" data-t="' + e.t + '">' + agoText(e.t) + '</span></span>';
+    e.isNew = false;
+  });
+  return h + '</div></div>';
+}
+/* 현황 화면을 그린 뒤: 숫자는 이전 값에서 새 값으로 올라가고, 막대는 이전 길이에서 새 길이로 늘어난다 */
+function animStatus() {
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.forEach.call(document.querySelectorAll('.cnum'), function (n) {
+    var k = n.dataset.k, to = Number(n.dataset.v), from = CSHOWN[k] == null ? 0 : CSHOWN[k], first = CSHOWN[k] == null;
+    CSHOWN[k] = to;
+    if (from === to) { n.textContent = to; return; }
+    if (!first) { n.classList.remove('bump'); void n.offsetWidth; n.classList.add('bump'); }
+    if (still) { n.textContent = to; return; }
+    var t0 = performance.now(), dur = first ? 1000 : 500;
+    (function step(t) {
+      var p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      n.textContent = Math.round(from + (to - from) * e);
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  });
+  var bars = document.querySelectorAll('.card.dept .bar i');
+  requestAnimationFrame(function () { requestAnimationFrame(function () {
+    Array.prototype.forEach.call(bars, function (b) { b.style.width = b.dataset.w + '%'; BARW[b.dataset.ck] = Number(b.dataset.w); });
+  }); });
+}
+/* 자동 새로고침 결과 반영: 입력·QnA 등 글을 쓰는 화면은 건드리지 않는다 */
+function softApply(d) {
+  if (!d || !d.me) return;
+  if ($('busy') && !$('busy').classList.contains('hide')) return;
+  D = d;
+  if (TAB === 'status') {
+    var w = document.querySelector('#main .wrap'), sl = w ? w.scrollLeft : 0;
+    render();
+    w = document.querySelector('#main .wrap'); if (w) w.scrollLeft = sl;
+  } else if (TAB === 'list' && $('lbody')) {
+    listBody();
+    navDot();
+  } else navDot();
+}
+function navDot() {
+  var b = document.querySelector('#nav button'); if (!b || TAB === 'status') return;
+  var has = anyFresh(), dot = b.querySelector('.fdot');
+  if (has && !dot) b.insertAdjacentHTML('beforeend', '<span class="fdot" title="최근 1분 사이 새 입력·확정"></span>');
+  if (!has && dot) dot.remove();
+}
+setInterval(function () {
+  if (document.hidden || !D || SAVING || TAB === 'form') return;   // 화면을 보고 있을 때만, 입력 중에는 쉬기
+  load(true);
+}, AUTO_MS);
+document.addEventListener('visibilitychange', function () { if (!document.hidden && D && !SAVING && TAB !== 'form') load(true); });
+setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll('.live .ago'), function (a) { a.textContent = agoText(+a.dataset.t); }); }, 1000);
+
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.7';
+var APP_VER = '2026-10-13.8';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
