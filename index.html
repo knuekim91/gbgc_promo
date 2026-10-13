@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-13.13) ===== */
+/* ===== 움직임 (2026-10-13.14) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -372,6 +372,41 @@ td.nt{min-width:110px}
 @keyframes tape{to{background-position:40px 0}}
 @keyframes shk{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 @media (prefers-reduced-motion:reduce){.hub-bg b,.hub-bg i,.hub-h h2,.hc,.hc.ready::before,.hc-ico,.hc.hz::after{animation:none}.hub-bg i{opacity:.5}}
+
+/* 첫 화면 */
+body.onhome #ddbar{display:none!important}
+.home{position:relative;isolation:isolate;border-radius:24px;padding:26px 18px 24px;overflow:hidden;color:#fff;text-align:center;background:linear-gradient(160deg,#0b1745 0%,#2a1263 52%,#58146b 100%)}
+.hm-top{display:flex;flex-direction:column;align-items:center;gap:8px}
+.hm-badge{display:inline-block;border-radius:99px;padding:5px 16px;font-size:13px;font-weight:800;letter-spacing:.08em;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);animation:hcIn .7s both}
+.hm-hi{font-size:14px;color:#cfd8ff;animation:hcIn .7s .1s both}
+.hm-t{margin:16px 0 0;display:flex;flex-direction:column;gap:2px;line-height:1.15;letter-spacing:-1.5px}
+.hm-t span{display:block;font-size:clamp(40px,9vw,76px);font-weight:900;animation:hcIn .8s .15s both}
+.hm-t span:first-child{background:linear-gradient(100deg,#fff 0%,#ffd66b 30%,#ff8fc0 60%,#9db8ff 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hcIn .8s .15s both,shine 7s linear infinite;text-shadow:none;filter:drop-shadow(0 4px 22px rgba(255,160,200,.35))}
+.hm-t span:last-child{font-size:clamp(22px,5.2vw,42px);font-weight:800;letter-spacing:-.8px;animation-delay:.3s;color:#eef1ff}
+.hm-t em{font-style:normal;font-weight:500;color:#ffd66b;margin:0 .1em}
+.hm-y{margin:6px 0 4px;font-size:clamp(54px,14vw,120px);font-weight:900;line-height:1;letter-spacing:.06em;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.8);background:linear-gradient(180deg,rgba(255,214,107,.95),rgba(232,80,138,.55));-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 24px rgba(245,184,61,.55));animation:hcIn .9s .4s both,yGlow 3.4s ease-in-out infinite}
+@keyframes yGlow{50%{filter:drop-shadow(0 0 40px rgba(232,80,138,.75))}}
+.hm-dd{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:10px 0 4px;border-radius:99px;padding:8px 20px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);animation:hcIn .8s .5s both}
+.hm-dd span{font-weight:700;font-size:14px}
+.hm-dd b{font-size:28px;font-weight:900;color:#ffe08a;letter-spacing:-.5px}
+.hm-dd small{font-size:12px;color:#cfd8ff}
+.hm-note{position:relative;margin:18px auto 0;max-width:760px;border-radius:18px;padding:14px 18px 16px;text-align:left;background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.06));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.28);animation:hcIn .8s .6s both}
+.hm-note::before{content:'';position:absolute;inset:0;border-radius:18px;padding:2px;pointer-events:none;background:conic-gradient(from var(--fa),#f5b83d,#e8508a,#2f5bd8,#f5b83d);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);opacity:.7;animation:fSpin 5s linear infinite}
+.hm-nk{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.06em;border-radius:99px;padding:2px 11px;background:linear-gradient(90deg,#ffd66b,#f5b83d);color:#3b2a00}
+.hm-nv{position:relative;margin-top:8px;min-height:2.9em}
+.hm-ni{position:absolute;inset:0 0 auto 0;font-size:clamp(17px,3.6vw,22px);font-weight:700;line-height:1.45;opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;pointer-events:none}
+.hm-ni.on{position:relative;opacity:1;transform:none;pointer-events:auto}
+.hm-nd{display:flex;gap:7px;margin-top:10px}
+.hm-nd button{width:9px;height:9px;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.4);cursor:pointer;transition:width .3s,background .3s}
+.hm-nd button.on{width:24px;background:#ffd66b}
+.hm-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:20px;max-width:900px;margin-inline:auto}
+.hm-c{position:relative;border:0;border-radius:18px;padding:16px 12px 14px;color:#fff;font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.05));box-shadow:0 8px 22px rgba(0,0,0,.28),inset 0 0 0 1px rgba(255,255,255,.22);transition:transform .2s,box-shadow .2s;animation:hcIn .7s both;animation-delay:calc(.7s + var(--i) * 80ms)}
+.hm-c:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.4),0 0 0 2px #ffd66b}
+.hm-c:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.hm-ci{font-size:30px;line-height:1.1}
+.hm-ct{font-size:17px;font-weight:800}
+.hm-cd{font-size:12px;color:#d6defe}
+@media (prefers-reduced-motion:reduce){.hm-t span,.hm-y,.hm-badge,.hm-hi,.hm-dd,.hm-note,.hm-c,.hm-note::before{animation:none}.hm-ni{transition:none}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -391,7 +426,7 @@ td.nt{min-width:110px}
 var CODE = { n: '', c: '' };   // 이름 + 접속코드 (이 폰에만 저장)
 try { CODE = JSON.parse(localStorage.getItem('hb_cred') || '') || CODE; } catch (e) {}
 var SELDEPT = '상업정보', VIEW2 = false, PSEC = 0, PIDX = 0;
-var D = null, TAB = 'status', TRK = '취업희망자', FILTER = '', SEL = {}, EDIT = null;
+var D = null, TAB = 'home', TRK = '취업희망자', FILTER = '', SEL = {}, EDIT = null;
 var TRACKS = ['취업희망자', '일반(특별포함)'], DEPTS = ['상업정보', '보건행정코디', '3D융합콘텐츠'];
 var ADJ = ['접수', '미접수'];
 var FORM = {};
@@ -457,14 +492,16 @@ function render() {
   ddBar();
   var r = D.me.role;
   $('who').innerHTML = esc(D.me.name) + ' · ' + r + ' <a href="#" onclick="logout();return false">다른 이름</a>';
-  var tabs = [['status', '현황']];
+  var tabs = [['home', '홈'], ['status', '현황']];
   if (r !== '열람') tabs.push(['form', '입력'], ['list', r === '관리자' ? '전체 관리' : '학생 목록']);
   tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()], ['stat', '통계'], ['stu', '중학생용']);
   $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + (t[0] === 'status' && TAB !== 'status' && anyFresh() ? '<span class="fdot" title="최근 1분 사이 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '<a class="mlink" href="manual/" target="_blank" rel="noopener">이용안내</a>';
   if (TAB === 'promo' && LASTTAB !== 'promo') PMODE = 'hub';
   LASTTAB = TAB;
   if (TAB !== 'status') STAT_KEY = '';   // 현황에 다시 들어오면 카드 등장 효과를 한 번 더
-  if (TAB === 'status') { $('main').innerHTML = viewStatus(); animStatus(); }
+  document.body.classList.toggle('onhome', TAB === 'home');
+  if (TAB === 'home') { $('main').innerHTML = viewHome(); bindHome(); }
+  else if (TAB === 'status') { $('main').innerHTML = viewStatus(); animStatus(); }
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
   else if (TAB === 'promo') { if (PMODE === 'hub') { $('main').innerHTML = viewHub(); bindHub(); } else { $('main').innerHTML = viewPromo(); bindPromo(); } }
   else if (TAB === 'stat') { $('main').innerHTML = viewStat(); }
@@ -551,6 +588,42 @@ function promoThumbsHtml(sec) {
     return '<img class="' + (i === PIDX ? 'on' : '') + '" src="promo/t' + pad2(p) + '.jpg" alt="' + esc((PROMO.pages[p] || {}).t) + '" onclick="promoGo(' + i + ')">'; }).join('');
 }
 
+
+/* ---- 첫 화면(홈): 제목·연도·공지·바로가기. 공지는 시트 [설정] 탭 '공지' 행에서 가져온다 ---- */
+var HOME_GREET = '선생님!! 오늘도 좋은 하루 되세요.', NOTE_I = 0, NOTE_TM = null;
+function homeLinks() {
+  var r = D.me.role, a = [['status', '📊', '현황', '지원 인원과 순위']];
+  if (r !== '열람') a.push(['form', '✍️', '입력', '학생 등록·접수'], ['list', '🗂️', r === '관리자' ? '전체 관리' : '학생 목록', '검색·수정']);
+  a.push(['promo', '🎬', '홍보자료', '책자·영상'], ['qna', '💬', 'QnA', '현장 질문과 답변']);
+  if (r !== '열람') a.push(['stat', '📈', '통계', '구별·성적대별']);
+  a.push(['stu', '📱', '중학생용', 'QR 안내 페이지']);
+  return a;
+}
+function viewHome() {
+  var sp = '';
+  for (var i = 0; i < 22; i++) sp += '<i style="left:' + Math.round(Math.random() * 100) + '%;top:' + Math.round(Math.random() * 100) + '%;animation-delay:' + (Math.random() * 5).toFixed(1) + 's;--sz:' + (3 + Math.round(Math.random() * 5)) + 'px"></i>';
+  var notes = (D.notices && D.notices.length) ? D.notices : [HOME_GREET], dl = (typeof deadline === 'function') ? deadline() : null;
+  return '<div class="home"><div class="hub-bg"><b></b><b></b><b></b>' + sp + '</div>' +
+    '<div class="hm-top"><span class="hm-badge">경북여자상업고등학교</span><div class="hm-hi">' + esc(D.me.name) + ' 선생님, 환영합니다</div></div>' +
+    '<h1 class="hm-t"><span>경북여상</span><span>원서접수 현황 <em>및</em> 홍보</span></h1>' +
+    '<div class="hm-y" aria-label="2026">2026</div>' +
+    (dl ? '<div class="hm-dd"><span>' + esc(dl.name) + ' 원서접수 마감</span><b>' + dl.text + '</b><small>' + esc(dl.closeText) + '</small></div>' : '') +
+    '<div class="hm-note" id="hmnote"><span class="hm-nk">📢 공지</span><div class="hm-nv" id="hmnv">' + notes.map(function (n, i) { return '<div class="hm-ni' + (i === 0 ? ' on' : '') + '">' + esc(n) + '</div>'; }).join('') + '</div>' +
+    (notes.length > 1 ? '<div class="hm-nd" id="hmnd">' + notes.map(function (n, i) { return '<button type="button" aria-label="공지 ' + (i + 1) + '" class="' + (i === 0 ? 'on' : '') + '" onclick="homeNote(' + i + ')"></button>'; }).join('') + '</div>' : '') + '</div>' +
+    '<div class="hm-g">' + homeLinks().map(function (x, i) {
+      return '<button type="button" class="hm-c" style="--i:' + i + '" onclick="TAB=\'' + x[0] + '\';render()"><span class="hm-ci">' + x[1] + '</span><span class="hm-ct">' + esc(x[2]) + '</span><span class="hm-cd">' + esc(x[3]) + '</span></button>'; }).join('') + '</div></div>';
+}
+function homeNote(i) {
+  var items = document.querySelectorAll('#hmnv .hm-ni'), dots = document.querySelectorAll('#hmnd button'); if (!items.length) return;
+  NOTE_I = (i + items.length) % items.length;
+  Array.prototype.forEach.call(items, function (e, k) { e.classList.toggle('on', k === NOTE_I); });
+  Array.prototype.forEach.call(dots, function (e, k) { e.classList.toggle('on', k === NOTE_I); });
+}
+function bindHome() {
+  NOTE_I = 0;
+  if (NOTE_TM) clearInterval(NOTE_TM);
+  NOTE_TM = setInterval(function () { if (!$('hmnv')) { clearInterval(NOTE_TM); NOTE_TM = null; return; } if (document.querySelectorAll('#hmnv .hm-ni').length > 1) homeNote(NOTE_I + 1); }, 5000);
+}
 /* ---- 홍보자료 센터(허브): 항목을 고르면 해당 자료로 들어간다. 새 자료는 PHUB에 한 줄만 추가하면 된다 ---- */
 var PMODE = 'hub', LASTTAB = '';
 var PHUB = [
@@ -1362,7 +1435,7 @@ function softApply(d) {
   } else navDot();
 }
 function navDot() {
-  var b = document.querySelector('#nav button'); if (!b || TAB === 'status') return;
+  var b = Array.prototype.filter.call(document.querySelectorAll('#nav button'), function (x) { return x.textContent.indexOf('현황') === 0; })[0]; if (!b || TAB === 'status') return;
   var has = anyFresh(), dot = b.querySelector('.fdot');
   if (has && !dot) b.insertAdjacentHTML('beforeend', '<span class="fdot" title="최근 1분 사이 새 입력·확정"></span>');
   if (!has && dot) dot.remove();
@@ -1376,7 +1449,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.13';
+var APP_VER = '2026-10-13.14';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
