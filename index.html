@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-13.14) ===== */
+/* ===== 움직임 (2026-10-13.15) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -380,13 +380,12 @@ body.onhome #ddbar{display:none!important}
 .hm-badge{display:inline-block;border-radius:99px;padding:5px 16px;font-size:13px;font-weight:800;letter-spacing:.08em;background:rgba(255,255,255,.14);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);animation:hcIn .7s both}
 .hm-hi{font-size:14px;color:#cfd8ff;animation:hcIn .7s .1s both}
 .hm-t{margin:16px 0 0;display:flex;flex-direction:column;gap:2px;line-height:1.15;letter-spacing:-1.5px}
-.hm-t span{display:block;font-size:clamp(40px,9vw,76px);font-weight:900;animation:hcIn .8s .15s both}
-.hm-t span:first-child{background:linear-gradient(100deg,#fff 0%,#ffd66b 30%,#ff8fc0 60%,#9db8ff 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hcIn .8s .15s both,shine 7s linear infinite;text-shadow:none;filter:drop-shadow(0 4px 22px rgba(255,160,200,.35))}
-.hm-t span:last-child{font-size:clamp(22px,5.2vw,42px);font-weight:800;letter-spacing:-.8px;animation-delay:.3s;color:#eef1ff}
-.hm-t em{font-style:normal;font-weight:500;color:#ffd66b;margin:0 .1em}
+.hm-t span{display:block;font-size:clamp(28px,7.6vw,70px);font-weight:900;animation:hcIn .8s .15s both}
+.hm-t span{background:linear-gradient(100deg,#fff 0%,#ffd66b 30%,#ff8fc0 60%,#9db8ff 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hcIn .8s .15s both,shine 7s linear infinite;text-shadow:none;filter:drop-shadow(0 4px 22px rgba(255,160,200,.35))}
+.hm-t em{font-style:normal;font-weight:inherit;margin:0 .05em}
 .hm-y{margin:6px 0 4px;font-size:clamp(54px,14vw,120px);font-weight:900;line-height:1;letter-spacing:.06em;color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.8);background:linear-gradient(180deg,rgba(255,214,107,.95),rgba(232,80,138,.55));-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 24px rgba(245,184,61,.55));animation:hcIn .9s .4s both,yGlow 3.4s ease-in-out infinite}
 @keyframes yGlow{50%{filter:drop-shadow(0 0 40px rgba(232,80,138,.75))}}
-.hm-dd{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:10px 0 4px;border-radius:99px;padding:8px 20px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);animation:hcIn .8s .5s both}
+.hm-dd{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin:22px 0 4px;border-radius:99px;padding:8px 20px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);animation:hcIn .8s .5s both}
 .hm-dd span{font-weight:700;font-size:14px}
 .hm-dd b{font-size:28px;font-weight:900;color:#ffe08a;letter-spacing:-.5px}
 .hm-dd small{font-size:12px;color:#cfd8ff}
@@ -606,7 +605,6 @@ function viewHome() {
   return '<div class="home"><div class="hub-bg"><b></b><b></b><b></b>' + sp + '</div>' +
     '<div class="hm-top"><span class="hm-badge">경북여자상업고등학교</span><div class="hm-hi">' + esc(D.me.name) + ' 선생님, 환영합니다</div></div>' +
     '<h1 class="hm-t"><span>경북여상</span><span>원서접수 현황 <em>및</em> 홍보</span></h1>' +
-    '<div class="hm-y" aria-label="2026">2026</div>' +
     (dl ? '<div class="hm-dd"><span>' + esc(dl.name) + ' 원서접수 마감</span><b>' + dl.text + '</b><small>' + esc(dl.closeText) + '</small></div>' : '') +
     '<div class="hm-note" id="hmnote"><span class="hm-nk">📢 공지</span><div class="hm-nv" id="hmnv">' + notes.map(function (n, i) { return '<div class="hm-ni' + (i === 0 ? ' on' : '') + '">' + esc(n) + '</div>'; }).join('') + '</div>' +
     (notes.length > 1 ? '<div class="hm-nd" id="hmnd">' + notes.map(function (n, i) { return '<button type="button" aria-label="공지 ' + (i + 1) + '" class="' + (i === 0 ? 'on' : '') + '" onclick="homeNote(' + i + ')"></button>'; }).join('') + '</div>' : '') + '</div>' +
@@ -1449,7 +1447,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.14';
+var APP_VER = '2026-10-13.15';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
