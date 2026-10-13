@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-13.17) ===== */
+/* ===== 움직임 (2026-10-13.18) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -414,8 +414,8 @@ body.onhome #ddbar{display:none!important}
 .hs-seg button{border:0;border-radius:99px;padding:4px 12px;font:inherit;font-size:12.5px;font-weight:700;color:#d6defe;background:transparent;cursor:pointer}
 .hs-seg button.on{background:#fff;color:#2f2a8a}
 .hs-g{display:grid;grid-template-columns:.9fr 1fr 1.7fr 1fr;align-items:center;gap:6px;padding:8px 0;border-top:1px solid rgba(255,255,255,.14);text-align:center}
-.hs-g.hs-hd{border-top:0;padding:4px 0 2px;font-size:13px;color:#cfd8ff;font-weight:700}
-.hs-hd small{font-weight:400;font-size:11px}
+.hs-g.hs-hd{border-top:0;padding:4px 0 6px;font-size:clamp(16px,4vw,22px);color:#e6ebff;font-weight:800}
+.hs-hd small{font-weight:600;font-size:clamp(12px,3vw,15px);color:#cfd8ff}
 .hs-n{text-align:left;font-size:clamp(18px,4.4vw,26px);font-weight:900}
 .hs-v{font-size:clamp(26px,7vw,46px);font-weight:900;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums}
 .hs-w{display:inline-flex;align-items:baseline;justify-content:center;gap:6px;flex-wrap:wrap}
@@ -425,6 +425,10 @@ body.onhome #ddbar{display:none!important}
 .hs-g.hs-tot{background:rgba(255,255,255,.08);border-radius:12px;border-top:0;margin-top:4px;padding-inline:8px}
 .hs-tot .hs-v{font-size:clamp(22px,6vw,38px)}
 @media (prefers-reduced-motion:reduce){.hm-sum{animation:none}}
+
+.hm-ne{margin-left:8px;border:0;border-radius:99px;padding:3px 12px;font:inherit;font-size:12.5px;font-weight:800;background:rgba(255,255,255,.2);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);cursor:pointer}
+.hm-ne:hover{background:rgba(255,255,255,.32)}
+#smodal textarea{width:100%;min-height:130px;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font:inherit;resize:vertical}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -633,6 +637,27 @@ function homeSumHtml() {
   });
   return h + '<div class="hs-g hs-tot"><span class="hs-n">합계</span><b class="hs-v">' + tot.정원 + '</b><span class="hs-w' + (tot.합계 > tot.정원 ? ' over' : '') + '"><b class="hs-v">' + tot.합계 + '</b><small>(' + tot.확정 + '/' + tot.고민 + ')</small></span><b class="hs-v hs-r">' + tot.접수 + '</b></div>';
 }
+
+/* ---- 공지 쓰기 (관리자 전용): 입력한 내용이 구글 시트 [설정] 탭 '공지' 행에 기록된다 ---- */
+function noticeEdit() {
+  if (D.me.role !== '관리자') return;
+  closeStu();
+  var m = document.createElement('div'); m.id = 'smodal';
+  m.innerHTML = '<div class="sbox" role="dialog" aria-modal="true" aria-label="공지 쓰기"><button type="button" class="sx" aria-label="닫기">✕</button><div class="sh">공지 쓰기</div>' +
+    '<p style="margin:0 0 8px;font-size:13px;color:var(--mu)">한 줄에 공지 하나씩 적으세요. 여러 개이면 첫 화면에서 차례로 바뀝니다. (최대 10개) 모두 지우고 저장하면 기본 인사말이 나옵니다.</p>' +
+    '<textarea id="nt_text" rows="6" maxlength="1500" placeholder="예: 내일(수) 아침 8시 임시직원회의 있어요.">' + esc((D.notices || []).join('\n')) + '</textarea>' +
+    '<button type="button" class="btn" id="nt_save">저장</button></div>';
+  m.onclick = function (e) { if (e.target === m || e.target.classList.contains('sx')) closeStu(); };
+  document.body.appendChild(m);
+  $('nt_text').focus();
+  $('nt_save').onclick = function () {
+    var b = $('nt_save'); b.disabled = true; b.textContent = '저장 중…';
+    call('saveNotice', $('nt_text').value).then(function (r) {
+      D.notices = r.notices || []; closeStu(); toast('✓ 공지를 저장했습니다.');
+      if (TAB === 'home') render();
+    }).catch(function (e) { b.disabled = false; b.textContent = '저장'; toast(e.message || e); });
+  };
+}
 function viewHome() {
   var sp = '';
   for (var i = 0; i < 22; i++) sp += '<i style="left:' + Math.round(Math.random() * 100) + '%;top:' + Math.round(Math.random() * 100) + '%;animation-delay:' + (Math.random() * 5).toFixed(1) + 's;--sz:' + (3 + Math.round(Math.random() * 5)) + 'px"></i>';
@@ -642,7 +667,7 @@ function viewHome() {
     '<h1 class="hm-t"><span>경북여상</span><span>원서접수 현황 <em>및</em> 홍보</span></h1>' +
     (dl ? '<div class="hm-dd"><span>' + esc(dl.name) + ' 원서접수 마감</span><b>' + dl.text + '</b><small>' + esc(dl.closeText) + '</small></div>' : '') +
     '<div class="hm-sum" id="hmsum">' + homeSumHtml() + '</div>' +
-    '<div class="hm-note" id="hmnote"><span class="hm-nk">📢 공지</span><div class="hm-nv" id="hmnv">' + notes.map(function (n, i) { return '<div class="hm-ni' + (i === 0 ? ' on' : '') + '">' + esc(n) + '</div>'; }).join('') + '</div>' +
+    '<div class="hm-note" id="hmnote"><span class="hm-nk">📢 공지</span>' + (D.me.role === '관리자' ? '<button type="button" class="hm-ne" onclick="noticeEdit()">✏️ 공지 쓰기</button>' : '') + '<div class="hm-nv" id="hmnv">' + notes.map(function (n, i) { return '<div class="hm-ni' + (i === 0 ? ' on' : '') + '">' + esc(n) + '</div>'; }).join('') + '</div>' +
     (notes.length > 1 ? '<div class="hm-nd" id="hmnd">' + notes.map(function (n, i) { return '<button type="button" aria-label="공지 ' + (i + 1) + '" class="' + (i === 0 ? 'on' : '') + '" onclick="homeNote(' + i + ')"></button>'; }).join('') + '</div>' : '') + '</div>' +
     '<div class="hm-g">' + homeLinks().map(function (x, i) {
       return '<button type="button" class="hm-c" style="--i:' + i + '" onclick="TAB=\'' + x[0] + '\';render()"><span class="hm-ci">' + x[1] + '</span><span class="hm-ct">' + esc(x[2]) + '</span><span class="hm-cd">' + esc(x[3]) + '</span></button>'; }).join('') + '</div></div>';
@@ -1485,7 +1510,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.17';
+var APP_VER = '2026-10-13.18';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
