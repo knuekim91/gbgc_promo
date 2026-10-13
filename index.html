@@ -15,6 +15,15 @@ body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,'Mal
 header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
 header b{font-size:16px}
 header span{color:var(--mu);font-size:13px}
+header{padding:12px 16px;border-bottom:2px solid transparent;border-image:linear-gradient(90deg,#2f5bd8,#e8508a,#f5b83d,#2f5bd8) 1;box-shadow:0 4px 14px rgba(47,91,216,.15)}
+header .brand{font-size:23px;font-weight:800;letter-spacing:-.5px;display:flex;align-items:center;gap:8px;line-height:1.2}
+header .brand .bt{font-size:inherit;color:transparent;background:linear-gradient(100deg,#2f5bd8 0%,#8a4fe0 30%,#e8508a 50%,#f5a623 70%,#2f5bd8 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;animation:shine 6s linear infinite}
+header .gem{font-style:normal;color:#f5b83d;font-size:16px;animation:tw 2.4s ease-in-out infinite}
+header .gem.g2{color:#e8508a;font-size:12px;animation-delay:1.2s}
+@keyframes shine{to{background-position:-250% 0}}
+@keyframes tw{0%,100%{transform:scale(.7) rotate(0);opacity:.6}50%{transform:scale(1.25) rotate(25deg);opacity:1}}
+@media (prefers-reduced-motion:reduce){header .brand .bt,header .gem{animation:none}}
+@media (max-width:480px){header .brand{font-size:19px}}
 nav{display:flex;gap:6px;padding:10px 16px 0;overflow-x:auto}
 nav button{border:0;background:transparent;color:var(--mu);padding:8px 12px;border-radius:8px;font:inherit;font-weight:600;white-space:nowrap}
 nav button.on{background:var(--pr);color:#fff}
@@ -240,7 +249,7 @@ td.nt{min-width:110px}
 <script src="school-gu.js"></script>
 </head>
 <body>
-<header><b>경북여상 원서접수현황</b><span id="who"></span></header>
+<header><b class="brand"><i class="gem">✦</i><span class="bt">경북여상 원서접수현황</span><i class="gem g2">✦</i></b><span id="who"></span></header>
 <nav id="nav"></nav>
 <div id="ddbar" class="hide"></div>
 <main id="main">불러오는 중…</main>
@@ -1000,7 +1009,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.1';
+var APP_VER = '2026-10-13.2';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
