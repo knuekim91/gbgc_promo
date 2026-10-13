@@ -247,6 +247,33 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 .n2.nm{color:var(--tx);font-size:12px;max-width:200px}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
+
+/* 현황 실시간 효과 */
+.live{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:8px 12px;margin-bottom:12px;overflow:hidden}
+.lv-dot{flex:none;width:10px;height:10px;border-radius:50%;background:#16a34a;box-shadow:0 0 0 0 rgba(22,163,74,.6);animation:lvp 1.8s infinite}
+.lv-t{flex:none;font-size:13px;font-weight:800;color:#16a34a}
+.lv-v{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 94%,transparent)}
+.lv-tr{display:flex;gap:8px;width:max-content}
+.lv-tr.run{animation:lvm 38s linear infinite}
+.lv-v:hover .lv-tr{animation-play-state:paused}
+.lv-c{flex:none;border:1px solid var(--bd);border-radius:99px;padding:3px 12px;font-size:13px;white-space:nowrap;background:var(--bg)}
+.lv-c b{font-weight:800}.lv-c i{font-style:normal;color:var(--mu);font-size:12px;margin-left:4px}
+.lv-c.hot{border-color:#16a34a;background:rgba(22,163,74,.10)}
+.bd{display:inline-block;border-radius:99px;padding:1px 9px;font-size:12px;font-weight:800;vertical-align:2px}
+.bd.new{background:#fde68a;color:#78350f;animation:bdp 1.6s ease-in-out infinite}
+.bd.ok{background:#bbf7d0;color:#14532d}
+.card.dept .n1 b{display:inline-block;font-weight:800}
+.card.dept .n1 b.bump{animation:bump .9s ease}
+.card.dept.sel{animation:glow 3s ease-in-out infinite}
+.bar i.f{background:repeating-linear-gradient(45deg,var(--er) 0 10px,#f87171 10px 20px);background-size:28px 28px;animation:stripe 1s linear infinite}
+.bar i{transition:width .8s ease}
+@keyframes lvp{0%{box-shadow:0 0 0 0 rgba(22,163,74,.55)}70%{box-shadow:0 0 0 9px rgba(22,163,74,0)}100%{box-shadow:0 0 0 0 rgba(22,163,74,0)}}
+@keyframes lvm{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes bdp{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.35);color:var(--er)}100%{transform:scale(1)}}
+@keyframes stripe{to{background-position:28px 0}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 4px var(--selring),0 10px 26px var(--selsh)}50%{box-shadow:0 0 0 6px var(--selring),0 0 34px rgba(232,80,138,.45)}}
+@media (prefers-reduced-motion:reduce){.lv-dot,.lv-tr.run,.bd.new,.card.dept.sel,.bar i.f,.card.dept .n1 b.bump{animation:none}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -333,7 +360,7 @@ function render() {
   if (r !== '열람') tabs.push(['form', '입력'], ['list', r === '관리자' ? '전체 관리' : '학생 목록']);
   tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()], ['stat', '통계'], ['stu', '중학생용']);
   $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + '</button>'; }).join('') + '<a class="mlink" href="manual/" target="_blank" rel="noopener">이용안내</a>';
-  if (TAB === 'status') $('main').innerHTML = viewStatus();
+  if (TAB === 'status') { $('main').innerHTML = viewStatus(); animateCounts(); }
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
   else if (TAB === 'promo') { $('main').innerHTML = viewPromo(); bindPromo(); }
   else if (TAB === 'stat') { $('main').innerHTML = viewStat(); }
@@ -342,15 +369,67 @@ function render() {
   else $('main').innerHTML = viewList();
 }
 
+
+/* ---- 현황 실시간 효과: 최근 입력·변경 알림, 방금 배지, 자동 새로고침 ---- */
+function parseKST(t) {   // 'MM-dd HH:mm' (올해) -> Date
+  var m = /^(\d\d)-(\d\d) (\d\d):(\d\d)$/.exec(String(t || '')); if (!m) return null;
+  var now = new Date(), d = new Date(now.getFullYear(), +m[1] - 1, +m[2], +m[3], +m[4]);
+  if (d - now > 86400000) d.setFullYear(d.getFullYear() - 1);
+  return d;
+}
+function agoText(d) {
+  var mi = Math.floor((Date.now() - d) / 60000);
+  return mi < 1 ? '방금' : mi < 60 ? mi + '분 전' : mi < 1440 ? Math.floor(mi / 60) + '시간 전' : (d.getMonth() + 1) + '/' + d.getDate();
+}
+function recentEvents() {
+  var ev = [];
+  ((D && D.rows) || []).forEach(function (r) {
+    var c = parseKST(r.입력일시), m = parseKST(r.수정일시);
+    if (!c) return;
+    var t = m && m > c ? m : c, kind;
+    if (m && m - c > 90000) kind = r.원서접수 === '접수' ? '접수' : r.단계 === '확정' ? '확정' : r.단계 === '타교지원' ? '타교지원' : '수정';
+    else kind = '새 입력';
+    ev.push({ t: t, kind: kind, who: r.담당교사, dept: r['1지망'], trk: r.전형 });
+  });
+  ev.sort(function (a, b) { return b.t - a.t; });
+  return ev;
+}
+function liveBar() {
+  var ev = recentEvents().slice(0, 8);
+  var chip = function (e) { return '<span class="lv-c ' + (Date.now() - e.t < 1800000 ? 'hot' : '') + '"><b>' + esc(e.who || '') + '</b> ' + esc(e.dept) + ' ' + esc(e.kind) + ' 1명 <i>' + agoText(e.t) + '</i></span>'; };
+  var body = ev.length ? ev.map(chip).join('') : '<span class="lv-c">아직 입력된 학생이 없습니다</span>';
+  return '<div class="live"><span class="lv-dot"></span><span class="lv-t">실시간</span><div class="lv-v"><div class="lv-tr' + (ev.length > 3 ? ' run' : '') + '">' + body + (ev.length > 3 ? body : '') + '</div></div></div>';
+}
+function deptBadges(dept) {   // 최근 30분 안에 새로 입력·확정된 인원
+  var n = 0, c = 0, lim = Date.now() - 1800000;
+  recentEvents().forEach(function (e) { if (e.dept === dept && e.trk === TRK && e.t.getTime() >= lim) { if (e.kind === '새 입력') n++; else if (e.kind === '확정' || e.kind === '접수') c++; } });
+  return (n ? ' <span class="bd new">+' + n + ' 방금</span>' : '') + (c ? ' <span class="bd ok">확정 +' + c + '</span>' : '');
+}
+var PREVN = {};
+function animateCounts() {   // 숫자가 바뀐 카드만 위로 올라가며 바뀜
+  Array.prototype.forEach.call(document.querySelectorAll('.card.dept .n1 b'), function (el) {
+    var key = TRK + el.dataset.k, to = +el.dataset.to, from = PREVN[key];
+    PREVN[key] = to;
+    if (from === undefined || from === to || window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    var t0 = Date.now();
+    (function step() { var p = Math.min(1, (Date.now() - t0) / 700); el.textContent = Math.round(from + (to - from) * p); if (p < 1) requestAnimationFrame(step); })();
+    el.classList.add('bump'); setTimeout(function () { el.classList.remove('bump'); }, 900);
+  });
+}
+setInterval(function () {   // 현황 화면을 보고 있을 때만 30초마다 조용히 새로 불러옴
+  if (document.hidden || !D || TAB !== 'status' || !CODE.n || !CODE.c) return;
+  call('getData').then(function (d) { if (TAB === 'status') { D = d; render(); } }).catch(function () {});
+}, 30000);
+
 /* ---- 현황 ---- */
 function viewStatus() {
-  var h = '';
+  var h = liveBar();
   h += '<div class="seg" style="margin-bottom:12px">' + TRACKS.map(function (t) {
     return '<button class="' + (TRK === t ? 'on' : '') + '" onclick="TRK=\'' + t + '\';render()">' + t + '</button>'; }).join('') + '</div><div class="grid">';
   D.summary.filter(function (s) { return s.전형 === TRK; }).forEach(function (s) {
     var pct = s.정원 ? Math.min(100, Math.round(s.합계 / s.정원 * 100)) : 0, over = s.합계 > s.정원;
-    h += '<div class="card dept' + (SELDEPT === s.계열 ? ' sel' : '') + '" tabindex="0" role="button" aria-pressed="' + (SELDEPT === s.계열) + '" onclick="pickDept(\'' + s.계열 + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();pickDept(\'' + s.계열 + '\')}"><h3>' + s.계열 + ' <span class="tag ' + (over ? 'er' : 'pr') + '">' + (over ? '정원 초과' : '정원 ' + s.정원) + '</span></h3>' +
-      '<div class="big"><div class="n1">' + s.합계 + ' <span>/ ' + s.정원 + '명 (1지망)</span></div>' +
+    h += '<div class="card dept' + (SELDEPT === s.계열 ? ' sel' : '') + '" tabindex="0" role="button" aria-pressed="' + (SELDEPT === s.계열) + '" onclick="pickDept(\'' + s.계열 + '\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();pickDept(\'' + s.계열 + '\')}"><h3>' + s.계열 + ' <span class="tag ' + (over ? 'er' : 'pr') + '">' + (over ? '정원 초과' : '정원 ' + s.정원) + '</span>' + deptBadges(s.계열) + '</h3>' +
+      '<div class="big"><div class="n1"><b data-k="' + s.계열 + '" data-to="' + s.합계 + '">' + s.합계 + '</b> <span>/ ' + s.정원 + '명 (1지망)</span></div>' +
       '<div class="rcv">원서접수 : <b>' + (s.접수 || 0) + '</b></div></div>' +
       '<div class="bar"><i class="' + (over ? 'f' : '') + '" style="width:' + pct + '%"></i></div>' +
       '<div class="kv"><span>확정 <b>' + s.확정 + '</b></span><span>고민 <b>' + s.고민 + '</b></span>' + (s.타교지원 ? '<span>타교지원 <b>' + s.타교지원 + '</b></span>' : '') + (s.전형 === '취업희망자' ? '' : '<span>2지망 <b>' + s.이지망 + '</b></span>') + '</div>' +
@@ -1022,7 +1101,7 @@ function applyAdj() {
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.6';
+var APP_VER = '2026-10-13.7';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
