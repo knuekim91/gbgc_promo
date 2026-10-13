@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-13.9) ===== */
+/* ===== 움직임 (2026-10-13.8) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -321,15 +321,6 @@ td.nt{min-width:110px}
   .card.dept.fresh::before{background:var(--freshbd)}
   .burst,.fleft{display:none}
 }
-
-/* 실시간 줄: 원서접수 완료는 강하게 */
-.live .ev.rc{background:linear-gradient(90deg,#16a34a,#22c55e);color:#fff;font-weight:700;font-size:14px;padding:5px 14px;box-shadow:0 2px 10px rgba(22,163,74,.45)}
-.live .ev.rc b,.live .ev.rc .ago{color:#fff}
-.live .ev.rc .rk{background:#fff;color:#15803d;border-radius:99px;padding:1px 9px;font-weight:800;font-size:13px}
-.live .ev.rc.hot{animation:rcPulse 1.2s ease-in-out infinite;box-shadow:0 0 0 2px #fde047,0 0 18px 4px rgba(34,197,94,.6)}
-.live .ev.rc.new{animation:evIn .5s cubic-bezier(.2,1.4,.4,1) both,rcPulse 1.2s ease-in-out .5s infinite}
-@keyframes rcPulse{50%{transform:scale(1.05);box-shadow:0 0 0 3px #fde047,0 0 26px 8px rgba(34,197,94,.75)}}
-@media (prefers-reduced-motion:reduce){.live .ev.rc.hot,.live .ev.rc.new{animation:none}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1133,7 +1124,7 @@ function ingest(rows) {
   var now = Date.now();
   if (PREVSNAP) diffRows(PREVSNAP, rows).forEach(function (e) {
     FRESH[e.id] = { type: e.type, t: now };
-    EVENTS.unshift({ type: e.type, t: now, who: e.r.담당교사, name: e.r.full ? e.r.이름 : '', school: e.r.중학교, dept: e.r['1지망'], trk: e.r.전형, isNew: true });
+    EVENTS.unshift({ type: e.type, t: now, who: e.r.담당교사, dept: e.r['1지망'], trk: e.r.전형, isNew: true });
   });
   EVENTS = EVENTS.slice(0, 8);
   PREVSNAP = rows.map(function (r) { return { ID: r.ID, 단계: r.단계, 원서접수: r.원서접수 }; });
@@ -1178,10 +1169,6 @@ function liveHtml() {
   if (!EVENTS.length) h += '<span class="none">다른 선생님이 입력하거나 확정하면 여기에 바로 보여요. (30초마다 확인)</span>';
   EVENTS.forEach(function (e) {
     var hot = Date.now() - e.t < FRESH_MS;
-    if (e.type === 'receipt') {   // 원서접수는 눈에 띄게
-      h += '<span class="ev rc' + (hot ? ' hot' : '') + (e.isNew ? ' new' : '') + '"><span class="rk">✔ 원서접수 완료</span> <b>' + esc(e.name ? e.name + ' (' + e.school + ')' : e.who) + '</b> ' + (e.trk === '취업희망자' ? '' : '일반 · ') + esc(e.dept) + ' <span class="ago" data-t="' + e.t + '">' + agoText(e.t) + '</span></span>';
-      e.isNew = false; return;
-    }
     h += '<span class="ev' + (hot ? ' hot' : '') + (e.isNew ? ' new' : '') + '"><b>' + esc(e.who) + '</b> ' + (e.trk === '취업희망자' ? '' : '일반 · ') + esc(e.dept) + ' ' + EV_LBL[e.type] + ' <span class="ago" data-t="' + e.t + '">' + agoText(e.t) + '</span></span>';
     e.isNew = false;
   });
@@ -1237,7 +1224,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-13.9';
+var APP_VER = '2026-10-13.8';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
