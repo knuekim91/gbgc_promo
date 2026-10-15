@@ -99,9 +99,57 @@ a{color:var(--pr)}
 .pa{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}
 .pbtn{display:inline-block;border-radius:99px;padding:10px 18px;background:#e8337f;color:#fff;font-weight:800;text-decoration:none;font-size:15px}
 .pbtn.g{background:#eceef6;color:#2a2f45}
+
+/* 홍보자료 센터 */
+.ph{border-radius:18px;padding:20px 18px;color:#fff;background:linear-gradient(135deg,#2f5bd8,#8a4fe0 55%,#e8508a);box-shadow:0 8px 22px rgba(47,91,216,.28);margin-bottom:14px}
+.ph-k{font-size:11px;letter-spacing:.3em;opacity:.85}
+.ph h2{margin:4px 0 2px;font-size:28px}
+.ph p{margin:0;opacity:.95}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.pc{position:relative;display:flex;flex-direction:column;gap:6px;text-align:left;border:0;border-radius:18px;padding:18px 16px 16px;color:#fff;cursor:pointer;font:inherit;min-height:170px;box-shadow:0 8px 20px rgba(0,0,0,.16);transition:transform .15s}
+.pc:active{transform:scale(.98)}
+.pc:hover{transform:translateY(-3px)}
+.pc.c1{background:linear-gradient(135deg,#2f5bd8,#6d8cff)}
+.pc.c2{background:linear-gradient(135deg,#e8337f,#ff9ac1)}
+.pc.c3{background:linear-gradient(135deg,#c2185b,#ff6f91)}
+.pc .pi{width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.25);display:grid;place-items:center;font-size:28px}
+.pc b{font-size:21px;margin-top:4px}
+.pc small{font-size:13px;opacity:.95;line-height:1.4;flex:1}
+.pc i{position:absolute;right:12px;top:12px;font-style:normal;font-size:12px;font-weight:800;background:rgba(255,255,255,.28);border-radius:99px;padding:3px 10px}
+.pbk{border:1px solid var(--bd);background:var(--card);color:var(--pr);border-radius:99px;padding:6px 14px;font-weight:700;font-size:14px;margin-bottom:10px;cursor:pointer}
+.yh{border-radius:18px;padding:18px;color:#fff;background:linear-gradient(135deg,#6a1030,#c2185b 55%,#ff6f91);margin-bottom:10px}
+.yh h2{margin:4px 0 2px;font-size:26px}
+.yh p{margin:0 0 10px;opacity:.95}
+.ych{display:inline-block;background:#fff;color:#c2185b;font-weight:800;border-radius:99px;padding:7px 14px;text-decoration:none;font-size:14px}
+.ybar input{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font:inherit;margin-bottom:8px}
+.ychips{display:flex;gap:6px;flex-wrap:wrap}
+.ychips button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:6px 11px;font-size:13px;font-weight:700;cursor:pointer}
+.ychips button b{color:var(--mu);margin-left:2px}
+.ychips button.on{background:#c2185b;border-color:#c2185b;color:#fff}
+.ychips button.on b{color:#ffd3e1}
+.ys{margin-top:18px}
+.ys h3{margin:0}
+.ys h3 small{color:var(--mu);font-size:13px;margin-left:4px}
+.ys p{margin:2px 0 8px;color:var(--mu);font-size:13px}
+.yg{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+@media (min-width:640px){.yg{grid-template-columns:repeat(3,1fr);gap:12px}}
+.yc{display:flex;flex-direction:column;text-align:left;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:0;overflow:hidden;cursor:pointer}
+.yth{position:relative;display:block;aspect-ratio:16/9;background:#222;overflow:hidden}
+.yth img{width:100%;height:100%;object-fit:cover;display:block}
+.yth i{position:absolute;right:6px;bottom:6px;width:30px;height:30px;border-radius:50%;background:rgba(194,24,91,.92);color:#fff;font-style:normal;font-size:12px;display:grid;place-items:center;padding-left:2px}
+.ytt{padding:7px 9px 9px;font-size:12.5px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.9em}
+.ym{display:block;margin:10px auto 0;border:1px dashed #c2185b;background:transparent;color:#c2185b;border-radius:99px;padding:8px 18px;font-weight:800;cursor:pointer}
+#ymodal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:12px}
+.ybox{position:relative;width:100%;max-width:860px;max-height:92vh;overflow:auto;background:var(--card);border-radius:14px;padding:10px 10px 14px}
+.yfr{position:relative;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
+.yfr iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.ytit{font-weight:800;margin:10px 36px 8px 2px;line-height:1.35}
+.ya{display:flex;gap:8px;flex-wrap:wrap}
+.yx{position:absolute;right:8px;top:8px;z-index:2;width:30px;height:30px;border:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:14px;cursor:pointer}
 </style>
 <script src="../config.js"></script>
 <script src="../promo-data.js"></script>
+<script src="../promo/videos.js"></script>
 </head>
 <body>
 <header><div class="in"><div class="lg">여</div><div><h1>경북여자상업고등학교<br>2027 신입생 안내</h1><p>궁금한 것을 직접 찾아보세요</p></div></div><div class="dl" id="dl" hidden></div></header>
@@ -148,6 +196,8 @@ a{color:var(--pr)}
     <button class="btn g" onclick="openBook(21)">입학전형 요강 책자 보기</button></div>
 </section>
 
+<section id="s-promo"></section>
+
 <section id="s-calc">
   <div class="card"><h2>내신 점수 계산기</h2><p class="lead">취업희망자 전형의 서류 점수를 미리 계산해 볼 수 있어요. 입력한 값은 이 폰 안에서만 계산되고 어디에도 저장되지 않아요.</p>
     <label for="pct">내 석차백분율 (전 학년, 숫자만)</label>
@@ -183,7 +233,7 @@ a{color:var(--pr)}
 <footer>경북여자상업고등학교 · 2027학년도 신입생 모집 안내 자료입니다.</footer>
 
 <script>
-var TABS = [['s-book', '학교 소개'], ['s-admit', '입학 안내'], ['s-calc', '점수 계산'], ['s-quiz', '학과 찾기'], ['s-faq', '질문과 답변']];
+var TABS = [['s-book', '학교 소개'], ['s-admit', '입학 안내'], ['s-promo', '홍보자료'], ['s-calc', '점수 계산'], ['s-quiz', '학과 찾기'], ['s-faq', '질문과 답변']];
 function $(id) { return document.getElementById(id); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function pad2(n) { return (n < 10 ? '0' : '') + n; }
@@ -192,8 +242,72 @@ function pad2(n) { return (n < 10 ? '0' : '') + n; }
 function showTab(id) {
   TABS.forEach(function (t) { $(t[0]).classList.toggle('on', t[0] === id); });
   $('nav').innerHTML = TABS.map(function (t) { return '<button class="' + (t[0] === id ? 'on' : '') + '" onclick="showTab(\'' + t[0] + '\')">' + t[1] + '</button>'; }).join('');
+  if (id === 's-promo' && PM !== 'hub') { PM = 'hub'; promoView(); }   // 탭을 다시 누르면 홍보자료 처음으로
   window.scrollTo(0, 0);
 }
+
+
+/* ---- 홍보자료 센터: 홍보책자 · 설명회 포스터 · 홍보 유튜브 ---- */
+var PM = 'hub', YC = 'all', YQ = '', YMORE = {}, YSHOW = 6;
+var CH_URL = (window.PROMO_VIDEOS && PROMO_VIDEOS.channel) || 'https://www.youtube.com/';
+function ycats() { return (window.PROMO_VIDEOS && PROMO_VIDEOS.cats) || []; }
+function ycount() { return ycats().reduce(function (a, c) { return a + c.items.length; }, 0); }
+function pgo(m) { PM = m; promoView(); window.scrollTo(0, 0); }
+function promoView() {
+  var h = '';
+  if (PM === 'hub') {
+    h = '<div class="ph"><div class="ph-k">PROMOTION</div><h2>홍보자료</h2><p>경북여상을 더 알고 싶다면 골라 보세요!</p></div>' +
+      '<div class="pg">' +
+      '<button type="button" class="pc c1" onclick="showTab(\'s-book\')"><span class="pi">📖</span><b>홍보책자</b><small>학교·학과·취업 이야기를 책자로 넘겨 봐요</small><i>24쪽</i></button>' +
+      '<button type="button" class="pc c2" onclick="pgo(\'poster\')"><span class="pi">🖼️</span><b>설명회 포스터</b><small>3차 입학설명회 11월 14일(토)</small><i>PDF</i></button>' +
+      '<button type="button" class="pc c3" onclick="pgo(\'yt\')"><span class="pi">▶</span><b>홍보 유튜브</b><small>학교 소개, 학과, 선배 이야기, 행사 영상</small><i>영상 ' + ycount() + '개</i></button></div>';
+  } else if (PM === 'poster') {
+    h = '<button type="button" class="pbk" onclick="pgo(\'hub\')">← 홍보자료</button>' +
+      '<div class="card posterc"><h3>3차 입학설명회 포스터</h3><p class="lead" style="margin-top:4px">11월 14일(토) 오전 10:00 · 학교 내 강당(우봉관)</p>' +
+      '<a href="../poster/info-session-3rd.jpg" target="_blank" rel="noopener"><img class="posterimg" src="../poster/info-session-3rd-t.jpg" alt="3차 입학설명회 안내 포스터: 11월 14일 토요일 오전 10시, 학교 내 강당(우봉관)"></a>' +
+      '<div class="pa"><a class="pbtn" href="../poster/info-session-3rd.pdf" download>PDF 내려받기</a><a class="pbtn g" href="../poster/info-session-3rd.jpg" target="_blank" rel="noopener">크게 보기</a></div></div>';
+  } else {
+    h = '<button type="button" class="pbk" onclick="pgo(\'hub\')">← 홍보자료</button>' +
+      '<div class="yh"><div class="ph-k">PROMOTION VIDEO</div><h2>홍보 유튜브</h2><p>궁금한 영상을 골라서 눌러 보세요.</p><a class="ych" href="' + esc(CH_URL) + '" target="_blank" rel="noopener">▶ 유튜브 채널 가기</a></div>' +
+      '<div class="ybar" id="ybar"><input id="yq" type="search" placeholder="영상 검색 (예: 3D, 은행, 체육대회)" value="' + esc(YQ) + '" oninput="ysearch(this.value)" autocomplete="off"><div class="ychips" id="ychips">' + ychips() + '</div></div><div id="ybody">' + ybody() + '</div>';
+  }
+  $('s-promo').innerHTML = h;
+}
+function ychips() {
+  return '<button type="button" class="' + (YC === 'all' ? 'on' : '') + '" onclick="ycat(\'all\')">전체 <b>' + ycount() + '</b></button>' +
+    ycats().map(function (c) { return '<button type="button" class="' + (YC === c.id ? 'on' : '') + '" onclick="ycat(\'' + c.id + '\')">' + c.ico + ' ' + esc(c.t) + ' <b>' + c.items.length + '</b></button>'; }).join('');
+}
+function ycard(v) {
+  return '<button type="button" class="yc" onclick="yplay(\'' + v.id + '\')" aria-label="' + esc(v.t) + ' 재생"><span class="yth"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/' + v.id + '/mqdefault.jpg"><i>▶</i></span><span class="ytt">' + esc(v.t) + '</span></button>';
+}
+function ybody() {
+  var q = YQ.trim().toLowerCase(), h = '', any = false;
+  ycats().forEach(function (c) {
+    if (YC !== 'all' && YC !== c.id) return;
+    var list = q ? c.items.filter(function (v) { return v.t.toLowerCase().indexOf(q) >= 0; }) : c.items;
+    if (!list.length) return;
+    any = true;
+    var all = YC !== 'all' || q || YMORE[c.id], shown = all ? list : list.slice(0, YSHOW);
+    h += '<div class="ys"><h3>' + c.ico + ' ' + esc(c.t) + ' <small>' + list.length + '</small></h3><p>' + esc(c.d) + '</p><div class="yg">' + shown.map(ycard).join('') + '</div>' +
+      (!all && list.length > YSHOW ? '<button type="button" class="ym" onclick="YMORE[\'' + c.id + '\']=true;ydraw()">+ ' + (list.length - YSHOW) + '개 더 보기</button>' : '') + '</div>';
+  });
+  return any ? h : '<div class="card">찾는 영상이 없어요. 다른 말로 검색해 보세요.</div>';
+}
+function ydraw() { var b = $('ybody'), c = $('ychips'); if (b) { b.innerHTML = ybody(); } if (c) c.innerHTML = ychips(); }
+function ycat(id) { YC = id; ydraw(); var bar = $('ybar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+function ysearch(v) { YQ = v || ''; ydraw(); }
+function yclose() { var m = $('ymodal'); if (m) m.remove(); }
+function yplay(id) {
+  var it = null; ycats().forEach(function (c) { c.items.forEach(function (v) { if (v.id === id) it = v; }); });
+  if (!it) return;
+  yclose();
+  var m = document.createElement('div'); m.id = 'ymodal';
+  m.innerHTML = '<div class="ybox" role="dialog" aria-modal="true" aria-label="' + esc(it.t) + '"><button type="button" class="yx" aria-label="닫기">✕</button><div class="yfr"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1" title="' + esc(it.t) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>' +
+    '<div class="ytit">' + esc(it.t) + '</div><div class="ya"><a class="pbtn" href="https://www.youtube.com/watch?v=' + id + '" target="_blank" rel="noopener">유튜브에서 열기</a><button type="button" class="pbtn g" id="yclose">닫기</button></div></div>';
+  m.onclick = function (e) { if (e.target === m || e.target.className === 'yx' || e.target.id === 'yclose') yclose(); };
+  document.body.appendChild(m);
+}
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') yclose(); });
 
 /* ---- 책자 뷰어 ---- */
 var SEC = 0, IDX = 0;
@@ -336,7 +450,7 @@ function liveFaq() {   // 선생님용 QnA에서 공개한 질문이 있으면 �
   }).catch(function () {});
 }
 
-showTab('s-book'); bookShow(); dday(); orient(); quizInit(); faqInit(); liveFaq();
+showTab('s-book'); promoView(); bookShow(); dday(); orient(); quizInit(); faqInit(); liveFaq();
 </script>
 </body>
 </html>
