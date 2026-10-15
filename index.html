@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-15.8) ===== */
+/* ===== 움직임 (2026-10-15.9) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -507,9 +507,48 @@ body.onhome #ddbar{display:none!important}
 .pv:fullscreen .pzfs button#fzl{font-size:14px;min-width:68px}
 .pv:fullscreen .pzfs button:active:not(:disabled){background:rgba(255,255,255,.25)}
 .pv:fullscreen .pzfs button:disabled{opacity:.35}
+
+/* 홍보 유튜브 */
+.ythead{position:relative;overflow:hidden;border-radius:20px;padding:22px 20px;color:#fff;background:linear-gradient(135deg,#6a1030 0%,#c2185b 55%,#ff6f91 100%);box-shadow:0 10px 26px rgba(194,24,91,.28)}
+.ythead::after{content:'▶';position:absolute;right:-10px;bottom:-34px;font-size:150px;opacity:.12;line-height:1}
+.yt-k{font-size:11px;letter-spacing:.3em;opacity:.85}
+.ythead h2{margin:4px 0 4px;font-size:30px;letter-spacing:-.5px}
+.ythead p{margin:0 0 12px;opacity:.92}
+.yt-ch{display:inline-block;background:#fff;color:#c2185b;font-weight:800;border-radius:99px;padding:8px 16px;text-decoration:none;font-size:14px}
+.ytbar{margin:14px 0 6px}
+.ytbar input{width:100%;margin-bottom:10px}
+.ytchips{display:flex;gap:6px;flex-wrap:wrap}
+.ytchips button{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:6px 12px;font:inherit;font-size:13.5px;font-weight:700;cursor:pointer}
+.ytchips button b{color:var(--mu);font-weight:700;margin-left:2px}
+.ytchips button.on{background:#c2185b;border-color:#c2185b;color:#fff}
+.ytchips button.on b{color:#ffd3e1}
+.ytsec{margin-top:22px}
+.ytsh h3{margin:0;font-size:19px}
+.ytsh h3 small{font-size:13px;color:var(--mu);font-weight:700;margin-left:4px}
+.ytsh p{margin:2px 0 10px;color:var(--mu);font-size:13px}
+.ytg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.ytc{display:flex;flex-direction:column;text-align:left;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:14px;padding:0;overflow:hidden;cursor:pointer;font:inherit;transition:transform .15s,box-shadow .15s}
+.ytc:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,0,0,.16)}
+.ytc:focus-visible{outline:3px solid #c2185b;outline-offset:2px}
+.yth{position:relative;display:block;aspect-ratio:16/9;background:#222;overflow:hidden}
+.yth img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.ytc:hover .yth img{transform:scale(1.06)}
+.ytpl{position:absolute;right:8px;bottom:8px;width:34px;height:34px;border-radius:50%;background:rgba(194,24,91,.92);color:#fff;font-style:normal;font-size:14px;display:grid;place-items:center;padding-left:2px;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.ytt{padding:9px 11px 11px;font-size:13.5px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.9em}
+.ytmore{display:block;margin:12px auto 0;border:1px dashed #c2185b;background:transparent;color:#c2185b;border-radius:99px;padding:8px 20px;font:inherit;font-weight:800;cursor:pointer}
+#smodal.ytm .sbox.ytbox{max-width:880px;padding:12px 12px 14px}
+.ytfr{position:relative;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden}
+.ytfr iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.yttt{font-weight:800;margin:10px 40px 8px 2px;line-height:1.35}
+.yta{display:flex;gap:8px;flex-wrap:wrap}
+.yta a.btn{text-decoration:none}
+.ytnote{color:var(--mu);font-size:12px;margin:8px 2px 0}
+@media (max-width:480px){.ytg{grid-template-columns:repeat(2,1fr);gap:9px}.ytt{font-size:12.5px;padding:7px 8px 9px}.ythead h2{font-size:26px}}
+@media (prefers-reduced-motion:reduce){.ytc,.yth img{transition:none}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
+<script src="promo/videos.js"></script>
 <script src="school-gu.js"></script>
 </head>
 <body>
@@ -629,7 +668,7 @@ function render() {
   if (TAB === 'home') { $('main').innerHTML = viewHome(); bindHome(); }
   else if (TAB === 'status') { $('main').innerHTML = viewStatus(); animStatus(); }
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
-  else if (TAB === 'promo') { if (PMODE === 'hub') { $('main').innerHTML = viewHub(); bindHub(); } else if (PMODE === 'poster') { $('main').innerHTML = viewPosters(); } else { $('main').innerHTML = viewPromo(); bindPromo(); } }
+  else if (TAB === 'promo') { if (PMODE === 'hub') { $('main').innerHTML = viewHub(); bindHub(); } else if (PMODE === 'poster') { $('main').innerHTML = viewPosters(); } else if (PMODE === 'yt') { $('main').innerHTML = viewYt(); } else { $('main').innerHTML = viewPromo(); bindPromo(); } }
   else if (TAB === 'stat') { $('main').innerHTML = viewStat(); }
   else if (TAB === 'stu') { $('main').innerHTML = viewStu(); bindStu(); }
   else if (TAB === 'qna') { $('main').innerHTML = viewQna(); bindQna(); if (!QNA) loadQna(); }
@@ -793,7 +832,7 @@ var PMODE = 'hub', LASTTAB = '';
 var PHUB = [
   { id: 'book', ico: '📖', t: '홍보책자', d: '2027학년도 신입생 모집 홍보책자를 넘겨 보며 학교를 소개합니다.', tag: '24쪽', ready: true, c1: '#2f5bd8', c2: '#7b9cff' },
   { id: 'poster', ico: '🖼️', t: '설명회 포스터', d: '3차 입학설명회(11월 14일) 안내 포스터. 보기, PDF 내려받기, 인쇄.', tag: 'PDF', ready: true, c1: '#e8337f', c2: '#ff9ac1' },
-  { id: 'yt', ico: '▶', t: '홍보 유튜브', d: '학교 홍보 영상 모음. 곧 만나요!', tag: '준비 중', ready: false, c1: '#e11d48', c2: '#fb7185' },   // 영상이 생기면 ready: true, url: '유튜브 주소' 를 넣으면 됩니다
+  { id: 'yt', ico: '▶', t: '홍보 유튜브', d: '학교 소개, 학과, 취업 이야기, 행사 영상을 분류해 모았어요.', tag: '영상 ' + ytCount() + '개', ready: true, c1: '#e11d48', c2: '#fb7185' },
   { id: 'wip', ico: '🚧', t: '공사 중', d: '새로운 홍보 콘텐츠가 이곳에 들어올 예정입니다.', tag: '공사 중', ready: false, hazard: true, c1: '#f59e0b', c2: '#fcd34d' }
 ];
 function bookIcon() {   // 책장이 계속 넘어가는 책 아이콘
@@ -815,6 +854,7 @@ function hubGo(i, el) {
   if (x.url) { window.open(x.url, '_blank', 'noopener'); return; }
   if (x.id === 'book') { PMODE = 'book'; render(); window.scrollTo(0, 0); }
   if (x.id === 'poster') { PMODE = 'poster'; render(); window.scrollTo(0, 0); }
+  if (x.id === 'yt') { PMODE = 'yt'; render(); window.scrollTo(0, 0); }
 }
 function bindHub() {   // 마우스를 올리면 카드가 살짝 기울고 빛이 따라온다
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -833,6 +873,57 @@ function bindHub() {   // 마우스를 올리면 카드가 살짝 기울고 빛�
 var POSTERS = [
   { t: '3차 입학설명회 안내 포스터', sub: '11월 14일(토) 오전 10:00 · 학교 내 강당(우봉관)', img: 'poster/info-session-3rd.jpg', thumb: 'poster/info-session-3rd-t.jpg', pdf: 'poster/info-session-3rd.pdf' }
 ];
+
+/* ---- 홍보 유튜브: 학교 채널 영상을 분류별로 정리 (목록은 promo/videos.js) ---- */
+var YT_CAT = 'all', YT_Q = '', YT_MORE = {}, YT_SHOW = 6;
+function ytData() { return (window.PROMO_VIDEOS && PROMO_VIDEOS.cats) || []; }
+function ytCount() { return ytData().reduce(function (a, c) { return a + c.items.length; }, 0); }
+function ytCard(v) {
+  return '<button type="button" class="ytc" onclick="ytPlay(\'' + v.id + '\')" aria-label="' + esc(v.t) + ' 재생"><span class="yth"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/' + v.id + '/mqdefault.jpg"><i class="ytpl">▶</i></span><span class="ytt">' + esc(v.t) + '</span></button>';
+}
+function ytBodyHtml() {
+  var cats = ytData(), q = YT_Q.trim().toLowerCase(), h = '', any = false;
+  cats.forEach(function (c) {
+    if (YT_CAT !== 'all' && YT_CAT !== c.id) return;
+    var list = q ? c.items.filter(function (v) { return v.t.toLowerCase().indexOf(q) >= 0; }) : c.items;
+    if (!list.length) return;
+    any = true;
+    var all = YT_CAT !== 'all' || q || YT_MORE[c.id], shown = all ? list : list.slice(0, YT_SHOW);
+    h += '<section class="ytsec"><div class="ytsh"><h3><span>' + c.ico + '</span> ' + esc(c.t) + ' <small>' + list.length + '</small></h3><p>' + esc(c.d) + '</p></div><div class="ytg">' + shown.map(ytCard).join('') + '</div>' +
+      (!all && list.length > YT_SHOW ? '<button type="button" class="ytmore" onclick="YT_MORE[\'' + c.id + '\']=true;ytDraw()">+ ' + (list.length - YT_SHOW) + '개 더 보기</button>' : '') + '</section>';
+  });
+  return any ? h : '<div class="card empty">찾는 영상이 없습니다. 다른 말로 검색해 보세요.</div>';
+}
+function ytChips() {
+  var cats = ytData();
+  return '<button type="button" class="' + (YT_CAT === 'all' ? 'on' : '') + '" onclick="ytCat(\'all\')">전체 <b>' + ytCount() + '</b></button>' +
+    cats.map(function (c) { return '<button type="button" class="' + (YT_CAT === c.id ? 'on' : '') + '" onclick="ytCat(\'' + c.id + '\')">' + c.ico + ' ' + esc(c.t) + ' <b>' + c.items.length + '</b></button>'; }).join('');
+}
+function ytDraw() { var b = $('ytbody'), c = $('ytchips'); if (b) b.innerHTML = ytBodyHtml(); if (c) c.innerHTML = ytChips(); }
+function ytCat(id) { YT_CAT = id; ytDraw(); var bar = $('ytbar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+function ytSearch(v) { YT_Q = v || ''; ytDraw(); }
+function viewYt() {
+  if (!ytData().length) return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button><div class="card">영상 목록을 불러오지 못했습니다.</div>';
+  return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button>' +
+    '<div class="ythead"><div class="yt-k">PROMOTION VIDEO</div><h2>홍보 유튜브</h2><p>학교 소개 · 학과 · 취업 이야기 · 행사까지, 분류해서 골라 보세요.</p>' +
+    '<a class="yt-ch" href="' + esc(PROMO_VIDEOS.channel) + '" target="_blank" rel="noopener">▶ 유튜브 채널에서 전체 보기</a></div>' +
+    '<div class="ytbar" id="ytbar"><input id="ytq" type="search" placeholder="영상 제목 검색 (예: 대구은행, 체육대회, 3D)" value="' + esc(YT_Q) + '" oninput="ytSearch(this.value)" autocomplete="off"><div class="ytchips" id="ytchips">' + ytChips() + '</div></div>' +
+    '<div id="ytbody">' + ytBodyHtml() + '</div>' +
+    '<p class="mut" style="color:var(--mu);font-size:12px;margin-top:14px">영상 목록은 ' + esc(PROMO_VIDEOS.asof || '') + ' 기준입니다. 영상은 학교 공식 유튜브 채널에서 재생됩니다.</p>';
+}
+function ytPlay(id) {
+  var cats = ytData(), it = null;
+  cats.forEach(function (c) { c.items.forEach(function (v) { if (v.id === id) it = v; }); });
+  if (!it) return;
+  closeStu();
+  var m = document.createElement('div'); m.id = 'smodal'; m.className = 'ytm';
+  m.innerHTML = '<div class="sbox ytbox" role="dialog" aria-modal="true" aria-label="' + esc(it.t) + '"><button type="button" class="sx" aria-label="닫기">✕</button>' +
+    '<div class="ytfr"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&playsinline=1" title="' + esc(it.t) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>' +
+    '<div class="yttt">' + esc(it.t) + '</div><div class="yta"><a class="btn s" href="https://www.youtube.com/watch?v=' + id + '" target="_blank" rel="noopener">유튜브에서 열기</a><button type="button" class="btn s g" id="ytclose">닫기</button></div>' +
+    '<div class="ytnote">재생이 되지 않으면 "유튜브에서 열기"를 눌러 주세요.</div></div>';
+  m.onclick = function (e) { if (e.target === m || e.target.classList.contains('sx') || e.target.id === 'ytclose') closeStu(); };
+  document.body.appendChild(m);
+}
 function viewPosters() {
   return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button>' +
     '<div class="card"><h3 style="margin:0 0 4px">입학설명회 포스터</h3><div class="mut" style="color:var(--mu);font-size:13px">중학교 게시판, 단체 메시지, 인쇄용으로 쓰세요. A4 세로 크기입니다.</div></div>' +
@@ -1719,7 +1810,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-15.8';
+var APP_VER = '2026-10-15.9';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
