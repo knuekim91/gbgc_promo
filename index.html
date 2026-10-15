@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-15.7) ===== */
+/* ===== 움직임 (2026-10-15.8) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -495,6 +495,18 @@ body.onhome #ddbar{display:none!important}
 .twk i:nth-child(3){left:10px;top:60px;font-size:13px;color:#9db8ff;animation-delay:1s}
 .twk i:nth-child(4){left:46%;top:10px;font-size:11px;animation-delay:1.4s}
 @media (prefers-reduced-motion:reduce){.live .ev.hot,.live .ev.hot::before,.live .ev.hot::after,.stbl tr.fresh td,.card.fresh:not(.dept),.nw::before,.nw::after,.twk i{animation:none}.twk{display:none}}
+
+.zgrp{display:inline-flex;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--bd);border-radius:99px;padding:3px}
+.zgrp button{border:0;background:transparent;color:var(--tx);font:inherit;font-weight:800;min-width:34px;height:32px;border-radius:99px;cursor:pointer;padding:0 8px}
+.zgrp button#pzl{min-width:58px;font-size:13px;color:var(--pr)}
+.zgrp button:hover:not(:disabled){background:var(--selbg,#eaf0ff)}
+.zgrp button:disabled{opacity:.35;cursor:default}
+.pzfs{display:none}
+.pv:fullscreen .pzfs{display:flex;position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:6;gap:6px;align-items:center;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:5px}
+.pv:fullscreen .pzfs button{border:0;background:transparent;color:#fff;font:inherit;font-weight:800;font-size:20px;min-width:46px;height:42px;border-radius:99px;cursor:pointer}
+.pv:fullscreen .pzfs button#fzl{font-size:14px;min-width:68px}
+.pv:fullscreen .pzfs button:active:not(:disabled){background:rgba(255,255,255,.25)}
+.pv:fullscreen .pzfs button:disabled{opacity:.35}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -845,10 +857,11 @@ function viewPromo() {
     '<div class="pv" id="pv"><button class="pnav prev" id="pprev" aria-label="이전 페이지" onclick="promoMove(-1)">‹</button>' +
     '<button class="pnav next" id="pnext" aria-label="다음 페이지" onclick="promoMove(1)">›</button>' +
     '<div class="pfsbar" id="pfsbar"><span id="pfscount"></span><button type="button" id="pfsx">닫기 ✕</button></div>' +
+    '<div class="pzfs" id="pzfs"><button type="button" id="fzout" aria-label="축소">−</button><button type="button" id="fzl" title="원래 크기로">100%</button><button type="button" id="fzin" aria-label="확대">+</button></div>' +
     '<div class="scroller" id="pscroll"><img id="pimg" src="promo/p' + pad2(pg) + '.jpg" alt="' + esc(info.t) + '" draggable="false"></div>' +
     '<div class="perr hide" id="perr">이미지를 불러오지 못했습니다. 인터넷 연결을 확인하고 다시 눌러 주세요.</div></div>' +
     '<div class="pbar"><div><div class="ttl" id="ptitle"></div><div class="sub" id="psub"></div></div>' +
-    '<span class="chips"><button id="pzoom" type="button">확대</button><button id="pfull" type="button">발표 모드</button></span></div></div>' +
+    '<span class="chips"><span class="zgrp"><button id="pzout" type="button" aria-label="축소">−</button><button id="pzl" type="button" title="원래 크기로">100%</button><button id="pzin" type="button" aria-label="확대">+</button></span><button id="pfull" type="button">발표 모드</button></span></div></div>' +
     '<div><div class="card ppts"><h3>이 페이지에서 전할 포인트</h3><ul id="ppts"></ul></div>' +
     '<div class="pthumbs" id="pthumbs"></div>' +
     '<p style="color:var(--mu);font-size:12px">이미지를 누르면 확대·축소되고, 확대한 뒤에는 끌어서 움직일 수 있습니다. 좌우로 밀거나 방향키(← →)로 넘깁니다.</p></div></div>';
@@ -858,7 +871,7 @@ function promoShow() {
   var ord = promoOrder(), pos = promoPos(), pv = $('pv');
   Array.prototype.forEach.call($('pchips').children, function (b, i) { b.classList.toggle('on', i === PSEC); });
   var im = $('pimg');
-  pv.classList.remove('zoom'); $('pzoom').textContent = '확대'; $('perr').classList.add('hide');
+  resetZoom(); $('perr').classList.add('hide');
   im.src = 'promo/p' + pad2(pg) + '.jpg'; im.alt = info.t;
   $('pscroll').scrollTop = 0; $('pscroll').scrollLeft = 0;
   $('ptitle').textContent = info.t;
@@ -873,14 +886,38 @@ function promoPreload() {
   var o = promoOrder(), p = promoPos();
   [p + 1, p + 2, p - 1].forEach(function (i) { if (o[i]) { var im = new Image(); im.src = 'promo/p' + pad2(o[i][2]) + '.jpg'; } });
 }
-function promoZoom(ev) {
-  var pv = $('pv'), sc = $('pscroll'), im = $('pimg');
-  var on = !pv.classList.contains('zoom'), fx = 0.5, fy = 0.5;
-  if (ev && on) { var r = im.getBoundingClientRect(); fx = (ev.clientX - r.left) / r.width; fy = (ev.clientY - r.top) / r.height; }
-  im.style.width = ''; pv.classList.toggle('zoom', on); $('pzoom').textContent = on ? '축소' : '확대';
-  sc.scrollTop = 0; sc.scrollLeft = 0;
-  if (on) { sc.scrollLeft = Math.max(0, fx * sc.scrollWidth - sc.clientWidth / 2); sc.scrollTop = Math.max(0, fy * sc.scrollHeight - sc.clientHeight / 2); }
+var ZL = 100, ZBASE = 0, ZSTEPS = [100, 125, 150, 200, 250, 300, 400, 500];   // 확대 단계(%): 100이 맞춤 크기
+function updZ() {
+  var t = ZL + '%';
+  ['pzl', 'fzl'].forEach(function (id) { var e = $(id); if (e) e.textContent = t; });
+  [['pzout', ZL <= 100], ['fzout', ZL <= 100], ['pzin', ZL >= 500], ['fzin', ZL >= 500]].forEach(function (x) { var e = $(x[0]); if (e) e.disabled = x[1]; });
 }
+function zoomTo(level, fx, fy, cx, cy) {   // level(%) 로 맞춘다. fx,fy = 사진 위 기준점(0~1), cx,cy = 화면 위 그 점의 위치
+  var pv = $('pv'), sc = $('pscroll'), im = $('pimg'); if (!pv || !sc || !im) return;
+  level = Math.max(100, Math.min(500, Math.round(level)));
+  var sr = sc.getBoundingClientRect();
+  if (fx == null) { fx = im.offsetWidth ? (sc.scrollLeft + sc.clientWidth / 2) / im.offsetWidth : .5; fy = im.offsetHeight ? (sc.scrollTop + sc.clientHeight / 2) / im.offsetHeight : .5; }
+  if (cx == null) { cx = sr.left + sc.clientWidth / 2; cy = sr.top + sc.clientHeight / 2; }
+  if (level <= 100) { im.style.width = ''; pv.classList.remove('zoom'); sc.scrollLeft = 0; sc.scrollTop = 0; ZL = 100; updZ(); return; }
+  if (!pv.classList.contains('zoom')) { ZBASE = im.getBoundingClientRect().width; pv.classList.add('zoom'); }
+  im.style.width = (ZBASE * level / 100) + 'px'; ZL = level;
+  sc.scrollLeft = fx * im.offsetWidth - (cx - sr.left); sc.scrollTop = fy * im.offsetHeight - (cy - sr.top);
+  updZ();
+}
+function zoomStep(dir) {   // + / − 버튼: 한 단계씩, 지금 보이는 가운데를 기준으로
+  var bi = 0; ZSTEPS.forEach(function (v, i) { if (Math.abs(v - ZL) < Math.abs(ZSTEPS[bi] - ZL)) bi = i; });
+  var ni = Math.max(0, Math.min(ZSTEPS.length - 1, bi + dir));
+  if (dir > 0 && ZSTEPS[bi] <= ZL && ni === bi) ni = Math.min(ZSTEPS.length - 1, bi + 1);
+  zoomTo(ZSTEPS[ni]);
+}
+function promoZoom(ev) {   // 사진을 한 번 누르면 맞춤 ⇄ 200% 로 빠르게 전환 (누른 곳이 가운데로)
+  var im = $('pimg'); if (!im) return;
+  if (ZL > 100) { zoomTo(100); return; }
+  var fx = .5, fy = .5, cx, cy;
+  if (ev && ev.clientX != null) { var r = im.getBoundingClientRect(); fx = (ev.clientX - r.left) / r.width; fy = (ev.clientY - r.top) / r.height; cx = ev.clientX; cy = ev.clientY; }
+  zoomTo(200, fx, fy, cx, cy);
+}
+function resetZoom() { var pv = $('pv'), im = $('pimg'); if (pv) pv.classList.remove('zoom'); if (im) im.style.width = ''; ZL = 100; updZ(); }
 function promoFullscreen() {
   var pv = $('pv');
   if (document.fullscreenElement) { document.exitFullscreen(); return; }
@@ -894,12 +931,15 @@ function promoFsChange() {
     if (on && navigator.wakeLock) navigator.wakeLock.request('screen').then(function (l) { PWAKE = l; }, function () {});
     else if (!on && PWAKE) { PWAKE.release(); PWAKE = null; }
   } catch (e) {}
-  if (TAB === 'promo' && $('pv')) { $('pv').classList.remove('zoom'); $('pzoom').textContent = '확대'; }
+  if (TAB === 'promo' && $('pv')) { resetZoom(); }
 }
 document.addEventListener('fullscreenchange', promoFsChange);
 function bindPromo() {
   var pv = $('pv'), sc = $('pscroll'), im = $('pimg'), x0 = null, y0 = 0, drag = null, moved = false;
-  $('pzoom').onclick = function () { promoZoom(null); };
+  $('pzout').onclick = $('fzout').onclick = function () { zoomStep(-1); };
+  $('pzin').onclick = $('fzin').onclick = function () { zoomStep(1); };
+  $('pzl').onclick = $('fzl').onclick = function () { zoomTo(100); };
+  updZ();
   $('pfull').onclick = promoFullscreen;
   $('pfsx').onclick = function () { if (document.fullscreenElement) document.exitFullscreen(); };
   im.onerror = function () { $('perr').classList.remove('hide'); };
@@ -921,26 +961,19 @@ function bindPromo() {
     if (e.touches.length === 2) {
       pinched = true; x0 = null;
       var r = im.getBoundingClientRect(), cx = (e.touches[0].clientX + e.touches[1].clientX) / 2, cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-      pinch = { d0: dist(e.touches), w0: r.width / Math.max(1, sc.clientWidth) * 100, fx: (cx - r.left) / Math.max(1, r.width), fy: (cy - r.top) / Math.max(1, r.height) };
+      pinch = { d0: dist(e.touches), l0: ZL, fx: (cx - r.left) / Math.max(1, r.width), fy: (cy - r.top) / Math.max(1, r.height) };
     } else if (e.touches.length === 1 && !pinched) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }
     else x0 = null;
   }, { passive: true });
   sc.addEventListener('touchmove', function (e) {
     if (!pinch || e.touches.length !== 2) return;
     e.preventDefault();
-    var w = Math.max(100, Math.min(450, pinch.w0 * dist(e.touches) / pinch.d0));
-    var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2, cy = (e.touches[0].clientY + e.touches[1].clientY) / 2, sr = sc.getBoundingClientRect();
-    pv.classList.add('zoom'); $('pzoom').textContent = '축소';
-    im.style.width = w + '%';
-    sc.scrollLeft = pinch.fx * im.offsetWidth - (cx - sr.left);
-    sc.scrollTop = pinch.fy * im.offsetHeight - (cy - sr.top);
+    var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2, cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    zoomTo(pinch.l0 * dist(e.touches) / pinch.d0, pinch.fx, pinch.fy, cx, cy);
   }, { passive: false });
   sc.addEventListener('touchend', function (e) {
     if (pinch) {
-      if (e.touches.length < 2) {
-        pinch = null;
-        if (im.getBoundingClientRect().width <= sc.clientWidth * 1.05) { im.style.width = ''; pv.classList.remove('zoom'); $('pzoom').textContent = '확대'; sc.scrollLeft = 0; sc.scrollTop = 0; }
-      }
+      if (e.touches.length < 2) { pinch = null; if (ZL <= 105) zoomTo(100); }
       if (e.touches.length === 0) pinched = false;
       x0 = null; return;
     }
@@ -969,6 +1002,9 @@ document.addEventListener('keydown', function (e) {
   else if (k === 'Home') { PSEC = 0; PIDX = 0; promoShow(); }
   else if (k === 'End') { var o = promoOrder(), l = o[o.length - 1]; PSEC = l[0]; PIDX = l[1]; promoShow(); }
   else if (k === 'f' || k === 'F') promoFullscreen();
+  else if (k === '+' || k === '=') zoomStep(1);
+  else if (k === '-' || k === '_') zoomStep(-1);
+  else if (k === '0') zoomTo(100);
 });
 
 /* ---- 입력 탭: 내가 입력한 학생 + 입력창 ---- */
@@ -1683,7 +1719,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-15.7';
+var APP_VER = '2026-10-15.8';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
