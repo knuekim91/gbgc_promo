@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-15.1) ===== */
+/* ===== 움직임 (2026-10-15.2) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -450,6 +450,27 @@ body.onhome #ddbar{display:none!important}
 .pc-s{color:var(--mu);font-size:13px;margin:2px 0 10px}
 .pc-a{display:flex;gap:6px;flex-wrap:wrap}
 .pc-a a.btn{text-decoration:none}
+
+#smodal.dn{z-index:40}
+#smodal .dn-box{max-width:380px;text-align:center;padding:26px 22px 20px;background:var(--card)}
+.dn-ic{width:84px;height:84px;display:block;margin:0 auto 8px}
+.dn-ic circle{fill:none;stroke-width:3;stroke-dasharray:151;stroke-dashoffset:151;animation:dnC .6s ease forwards}
+.dn-ic path{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:50;stroke-dashoffset:50;animation:dnP .4s .5s ease forwards}
+.dn-ic.ok circle,.dn-ic.ok path{stroke:#16a34a}
+.dn-ic.bad circle,.dn-ic.bad path{stroke:#dc2626}
+.dn-ic.ok{filter:drop-shadow(0 0 14px rgba(22,163,74,.35))}
+@keyframes dnC{to{stroke-dashoffset:0}}
+@keyframes dnP{to{stroke-dashoffset:0}}
+.dn-t{font-size:22px;font-weight:800;margin:2px 0 8px}
+.dn-sum{display:flex;flex-direction:column;gap:2px;background:var(--bg);border-radius:12px;padding:10px 12px;margin:0 0 10px}
+.dn-sum b{font-size:17px}
+.dn-sum span{color:var(--mu);font-size:14px}
+.dn-m{color:var(--mu);font-size:14px;line-height:1.5}
+.dn-b{margin-top:16px}
+.dn-bar{height:3px;border-radius:2px;background:var(--bd);margin-top:12px;overflow:hidden}
+.dn-bar i{display:block;height:100%;background:#16a34a;transform-origin:left;animation:dnB 6s linear forwards}
+@keyframes dnB{to{transform:scaleX(0)}}
+@media (prefers-reduced-motion:reduce){.dn-ic circle,.dn-ic path{animation:none;stroke-dashoffset:0}.dn-bar i{animation:none}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1264,6 +1285,27 @@ function readForm() {
     var el = $('f_' + k); if (el) FORM[k] = el.value;
   });
 }
+
+/* ---- 저장 결과 팝업: 저장 중에는 화면을 덮고, 끝나면 완료 / 실패를 크게 알려 준다 ---- */
+var DONE_TM = null;
+function showDone(ok, o, msg) {
+  closeStu(); if (DONE_TM) { clearTimeout(DONE_TM); DONE_TM = null; }
+  var edit = !!(o && o.ID), who = o && o.이름 ? o.이름 : '';
+  var m = document.createElement('div'); m.id = 'smodal'; m.className = 'dn';
+  var mark = ok
+    ? '<svg class="dn-ic ok" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M14 27l8 8 16-17"/></svg>'
+    : '<svg class="dn-ic bad" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M17 17l18 18M35 17L17 35"/></svg>';
+  var sum = ok && o ? '<div class="dn-sum"><b>' + esc(o.중학교 || '') + (who ? ' · ' + esc(who) : '') + '</b><span>' + esc((o['1지망'] || '') + ' · ' + (o.단계 === '고민' ? '고민 중' : o.단계 || '')) + '</span></div>' : '';
+  m.innerHTML = '<div class="sbox dn-box" role="alertdialog" aria-modal="true" aria-label="' + (ok ? '저장 완료' : '저장 실패') + '">' + mark +
+    '<div class="dn-t">' + (ok ? (edit ? '수정이 완료되었습니다' : '입력이 완료되었습니다') : '저장하지 못했습니다') + '</div>' + sum +
+    '<div class="dn-m">' + (ok ? (edit ? '바뀐 내용이 저장되었어요.' : '정상적으로 저장되었어요. 같은 학생을 다시 저장하지 않아도 됩니다.') : esc(msg || '잠시 뒤 다시 시도해 주세요.') + '<br>입력한 내용은 그대로 남아 있습니다.') + '</div>' +
+    '<button type="button" class="btn dn-b" id="dn_ok">' + (ok ? '확인' : '닫고 다시 시도') + '</button>' +
+    (ok ? '<div class="dn-bar"><i></i></div>' : '') + '</div>';
+  m.onclick = function (e) { if (e.target === m || e.target.id === 'dn_ok') closeStu(); };
+  document.body.appendChild(m);
+  var b = $('dn_ok'); if (b) b.focus();
+  if (ok) DONE_TM = setTimeout(function () { DONE_TM = null; var d = $('smodal'); if (d && d.className === 'dn') d.remove(); }, 6000);
+}
 var SAVING = false;
 function save(force) {
   if (SAVING) return;
@@ -1273,7 +1315,7 @@ function save(force) {
   ['학생연락처', '보호자연락처', '담임연락처'].forEach(function (k) { o[k] = fmtTel(o[k]); });
   if ((o.전형 || TRACKS[0]) === '취업희망자') o['2지망'] = '';
   SAVING = true; $('saveBtn').disabled = true; $('saveBtn').textContent = '저장 중…';
-  busy('저장 중입니다. 잠시만 기다려 주세요…');
+  busy('저장 중입니다. 버튼을 다시 누르지 말고 잠시만 기다려 주세요…');
   call('saveStudent', o, force).then(function (r) {
     SAVING = false; idle();
     if (r.duplicate) {
@@ -1281,14 +1323,14 @@ function save(force) {
       if (confirm('이미 입력된 학생입니다.\n담당교사: ' + r.담당교사 + ' / ' + r.전형 + ' / ' + r.단계 + ' (' + r.입력일시 + ')\n\n그래도 새로 저장할까요?')) save(true);
       return;
     }
-    toast('✓ 저장했습니다.');
+    showDone(true, o);
     var keep = { 전형: FORM.전형, 중학교: FORM.중학교, 담임성함: FORM.담임성함, 담임연락처: FORM.담임연락처, 단계: FORM.단계 };
     FORM = EDIT ? {} : keep;   // 새 입력이면 같은 중학교 연속 입력 편의를 위해 학교·담임은 유지
     EDIT = null; TAB = 'form'; render();   // 폼을 바로 비우고, 현황은 뒤에서 갱신
     load();
   }).catch(function (e) {
     SAVING = false; idle(); $('saveBtn').disabled = false; $('saveBtn').textContent = EDIT ? '수정 저장' : '저장';
-    toast(e.message || e);
+    showDone(false, o, e.message || String(e));
   });
 }
 
@@ -1584,7 +1626,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-15.1';
+var APP_VER = '2026-10-15.2';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
