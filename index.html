@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-15.2) ===== */
+/* ===== 움직임 (2026-10-15.3) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -1327,7 +1327,9 @@ function save(force) {
     var keep = { 전형: FORM.전형, 중학교: FORM.중학교, 담임성함: FORM.담임성함, 담임연락처: FORM.담임연락처, 단계: FORM.단계 };
     FORM = EDIT ? {} : keep;   // 새 입력이면 같은 중학교 연속 입력 편의를 위해 학교·담임은 유지
     EDIT = null; TAB = 'form'; render();   // 폼을 바로 비우고, 현황은 뒤에서 갱신
-    load();
+    var toTop = function () { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); } };   // 맨 위 '내가 입력한 학생' 표가 보이게
+    toTop();
+    load().then(function () { if (TAB === 'form') toTop(); });
   }).catch(function (e) {
     SAVING = false; idle(); $('saveBtn').disabled = false; $('saveBtn').textContent = EDIT ? '수정 저장' : '저장';
     showDone(false, o, e.message || String(e));
@@ -1626,7 +1628,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-15.2';
+var APP_VER = '2026-10-15.3';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
