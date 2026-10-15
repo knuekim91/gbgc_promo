@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-15.4) ===== */
+/* ===== 움직임 (2026-10-15.5) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -289,7 +289,7 @@ td.nt{min-width:110px}
 .seg button{position:relative}
 .fdot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--freshbd);margin-left:6px;vertical-align:1px;animation:dotPing 1.4s ease-out infinite}
 @keyframes dotPing{0%{box-shadow:0 0 0 0 var(--glow)}70%,100%{box-shadow:0 0 0 8px rgba(245,184,61,0)}}
-/* ★ 최근 1시간: 카드 테두리에 빛이 돌고, 처음 3초는 크게 깜빡인 뒤 은은하게 남음 */
+/* ★ 당일: 카드 테두리에 빛이 돌고, 처음 3초는 크게 깜빡인 뒤 은은하게 남음 */
 @property --fa{syntax:'<angle>';inherits:false;initial-value:0deg}
 .card.dept.fresh{border-color:transparent}
 .card.dept.fresh::before{content:'';position:absolute;inset:-2px;z-index:-1;border-radius:12px;padding:2px;pointer-events:none;
@@ -307,13 +307,13 @@ td.nt{min-width:110px}
 .burst{position:absolute;left:50%;top:40%;width:0;height:0;pointer-events:none;z-index:3}
 .burst span{position:absolute;width:7px;height:7px;border-radius:2px;background:var(--c);opacity:0;animation:spark .9s cubic-bezier(.1,.8,.3,1) both}
 @keyframes spark{0%{opacity:1;transform:rotate(var(--r)) translateX(0)}100%{opacity:0;transform:rotate(var(--r)) translateX(var(--d)) scale(.4)}}
-/* ★ 최근 1시간 학생 줄·카드: 금색으로 깜빡이고 남은 시간 막대가 줄어듦 */
+/* ★ 당일 학생 줄·카드: 금색으로 깜빡이고 남은 시간 막대가 줄어듦 */
 .stbl tr.fresh td{background:var(--fresh);animation:rowFlash .8s ease-in-out 4 var(--el,0s) both}
 .stbl tr.fresh td:first-child{box-shadow:inset 4px 0 0 var(--freshbd)}
 @keyframes rowFlash{50%{background:rgba(245,184,61,.55)}}
 .card.fresh:not(.dept){background:var(--fresh);box-shadow:0 0 0 2px var(--freshbd);animation:cardFlash .8s ease-in-out 4 var(--el,0s) both}
 @keyframes cardFlash{50%{box-shadow:0 0 0 2px var(--freshbd),0 0 18px 4px var(--glow)}}
-.fleft{display:block;height:3px;border-radius:2px;background:var(--freshbd);margin-top:3px;max-width:120px;transform-origin:left;animation:fShrink 3600s linear both var(--el,0s)}
+.fleft{display:block;height:3px;border-radius:2px;background:var(--freshbd);margin-top:3px;max-width:120px;transform-origin:left;animation:fShrink 86400s linear both var(--el,0s)}
 @keyframes fShrink{to{transform:scaleX(0)}}
 @media (prefers-reduced-motion:reduce){
   #ddbar .ddin,#ddbar .ddin::after,.card.dept.intro,.card.dept .bar i.f,.card.dept .tag.er,.cnum.bump,.card.dept .pick i,.live .dot,.live .ev.new,.fdot,.card.dept.fresh::before,.card.dept.fresh::after,.nw,.burst,.stbl tr.fresh td,.card.fresh:not(.dept){animation:none!important}
@@ -585,7 +585,7 @@ function render() {
   var tabs = [['home', '홈'], ['status', '현황']];
   if (r !== '열람') tabs.push(['form', '입력'], ['list', r === '관리자' ? '전체 관리' : '학생 목록']);
   tabs.push(['promo', '홍보자료'], ['qna', 'QnA' + qnaBadge()], ['stat', '통계'], ['stu', '중학생용']);
-  $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + (t[0] === 'status' && TAB !== 'status' && anyFresh() ? '<span class="fdot" title="최근 1시간 사이 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '<a class="mlink" href="manual/" target="_blank" rel="noopener">이용안내</a>';
+  $('nav').innerHTML = tabs.map(function (t) { return '<button class="' + (TAB === t[0] ? 'on' : '') + '" onclick="TAB=\'' + t[0] + '\';render()">' + t[1] + (t[0] === 'status' && TAB !== 'status' && anyFresh() ? '<span class="fdot" title="오늘 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '<a class="mlink" href="manual/" target="_blank" rel="noopener">이용안내</a>';
   if (TAB === 'promo' && LASTTAB !== 'promo') PMODE = 'hub';
   LASTTAB = TAB;
   if (TAB !== 'status') STAT_KEY = '';   // 현황에 다시 들어오면 카드 등장 효과를 한 번 더
@@ -605,7 +605,7 @@ function viewStatus() {
   var h = liveHtml();
   var key = 'status|' + TRK, intro = STAT_KEY !== key; STAT_KEY = key;
   h += '<div class="seg" style="margin-bottom:12px">' + TRACKS.map(function (t) {
-    return '<button class="' + (TRK === t ? 'on' : '') + '" onclick="TRK=\'' + t + '\';render()">' + t + (t !== TRK && anyFresh(t) ? '<span class="fdot" title="최근 1시간 사이 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '</div><div class="grid">';
+    return '<button class="' + (TRK === t ? 'on' : '') + '" onclick="TRK=\'' + t + '\';render()">' + t + (t !== TRK && anyFresh(t) ? '<span class="fdot" title="오늘 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '</div><div class="grid">';
   D.summary.filter(function (s) { return s.전형 === TRK; }).forEach(function (s, si) {
     var pct = s.정원 ? Math.min(100, Math.round(s.합계 / s.정원 * 100)) : 0, over = s.합계 > s.정원;
     var fz = deptFresh(s.전형, s.계열), ck = s.전형 + '|' + s.계열;
@@ -1443,8 +1443,10 @@ function applyAdj() {
   call('setAdjust', ids, $('adj').value, $('amemo').value).then(function (r) { SEL = {}; toast(r.count + '명 적용'); return load(); }).then(idle, function (e) { idle(); toast(e.message || e); });
 }
 
-/* ---- 실시간: 30초마다 자동으로 다시 불러오고, 직전 목록과 비교해 최근 1시간의 새 입력·확정·원서접수를 강조한다 ---- */
-var FRESH_MS = 3600000, AUTO_MS = 30000;
+/* ---- 실시간: 30초마다 자동으로 다시 불러오고, 직전 목록과 비교해 당일의 새 입력·확정·원서접수를 강조한다 ---- */
+var AUTO_MS = 30000;
+function dayStart() { var d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }   // 오늘 0시 (당일 입력 기준)
+function msToMidnight() { var d = new Date(); d.setHours(24, 0, 0, 0); return d.getTime() - Date.now(); }
 var FRESH = {}, EVENTS = [], PREVSNAP = null, STAT_KEY = '', CSHOWN = {}, BARW = {}, FRESH_TM = null;
 function diffRows(prev, next) {
   var old = {}, out = [];
@@ -1483,18 +1485,18 @@ function ingest(rows) {
     EVENTS.unshift({ id: e.id, type: e.type, t: now, who: e.r.담당교사, dept: e.r['1지망'], trk: e.r.전형, isNew: true });
   });
   mergeServerEvents(rows);
-  EVENTS.forEach(function (e) { if (e.id && now - e.t < FRESH_MS && !FRESH[e.id]) FRESH[e.id] = { type: e.type, t: e.t }; });   // 다른 기기에서 막 들어온 학생도 같이 강조
+  EVENTS.forEach(function (e) { if (e.id && e.t >= dayStart() && !FRESH[e.id]) FRESH[e.id] = { type: e.type, t: e.t }; });   // 다른 기기에서 막 들어온 학생도 같이 강조
   // 기기마다 다르지 않도록 시트에 기록된 시각으로 최근 소식을 채움
   EVENTS.sort(function (a, b) { return b.t - a.t; });
   EVENTS = EVENTS.slice(0, 8);
   PREVSNAP = rows.map(function (r) { return { ID: r.ID, 단계: r.단계, 원서접수: r.원서접수 }; });
   if (FRESH_TM) clearTimeout(FRESH_TM);
-  if (anyFresh()) FRESH_TM = setTimeout(function () { FRESH_TM = null; if (D) softApply(D); }, FRESH_MS + 100);   // 1시간 지나면 빛을 끈다
+  if (anyFresh()) FRESH_TM = setTimeout(function () { FRESH_TM = null; if (D) softApply(D); }, msToMidnight() + 100);   // 자정이 지나면 빛을 끈다
 }
 function freshOf(id) {
   var f = FRESH[id]; if (!f) return null;
   var el = Date.now() - f.t;
-  if (el > FRESH_MS) { delete FRESH[id]; return null; }
+  if (f.t < dayStart()) { delete FRESH[id]; return null; }   // 당일 입력만 강조
   return { type: f.type, el: el };
 }
 function anyFresh(trk) {
@@ -1528,7 +1530,7 @@ function liveHtml() {
   var h = '<div class="live" aria-live="polite"><span class="dot"></span><span class="lb">실시간</span><div class="feed"><div class="trk">';
   if (!EVENTS.length) h += '<span class="none">다른 선생님이 입력하거나 확정하면 여기에 바로 보여요. (30초마다 확인)</span>';
   EVENTS.forEach(function (e) {
-    var hot = Date.now() - e.t < FRESH_MS;
+    var hot = e.t >= dayStart();
     h += '<span class="ev' + (hot ? ' hot' : '') + (e.isNew ? ' new' : '') + '" role="button" tabindex="0" title="누르면 학생 정보" onclick="showStu(\'' + esc(e.id || '') + '\')" onkeydown="if(event.key===\'Enter\'){showStu(\'' + esc(e.id || '') + '\')}"><b>' + esc(e.who) + '</b> ' + (e.trk === '취업희망자' ? '' : '일반 · ') + esc(e.dept) + ' ' + EV_LBL[e.type] + ' <span class="ago" data-t="' + e.t + '">' + agoText(e.t) + '</span></span>';
     e.isNew = false;
   });
@@ -1616,7 +1618,7 @@ function softApply(d) {
 function navDot() {
   var b = Array.prototype.filter.call(document.querySelectorAll('#nav button'), function (x) { return x.textContent.indexOf('현황') === 0; })[0]; if (!b || TAB === 'status') return;
   var has = anyFresh(), dot = b.querySelector('.fdot');
-  if (has && !dot) b.insertAdjacentHTML('beforeend', '<span class="fdot" title="최근 1시간 사이 새 입력·확정"></span>');
+  if (has && !dot) b.insertAdjacentHTML('beforeend', '<span class="fdot" title="오늘 새 입력·확정"></span>');
   if (!has && dot) dot.remove();
 }
 setInterval(function () {
@@ -1628,7 +1630,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-15.4';
+var APP_VER = '2026-10-15.5';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
