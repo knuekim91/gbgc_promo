@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-15.5) ===== */
+/* ===== 움직임 (2026-10-15.6) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -471,6 +471,30 @@ body.onhome #ddbar{display:none!important}
 .dn-bar i{display:block;height:100%;background:#16a34a;transform-origin:left;animation:dnB 6s linear forwards}
 @keyframes dnB{to{transform:scaleX(0)}}
 @media (prefers-reduced-motion:reduce){.dn-ic circle,.dn-ic path{animation:none;stroke-dashoffset:0}.dn-bar i{animation:none}}
+
+/* ★ 당일 입력: 더 화려하게 반짝임 */
+.live .ev.hot{position:relative;overflow:hidden;background:linear-gradient(110deg,#fff5d6 0%,#ffe08a 38%,#ffd0e6 62%,#fff5d6 100%);background-size:260% 100%;animation:evGold 3s linear infinite;box-shadow:0 0 0 1.5px #f5b83d inset,0 0 16px rgba(245,184,61,.6);color:#3b2a00}
+.live .ev.hot b{color:#3b2a00}
+.live .ev.hot .ago{color:#6b4a00}
+.live .ev.hot::before{content:'\2726';color:#e8508a;font-size:14px;animation:twinkle 1.4s ease-in-out infinite}
+.live .ev.hot::after{content:'';position:absolute;top:0;bottom:0;width:38%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.9),transparent);transform:skewX(-20deg);animation:evSheen 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes evGold{to{background-position:-260% 0}}
+@keyframes evSheen{0%{left:-60%}55%,100%{left:130%}}
+@keyframes twinkle{0%,100%{transform:scale(.6) rotate(0);opacity:.45}50%{transform:scale(1.35) rotate(45deg);opacity:1}}
+.stbl tr.fresh td{background:linear-gradient(100deg,var(--fresh) 0%,rgba(245,184,61,.55) 42%,rgba(255,150,200,.35) 52%,var(--fresh) 64%,var(--fresh) 100%);background-size:320% 100%;animation:rowFlash .8s ease-in-out 4 var(--el,0s) both,rowShimmer 3.2s linear infinite}
+@keyframes rowShimmer{from{background-position:100% 0}to{background-position:-120% 0}}
+.card.fresh:not(.dept){animation:cardFlash .8s ease-in-out 4 var(--el,0s) both,cardGlow 2.2s ease-in-out infinite}
+@keyframes cardGlow{0%,100%{box-shadow:0 0 0 2px var(--freshbd),0 0 8px 1px var(--glow)}50%{box-shadow:0 0 0 2px var(--freshbd),0 0 20px 5px var(--glow2)}}
+.nw{position:relative;overflow:hidden;box-shadow:0 0 10px rgba(245,184,61,.7)}
+.nw::before{content:'\2726';margin-right:3px;animation:twinkle 1.3s ease-in-out infinite}
+.nw::after{content:'';position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-20deg);animation:evSheen 2.2s ease-in-out infinite}
+.twk{position:absolute;inset:0;pointer-events:none;z-index:3}
+.twk i{position:absolute;font-style:normal;color:#f5b83d;text-shadow:0 0 8px rgba(255,214,107,.9);animation:twinkle 1.8s ease-in-out infinite}
+.twk i:nth-child(1){right:14px;top:46px;font-size:16px}
+.twk i:nth-child(2){right:60px;bottom:16px;font-size:12px;color:#ff8fb8;animation-delay:.5s}
+.twk i:nth-child(3){left:10px;top:60px;font-size:13px;color:#9db8ff;animation-delay:1s}
+.twk i:nth-child(4){left:46%;top:10px;font-size:11px;animation-delay:1.4s}
+@media (prefers-reduced-motion:reduce){.live .ev.hot,.live .ev.hot::before,.live .ev.hot::after,.stbl tr.fresh td,.card.fresh:not(.dept),.nw::before,.nw::after,.twk i{animation:none}.twk{display:none}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -618,6 +642,7 @@ function viewStatus() {
       '<div class="bar"><i class="' + (over ? 'f' : '') + '" data-ck="' + ck + '" data-w="' + pct + '" style="width:' + w0 + '%"></i></div>' +
       '<div class="kv"><span>확정 <b>' + num('c', s.확정) + '</b></span><span>고민 <b>' + num('g', s.고민) + '</b></span>' + (s.타교지원 ? '<span>타교지원 <b>' + s.타교지원 + '</b></span>' : '') + (s.전형 === '취업희망자' ? '' : '<span>2지망 <b>' + s.이지망 + '</b></span>') + '</div>' +
       (SELDEPT === s.계열 ? '<div class="pick"><i>▼</i> 아래에 지원 학생 목록</div>' : '') +
+      (fz ? '<div class="twk" aria-hidden="true"><i>✦</i><i>✦</i><i>✦</i><i>✦</i></div>' : '') +
       (fz && fz.el < 1200 ? '<div class="burst">' + sparks() + '</div>' : '') + '</div>';
   });
   return h + '</div>' + statusTable() + '<p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원 제외 · 순위는 접수 완료/접수 전을 따로 내신(석차백분율)이 낮은 순으로 매김</p>';
@@ -1488,7 +1513,6 @@ function ingest(rows) {
   EVENTS.forEach(function (e) { if (e.id && e.t >= dayStart() && !FRESH[e.id]) FRESH[e.id] = { type: e.type, t: e.t }; });   // 다른 기기에서 막 들어온 학생도 같이 강조
   // 기기마다 다르지 않도록 시트에 기록된 시각으로 최근 소식을 채움
   EVENTS.sort(function (a, b) { return b.t - a.t; });
-  EVENTS = EVENTS.slice(0, 8);
   PREVSNAP = rows.map(function (r) { return { ID: r.ID, 단계: r.단계, 원서접수: r.원서접수 }; });
   if (FRESH_TM) clearTimeout(FRESH_TM);
   if (anyFresh()) FRESH_TM = setTimeout(function () { FRESH_TM = null; if (D) softApply(D); }, msToMidnight() + 100);   // 자정이 지나면 빛을 끈다
@@ -1542,7 +1566,8 @@ function liveRun() {   // 소식이 줄에 다 안 들어가면 오른쪽에서 
   var f = document.querySelector('.live .feed'), t = f && f.querySelector('.trk');
   if (!t || t.scrollWidth <= f.clientWidth + 2) return;
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { f.style.overflowX = 'auto'; return; }
-  var w = t.scrollWidth + 8, dur = Math.max(18, Math.round(w / 45));   // 초당 약 45px
+  var n = t.children.length, pps = n <= 6 ? 45 : Math.min(170, 45 + (n - 6) * 8);   // 소식이 많을수록 빨리 흐름
+  var w = t.scrollWidth + 8, dur = Math.max(18, Math.round(w / pps));
   t.insertAdjacentHTML('beforeend', t.innerHTML);
   t.style.setProperty('--mw', '-' + w + 'px');
   t.style.animation = 'liveRun ' + dur + 's linear infinite';
@@ -1630,7 +1655,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-15.5';
+var APP_VER = '2026-10-15.6';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
