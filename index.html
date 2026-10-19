@@ -1507,8 +1507,11 @@ function qPublic(id, flag) {
 }
 
 /* ---- 입력 ---- */
+/* 전형 기본값: 취업희망자 전형 원서접수 마감 시각 전에는 취업희망자, 마감 이후에는 일반(특별포함) */
+function defTrack() { var c = (typeof DL !== 'undefined' && DL[0] && DL[0].close) ? DL[0].close.getTime() : 0; return c && Date.now() >= c ? TRACKS[1] : TRACKS[0]; }
 function formCardHtml() {
   var f = FORM, e = EDIT, mine = D.mySchools || [];
+  if (!e && !f.전형) f.전형 = defTrack();   // 새로 입력할 때 전형 기본값
   var oneDept = (f.전형 || TRACKS[0]) === '취업희망자';   // 2지망은 일반전형에서만
   if (!e && !f.중학교 && mine.length === 1) f.중학교 = mine[0];   // 담당 학교가 하나면 미리 채움
   function v(k) { return esc(f[k] || ''); }
@@ -1585,7 +1588,7 @@ function save(force) {
   if (!FORM.단계) return toast('단계(고민 중 / 확정' + (EDIT ? ' / 타교지원' : '') + ')를 선택하세요.');
   var o = JSON.parse(JSON.stringify(FORM)); if (EDIT) o.ID = EDIT;
   ['학생연락처', '보호자연락처', '담임연락처'].forEach(function (k) { o[k] = fmtTel(o[k]); });
-  if ((o.전형 || TRACKS[0]) === '취업희망자') o['2지망'] = '';
+  if ((o.전형 || defTrack()) === '취업희망자') o['2지망'] = '';
   SAVING = true; $('saveBtn').disabled = true; $('saveBtn').textContent = '저장 중…';
   busy('저장 중입니다. 버튼을 다시 누르지 말고 잠시만 기다려 주세요…');
   call('saveStudent', o, force).then(function (r) {
@@ -1902,7 +1905,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-19.7';
+var APP_VER = '2026-10-19.8';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
