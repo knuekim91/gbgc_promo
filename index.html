@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script>
+/* 라이트/다크 전환: 선택은 이 브라우저에 기억(교사용 앱·중학생 페이지 공통). 선택 전에는 기기 설정을 따른다. */
+(function () {
+  var K = 'gb_theme', d = document.documentElement;
+  try { var t = localStorage.getItem(K); if (t === 'dark' || t === 'light') d.setAttribute('data-theme', t); } catch (e) {}
+  window.themeNow = function () { var a = d.getAttribute('data-theme'); return a || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); };
+  window.themePaint = function () { var b = document.getElementById('themeBtn'); if (!b) return; var dk = themeNow() === 'dark'; b.textContent = dk ? '☀️' : '🌙'; b.title = dk ? '밝은 화면으로' : '어두운 화면으로'; b.setAttribute('aria-label', b.title); var m = document.querySelector('meta[name="theme-color"]'); if (m && !window.__tc) window.__tc = m.getAttribute('content'); };
+  window.themeToggle = function () { var n = themeNow() === 'dark' ? 'light' : 'dark'; d.setAttribute('data-theme', n); try { localStorage.setItem(K, n); } catch (e) {} themePaint(); };
+  document.addEventListener('DOMContentLoaded', themePaint);
+})();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
@@ -9,7 +20,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--bg:#f4f6fb;--card:#fff;--tx:#1f2937;--mu:#6b7280;--pr:#2f5bd8;--ok:#16a34a;--wa:#d97706;--er:#dc2626;--bd:#e5e7eb}
-@media (prefers-color-scheme:dark){:root{--bg:#111827;--card:#1f2937;--tx:#f3f4f6;--mu:#9ca3af;--pr:#7b9cff;--bd:#374151}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111827;--card:#1f2937;--tx:#f3f4f6;--mu:#9ca3af;--pr:#7b9cff;--bd:#374151}}
+:root[data-theme="dark"]{--bg:#111827;--card:#1f2937;--tx:#f3f4f6;--mu:#9ca3af;--pr:#7b9cff;--bd:#374151}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,'Malgun Gothic',sans-serif}
 header{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
@@ -73,7 +85,8 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 .login input{padding:13px;font-size:16px}
 .login .hint{margin:4px 0 0;color:var(--mu);font-size:12px}
 .login .err{background:#fee2e2;color:#991b1b;border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:14px}
-@media (prefers-color-scheme:dark){.login .err{background:#3b1d1d;color:#fecaca}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .login .err{background:#3b1d1d;color:#fecaca}}
+:root[data-theme="dark"] .login .err{background:#3b1d1d;color:#fecaca}
 .login .foot{text-align:center;margin-top:16px;color:var(--mu);font-size:12px}
 #busy{position:fixed;inset:0;z-index:20;background:rgba(17,24,39,.45);display:flex;align-items:center;justify-content:center;padding:16px}
 #busy .bx{background:var(--card);color:var(--tx);border-radius:14px;padding:20px 26px;display:flex;align-items:center;gap:14px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25)}
@@ -87,7 +100,8 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 .card.dept.sel{border-color:var(--pr);background:linear-gradient(180deg,var(--selbg),var(--card) 70%);box-shadow:0 0 0 4px var(--selring),0 10px 26px var(--selsh)}
 .card.dept .pick{margin-top:8px;font-size:12px;font-weight:700;color:var(--pr)}
 :root{--selbg:#e7eeff;--selring:rgba(47,91,216,.18);--selsh:rgba(47,91,216,.18)}
-@media (prefers-color-scheme:dark){:root{--selbg:#25325c;--selring:rgba(123,156,255,.28);--selsh:rgba(123,156,255,.2)}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--selbg:#25325c;--selring:rgba(123,156,255,.28);--selsh:rgba(123,156,255,.2)}}
+:root[data-theme="dark"]{--selbg:#25325c;--selring:rgba(123,156,255,.28);--selsh:rgba(123,156,255,.2)}
 .stbl h3{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
 .stbl table{width:auto;min-width:0}   /* 열 너비는 글자 수에 맞게, 표를 억지로 늘리지 않는다 */
 .stbl th,.stbl td{padding:7px 12px 7px 8px}
@@ -138,7 +152,8 @@ th,td{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;vertical
 .card.dept .n1 span{font-size:13px;color:var(--mu);font-weight:400}
 .card.dept .rcv{font-size:13px;font-weight:700;color:var(--tx);white-space:nowrap}
 .card.dept .rcv b{font-size:30px;line-height:1;font-weight:800;color:var(--er);margin-left:2px}
-@media (prefers-color-scheme:dark){:root{--er:#f87171}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--er:#f87171}}
+:root[data-theme="dark"]{--er:#f87171}
 .bdg{display:inline-block;min-width:18px;padding:0 6px;border-radius:99px;background:var(--er);color:#fff;font-size:12px;line-height:18px;text-align:center;margin-left:4px;vertical-align:1px}
 nav button.on .bdg{background:#fff;color:var(--er)}
 .qtop{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
@@ -192,7 +207,8 @@ details.qa[open] summary{border-bottom:1px solid var(--bd)}
 .qempty{padding:20px;text-align:center;color:var(--mu)}
 /* 원서접수 묶음 제목: 크고 진하게, 접수 완료는 초록, 접수 전은 주황 */
 :root{--gokbg:#dcfce7;--gokfg:#166534;--gwtbg:#fef3c7;--gwtfg:#92400e}
-@media (prefers-color-scheme:dark){:root{--gokbg:#14532d;--gokfg:#bbf7d0;--gwtbg:#4a3513;--gwtfg:#fde68a}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--gokbg:#14532d;--gokfg:#bbf7d0;--gwtbg:#4a3513;--gwtfg:#fde68a}}
+:root[data-theme="dark"]{--gokbg:#14532d;--gokfg:#bbf7d0;--gwtbg:#4a3513;--gwtfg:#fde68a}
 .stbl tr.grp td{font-size:15px;font-weight:800;padding:9px 10px;border-bottom:0;letter-spacing:-.2px}
 .stbl tr.grp.ok td{background:var(--gokbg);color:var(--gokfg);border-left:5px solid var(--ok)}
 .stbl tr.grp.wait td{background:var(--gwtbg);color:var(--gwtfg);border-left:5px solid var(--wa)}
@@ -206,7 +222,8 @@ details.qa[open] summary{border-bottom:1px solid var(--bd)}
 #stg{gap:8px;flex-wrap:wrap}
 #stg button{flex:0 0 auto;min-width:92px;padding:10px 22px}
 :root{--ac:#e8508a}
-@media (prefers-color-scheme:dark){:root{--ac:#f472b6}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ac:#f472b6}}
+:root[data-theme="dark"]{--ac:#f472b6}
 .gut td,.gut th,.bandt td,.bandt th{text-align:right}
 .gut td:first-child,.gut th:first-child,.bandt td:first-child,.bandt th:first-child{text-align:left}
 .gut tr.grow{cursor:pointer}
@@ -250,7 +267,8 @@ td.nt{min-width:110px}
 
 /* ===== 움직임 (2026-10-19.3) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
-@media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
+:root[data-theme="dark"]{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
 #ddbar .ddin{position:relative;overflow:hidden;background:linear-gradient(120deg,#2f5bd8,#5a6ff0,#6d8cff,#4b63e6,#2f5bd8);background-size:300% 100%;animation:ddDrift 14s ease-in-out infinite}
 #ddbar .ddin::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%);transform:translateX(-120%);animation:ddSheen 7s ease-in-out 1.2s infinite}
@@ -570,6 +588,9 @@ body.onhome #ddbar{display:none!important}
 .we b{display:block;margin-bottom:4px;color:var(--pr)}
 .we p{margin:0;line-height:1.75;font-size:14.5px}
 .wwarn{margin:12px 2px 0;color:#e8508a;font-weight:700;font-size:13.5px}
+:root[data-theme="dark"]{color-scheme:dark}:root[data-theme="light"]{color-scheme:light}
+.thm{border:1px solid rgba(127,127,127,.35);background:rgba(127,127,127,.12);color:inherit;border-radius:99px;width:36px;height:36px;font-size:18px;line-height:1;cursor:pointer;flex:none;padding:0}
+.thm:hover{background:rgba(127,127,127,.25)}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -578,7 +599,7 @@ body.onhome #ddbar{display:none!important}
 <script src="school-gu.js"></script>
 </head>
 <body>
-<header><b class="brand"><i class="gem">✦</i><span class="bt">경북여상 원서접수현황</span><i class="gem g2">✦</i></b><span id="who"></span></header>
+<header><b class="brand"><i class="gem">✦</i><span class="bt">경북여상 원서접수현황</span><i class="gem g2">✦</i></b><span id="who"></span><button type="button" id="themeBtn" class="thm" onclick="themeToggle()" style="margin-left:8px"></button></header>
 <nav id="nav"></nav>
 <div id="ddbar" class="hide"></div>
 <main id="main">불러오는 중…</main>
@@ -1881,7 +1902,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-19.6';
+var APP_VER = '2026-10-19.7';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
