@@ -557,10 +557,24 @@ body.onhome #ddbar{display:none!important}
 .gvi img{width:64px;height:auto;border-radius:8px;flex:none}
 .gvi b{display:block;font-size:15px}
 .gvi small{color:var(--mu);font-size:12.5px}
+
+.wnote{margin:6px 0 12px;padding-left:20px;line-height:1.7}
+.wtabs{display:flex;gap:8px;margin:2px 0 12px;flex-wrap:wrap}
+.wtabs button{flex:1 1 30%;min-width:110px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:10px 6px;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+.wtabs button.on{background:#0f9d8a;border-color:#0f9d8a;color:#fff}
+.wh4{margin:4px 0 8px;font-size:15px}
+.wtip{margin:0;padding-left:22px;line-height:1.7}
+.wtip li{margin-bottom:6px}
+.wex{display:grid;gap:10px}
+.we{background:rgba(47,91,216,.09);border-radius:12px;padding:12px 14px}
+.we b{display:block;margin-bottom:4px;color:var(--pr)}
+.we p{margin:0;line-height:1.75;font-size:14.5px}
+.wwarn{margin:12px 2px 0;color:#e8508a;font-weight:700;font-size:13.5px}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
 <script src="promo/videos.js"></script>
+<script src="promo/wish-data.js"></script>
 <script src="school-gu.js"></script>
 </head>
 <body>
@@ -680,7 +694,7 @@ function render() {
   if (TAB === 'home') { $('main').innerHTML = viewHome(); bindHome(); }
   else if (TAB === 'status') { $('main').innerHTML = viewStatus(); animStatus(); }
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
-  else if (TAB === 'promo') { if (PMODE === 'hub') { $('main').innerHTML = viewHub(); bindHub(); } else if (PMODE === 'poster') { $('main').innerHTML = viewPosters(); } else if (PMODE === 'yt') { $('main').innerHTML = viewYt(); } else { $('main').innerHTML = viewPromo(); bindPromo(); } }
+  else if (TAB === 'promo') { if (PMODE === 'hub') { $('main').innerHTML = viewHub(); bindHub(); } else if (PMODE === 'poster') { $('main').innerHTML = viewPosters(); } else if (PMODE === 'yt') { $('main').innerHTML = viewYt(); } else if (PMODE === 'wish') { $('main').innerHTML = viewWish(); } else { $('main').innerHTML = viewPromo(); bindPromo(); } }
   else if (TAB === 'stat') { $('main').innerHTML = viewStat(); }
   else if (TAB === 'stu') { $('main').innerHTML = viewStu(); bindStu(); }
   else if (TAB === 'qna') { $('main').innerHTML = viewQna(); bindQna(); if (!QNA) loadQna(); }
@@ -873,7 +887,7 @@ var PHUB = [
   { id: 'poster', ico: '🖼️', t: '설명회 포스터', d: '3차 입학설명회(11월 14일) 안내 포스터. 보기, PDF 내려받기, 인쇄.', tag: 'PDF', ready: true, c1: '#e8337f', c2: '#ff9ac1' },
   { id: 'yt', ico: '▶', t: '홍보 유튜브', d: '학교 소개, 학과, 취업 이야기, 행사 영상을 분류해 모았어요.', tag: '영상 ' + ytCount() + '개', ready: true, c1: '#e11d48', c2: '#fb7185' },
   { id: 'ig', ico: '📷', t: '인스타그램', d: '학교 공식 인스타그램의 새로운 소식과 사진을 만나 보세요. 학교 WIFI에서는 열리지 않으니 참고하세요.', tag: IG_URL ? '바로가기' : '링크 준비 중', ready: !!IG_URL, url: IG_URL, c1: '#8a3ab9', c2: '#f77737' },
-  { id: 'wish', ico: '📝', t: '취업희망서', d: '3개 학과별 작성요령과 예시, 양식 내려받기. 중학생에게 안내할 때 쓰세요.', tag: '3개 학과', ready: true, url: 'student/#wish', c1: '#0f9d8a', c2: '#4fd1b0' }
+  { id: 'wish', ico: '📝', t: '취업희망서', d: '3개 학과별 작성요령과 예시, 양식 내려받기. 중학생에게 안내할 때 쓰세요.', tag: '3개 학과', ready: true, c1: '#0f9d8a', c2: '#4fd1b0' }
 ];
 function bookIcon() {   // 책장이 계속 넘어가는 책 아이콘
   return '<span class="bk" aria-hidden="true"><i class="bk-l"></i><i class="bk-r"></i><i class="bk-p"></i><i class="bk-p" style="animation-delay:.45s"></i><i class="bk-p" style="animation-delay:.9s"></i></span>';
@@ -895,6 +909,7 @@ function hubGo(i, el) {
   if (x.id === 'book') { PMODE = 'book'; render(); window.scrollTo(0, 0); }
   if (x.id === 'poster') { PMODE = 'poster'; render(); window.scrollTo(0, 0); }
   if (x.id === 'yt') { PMODE = 'yt'; render(); window.scrollTo(0, 0); }
+  if (x.id === 'wish') { PMODE = 'wish'; render(); window.scrollTo(0, 0); }
 }
 function bindHub() {   // 마우스를 올리면 카드가 살짝 기울고 빛이 따라온다
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -942,6 +957,22 @@ function ytChips() {
 function ytDraw() { var b = $('ytbody'), c = $('ytchips'); if (b) b.innerHTML = ytBodyHtml(); if (c) c.innerHTML = ytChips(); }
 function ytCat(id) { YT_CAT = id; ytDraw(); var bar = $('ytbar'); if (bar && bar.scrollIntoView) bar.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
 function ytSearch(v) { YT_Q = v || ''; ytDraw(); }
+
+/* ---- 취업희망서: 학과별 작성요령 · 예시 · 양식 내려받기 (내용은 promo/wish-data.js, 중학생 페이지와 같음) ---- */
+var WDEPT = 'sang';
+function viewWish() {
+  var L = window.WISH_DATA || [], w = L.filter(function (x) { return x.id === WDEPT; })[0] || L[0];
+  if (!w) return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button><div class="card">자료를 불러오지 못했습니다.</div>';
+  return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button>' +
+    '<div class="card"><h3 style="margin:0 0 4px">📝 취업희망서 쓰기</h3><p class="lead" style="margin:0 0 10px">취업희망자 전형에 내는 서류입니다. 중학생·학부모 상담 때 학과를 골라 보여 주세요.</p>' +
+    '<ul class="wnote"><li>손으로 직접 써서 냅니다. (흑색 볼펜)</li><li>보호자의 동의와 서명이 필요합니다.</li><li>내지 않으면 탈락입니다.</li></ul>' +
+    '<a class="btn s" href="forms/career-wish-form.hwp" download>📥 취업희망서 양식 내려받기 (한글 파일)</a></div>' +
+    '<div class="wtabs" role="tablist">' + L.map(function (x) { return '<button type="button" role="tab" aria-selected="' + (x.id === WDEPT) + '" class="' + (x.id === WDEPT ? 'on' : '') + '" onclick="WDEPT=\'' + x.id + '\';render();window.scrollTo(0,0)">' + x.ico + ' ' + esc(x.t) + '</button>'; }).join('') + '</div>' +
+    '<div class="card"><h3 style="margin:0 0 2px">' + w.ico + ' ' + esc(w.t) + '</h3><p class="lead" style="margin:0 0 10px">' + esc(w.d) + '</p>' +
+    '<h4 class="wh4">✍️ 작성요령 3가지</h4><ol class="wtip">' + w.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol></div>' +
+    '<div class="card"><h4 class="wh4">📄 작성 예시 3개</h4><div class="wex">' + w.ex.map(function (e, i) { return '<div class="we"><b>' + (i + 1) + '. ' + esc(e.l) + '</b><p>' + esc(e.t) + '</p></div>'; }).join('') + '</div>' +
+    '<p class="wwarn">예시는 참고만 하도록 안내해 주세요. 학생 본인의 이야기와 다짐을 직접 써야 합니다.</p></div>';
+}
 function viewYt() {
   if (!ytData().length) return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button><div class="card">영상 목록을 불러오지 못했습니다.</div>';
   return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button>' +
@@ -1850,7 +1881,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-19.5';
+var APP_VER = '2026-10-19.6';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
