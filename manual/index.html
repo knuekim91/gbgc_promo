@@ -67,6 +67,9 @@ th{background:var(--soft)}
   figure.pair img{max-height:none;width:100%}
   figure.phone img{max-height:100mm}
 }
+figure.vid video{display:block;max-width:300px;width:100%;margin:0 auto;border-radius:10px;border:1px solid var(--bd);background:#000}
+.printonly{display:none}
+@media print{.noprint{display:none!important}.printonly{display:block!important;max-width:240px;margin:0 auto}}
 </style>
 </head>
 <body>
@@ -187,6 +190,7 @@ th{background:var(--soft)}
 <section id="s5">
   <h2><span class="n">5</span>학생 입력하기</h2>
   <p class="lead">중학교에서 상담한 학생이 있으면 <b>입력</b> 메뉴 아래쪽 <b>학생 입력</b> 칸에 적습니다.</p>
+  <figure class="phone vid"><video class="noprint" controls playsinline preload="metadata" poster="../guide-videos/01-student-input.jpg" src="../guide-videos/01-student-input.mp4"></video><img class="printonly" src="../guide-videos/01-student-input.jpg" alt="학생정보 입력하기 영상 대표 장면"><figcaption>▶ <b>학생정보 입력하기</b> 영상 (약 20초, 소리 있음). 앱의 <b>입력</b> 화면 <b>▶ 입력 방법 영상</b> 버튼과 홈의 <b>사용법 영상</b>에서도 볼 수 있습니다. (PDF에서는 대표 장면만 나옵니다.)</figcaption></figure>
   <h3>① 단계 고르기</h3>
   <figure><img src="img/s04_stage.jpg" alt="단계 선택"><figcaption>① <b>확정</b> 또는 <b>고민 중</b> ② 고민 중을 누르면 나타나는 <b>고민 내용</b> 칸</figcaption></figure>
   <ul class="st">

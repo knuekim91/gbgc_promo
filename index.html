@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-15.9) ===== */
+/* ===== 움직임 (2026-10-19.1) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -545,6 +545,18 @@ body.onhome #ddbar{display:none!important}
 .ytnote{color:var(--mu);font-size:12px;margin:8px 2px 0}
 @media (max-width:480px){.ytg{grid-template-columns:repeat(2,1fr);gap:9px}.ytt{font-size:12.5px;padding:7px 8px 9px}.ythead h2{font-size:26px}}
 @media (prefers-reduced-motion:reduce){.ytc,.yth img{transition:none}}
+
+.fh{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.gvb{border:1px solid #c2185b;background:#fff0f6;color:#c2185b;border-radius:99px;padding:5px 12px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.gvb:hover{background:#ffe0ec}
+#smodal.gv .sbox{max-width:400px}
+.gvv{width:100%;max-height:74vh;border-radius:12px;background:#000;display:block;margin:0 auto}
+.gvn{color:var(--mu);font-size:12.5px;margin:8px 2px 8px}
+.gvl{display:flex;flex-direction:column;gap:10px}
+.gvi{display:flex;gap:12px;align-items:center;text-align:left;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:8px;cursor:pointer;font:inherit}
+.gvi img{width:64px;height:auto;border-radius:8px;flex:none}
+.gvi b{display:block;font-size:15px}
+.gvi small{color:var(--mu);font-size:12.5px}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -761,6 +773,7 @@ function homeLinks() {
   var r = D.me.role, a = [['status', '📊', '현황', '지원 인원과 순위']];
   if (r !== '열람') a.push(['form', '✍️', '입력', '학생 등록·접수'], ['list', '🗂️', r === '관리자' ? '전체 관리' : '학생 목록', '검색·수정']);
   a.push(['promo', '🎬', '홍보자료', '책자·영상'], ['qna', '💬', 'QnA', '현장 질문과 답변']);
+  if (r !== '열람') a.push(['__guide', '🎥', '사용법 영상', '화면으로 배우기']);
   if (r !== '열람') a.push(['stat', '📈', '통계', '구별·성적대별']);
   a.push(['stu', '📱', '중학생용', 'QR 안내 페이지']);
   return a;
@@ -802,6 +815,31 @@ function noticeEdit() {
     }).catch(function (e) { b.disabled = false; b.textContent = '저장'; toast(e.message || e); });
   };
 }
+
+/* ---- 사용법 영상: 로그인한 교사 화면에서만 보인다. 새 영상은 GUIDES에 한 줄 추가 ---- */
+var GUIDES = [
+  { id: 'input', t: '학생정보 입력하기', d: '입력 메뉴에서 학생을 등록하고 저장하는 방법', len: '약 20초', src: 'guide-videos/01-student-input.mp4', poster: 'guide-videos/01-student-input.jpg' }
+];
+function guidePlay(id) {
+  var g = GUIDES.filter(function (x) { return x.id === id; })[0]; if (!g) return;
+  closeStu();
+  var m = document.createElement('div'); m.id = 'smodal'; m.className = 'gv';
+  m.innerHTML = '<div class="sbox" role="dialog" aria-modal="true" aria-label="' + esc(g.t) + '"><button type="button" class="sx" aria-label="닫기">✕</button><div class="sh">▶ ' + esc(g.t) + '</div>' +
+    '<video class="gvv" controls playsinline autoplay preload="metadata" poster="' + g.poster + '" src="' + g.src + '"></video>' +
+    '<div class="gvn">소리가 나오는 영상입니다. 소리를 켜고 보세요. 자막도 함께 나옵니다.</div>' +
+    (GUIDES.length > 1 ? '<button type="button" class="btn s g" onclick="guideList()">다른 영상 보기</button>' : '') + '</div>';
+  m.onclick = function (e) { if (e.target === m || e.target.classList.contains('sx')) closeStu(); };
+  document.body.appendChild(m);
+}
+function guideList() {
+  closeStu();
+  var m = document.createElement('div'); m.id = 'smodal'; m.className = 'gv';
+  m.innerHTML = '<div class="sbox" role="dialog" aria-modal="true" aria-label="사용법 영상"><button type="button" class="sx" aria-label="닫기">✕</button><div class="sh">▶ 사용법 영상</div>' +
+    '<div class="gvl">' + GUIDES.map(function (g) {
+      return '<button type="button" class="gvi" onclick="guidePlay(\'' + g.id + '\')"><img src="' + g.poster + '" alt="" loading="lazy"><span><b>' + esc(g.t) + '</b><small>' + esc(g.d) + ' · ' + esc(g.len) + '</small></span></button>'; }).join('') + '</div></div>';
+  m.onclick = function (e) { if (e.target === m || e.target.classList.contains('sx')) closeStu(); };
+  document.body.appendChild(m);
+}
 function viewHome() {
   var sp = '';
   for (var i = 0; i < 22; i++) sp += '<i style="left:' + Math.round(Math.random() * 100) + '%;top:' + Math.round(Math.random() * 100) + '%;animation-delay:' + (Math.random() * 5).toFixed(1) + 's;--sz:' + (3 + Math.round(Math.random() * 5)) + 'px"></i>';
@@ -814,7 +852,7 @@ function viewHome() {
     '<div class="hm-note" id="hmnote"><span class="hm-nk">📢 공지</span>' + (D.me.role === '관리자' ? '<button type="button" class="hm-ne" onclick="noticeEdit()">✏️ 공지 쓰기</button>' : '') + '<div class="hm-nv" id="hmnv">' + notes.map(function (n, i) { return '<div class="hm-ni' + (i === 0 ? ' on' : '') + '">' + esc(n) + '</div>'; }).join('') + '</div>' +
     (notes.length > 1 ? '<div class="hm-nd" id="hmnd">' + notes.map(function (n, i) { return '<button type="button" aria-label="공지 ' + (i + 1) + '" class="' + (i === 0 ? 'on' : '') + '" onclick="homeNote(' + i + ')"></button>'; }).join('') + '</div>' : '') + '</div>' +
     '<div class="hm-g">' + homeLinks().map(function (x, i) {
-      return '<button type="button" class="hm-c" style="--i:' + i + '" onclick="TAB=\'' + x[0] + '\';render()"><span class="hm-ci">' + x[1] + '</span><span class="hm-ct">' + esc(x[2]) + '</span><span class="hm-cd">' + esc(x[3]) + '</span></button>'; }).join('') + '</div></div>';
+      return '<button type="button" class="hm-c" style="--i:' + i + '" onclick="' + (x[0] === '__guide' ? 'guideList()' : 'TAB=\'' + x[0] + '\';render()') + '"><span class="hm-ci">' + x[1] + '</span><span class="hm-ct">' + esc(x[2]) + '</span><span class="hm-cd">' + esc(x[3]) + '</span></button>'; }).join('') + '</div></div>';
 }
 function homeNote(i) {
   var items = document.querySelectorAll('#hmnv .hm-ni'), dots = document.querySelectorAll('#hmnd button'); if (!items.length) return;
@@ -1421,7 +1459,7 @@ function formCardHtml() {
   if (!e && !f.중학교 && mine.length === 1) f.중학교 = mine[0];   // 담당 학교가 하나면 미리 채움
   function v(k) { return esc(f[k] || ''); }
   function opt(list, k, blank) { return (blank ? '<option value="">선택 안 함</option>' : '') + list.map(function (x) { return '<option' + (f[k] === x ? ' selected' : '') + '>' + x + '</option>'; }).join(''); }
-  return '<div class="card" id="fcard"><h3>' + (e ? '학생 정보 수정' : '학생 입력') + '</h3>' +
+  return '<div class="card" id="fcard"><h3 class="fh">' + (e ? '학생 정보 수정' : '학생 입력') + (e ? '' : ' <button type="button" class="gvb" onclick="guidePlay(\'input\')">▶ 입력 방법 영상</button>') + '</h3>' +
     '<label>단계</label><div class="seg" id="stg">' + (e ? ['확정', '고민', '타교지원'] : ['확정', '고민']).map(function (st) {
       return '<button type="button" data-v="' + st + '" class="' + (f.단계 === st ? 'on ' + (st === '확정' ? 'ok' : st === '타교지원' ? 'gone' : '') : '') + '">' + (st === '고민' ? '고민 중' : st) + '</button>'; }).join('') + '</div>' +
     (f.단계 === '고민' ? '<label>고민 내용 <span style="color:var(--mu);font-weight:400">· 어느 학교와 고민하는지 등</span></label><input id="f_고민내용" maxlength="60" placeholder="예: 제일여상과 고민중" value="' + v('고민내용') + '">' : '') +
@@ -1810,7 +1848,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-15.9';
+var APP_VER = '2026-10-19.1';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
