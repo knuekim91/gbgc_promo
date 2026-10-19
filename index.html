@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-19.1) ===== */
+/* ===== 움직임 (2026-10-19.2) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -867,11 +867,12 @@ function bindHome() {
 }
 /* ---- 홍보자료 센터(허브): 항목을 고르면 해당 자료로 들어간다. 새 자료는 PHUB에 한 줄만 추가하면 된다 ---- */
 var PMODE = 'hub', LASTTAB = '';
+var IG_URL = '';   // 학교 인스타그램 주소를 여기에 넣으면 카드가 열립니다. 예: 'https://www.instagram.com/계정이름/'
 var PHUB = [
   { id: 'book', ico: '📖', t: '홍보책자', d: '2027학년도 신입생 모집 홍보책자를 넘겨 보며 학교를 소개합니다.', tag: '24쪽', ready: true, c1: '#2f5bd8', c2: '#7b9cff' },
   { id: 'poster', ico: '🖼️', t: '설명회 포스터', d: '3차 입학설명회(11월 14일) 안내 포스터. 보기, PDF 내려받기, 인쇄.', tag: 'PDF', ready: true, c1: '#e8337f', c2: '#ff9ac1' },
   { id: 'yt', ico: '▶', t: '홍보 유튜브', d: '학교 소개, 학과, 취업 이야기, 행사 영상을 분류해 모았어요.', tag: '영상 ' + ytCount() + '개', ready: true, c1: '#e11d48', c2: '#fb7185' },
-  { id: 'wip', ico: '🚧', t: '공사 중', d: '새로운 홍보 콘텐츠가 이곳에 들어올 예정입니다.', tag: '공사 중', ready: false, hazard: true, c1: '#f59e0b', c2: '#fcd34d' }
+  { id: 'ig', ico: '📷', t: '인스타그램', d: '학교 공식 인스타그램의 새로운 소식과 사진을 만나 보세요.', tag: IG_URL ? '바로가기' : '링크 준비 중', ready: !!IG_URL, url: IG_URL, c1: '#8a3ab9', c2: '#f77737' }
 ];
 function bookIcon() {   // 책장이 계속 넘어가는 책 아이콘
   return '<span class="bk" aria-hidden="true"><i class="bk-l"></i><i class="bk-r"></i><i class="bk-p"></i><i class="bk-p" style="animation-delay:.45s"></i><i class="bk-p" style="animation-delay:.9s"></i></span>';
@@ -888,7 +889,7 @@ function viewHub() {
 }
 function hubGo(i, el) {
   var x = PHUB[i];
-  if (!x.ready) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); toast(x.id === 'yt' ? '홍보 유튜브는 곧 추가될 예정입니다.' : '아직 공사 중이에요. 곧 새 자료가 들어옵니다.'); return; }
+  if (!x.ready) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); toast(x.id === 'ig' ? '인스타그램 주소는 곧 연결됩니다.' : '곧 추가될 예정입니다.'); return; }
   if (x.url) { window.open(x.url, '_blank', 'noopener'); return; }
   if (x.id === 'book') { PMODE = 'book'; render(); window.scrollTo(0, 0); }
   if (x.id === 'poster') { PMODE = 'poster'; render(); window.scrollTo(0, 0); }
@@ -1848,7 +1849,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-19.1';
+var APP_VER = '2026-10-19.2';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
