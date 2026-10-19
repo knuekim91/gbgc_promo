@@ -591,6 +591,20 @@ body.onhome #ddbar{display:none!important}
 :root[data-theme="dark"]{color-scheme:dark}:root[data-theme="light"]{color-scheme:light}
 .thm{border:1px solid rgba(127,127,127,.35);background:rgba(127,127,127,.12);color:inherit;border-radius:99px;width:36px;height:36px;font-size:18px;line-height:1;cursor:pointer;flex:none;padding:0}
 .thm:hover{background:rgba(127,127,127,.25)}
+
+/* 현황: 전형 탭 + 그 안에 계열 카드·학생 목록을 한 블록으로 묶는다 */
+.seg.tseg{gap:6px;margin-bottom:0;align-items:flex-end}
+.seg.tseg button{border-radius:14px 14px 0 0;border:2px solid var(--bd);border-bottom:0;background:var(--bg);color:var(--mu);padding:12px 8px 10px;position:relative}
+.seg.tseg button.on{background:var(--pr);border-color:var(--pr)}
+.seg.tseg button:nth-child(2).on{background:#0f9d8a;border-color:#0f9d8a}
+.seg.tseg button.on{color:#fff;z-index:1}
+.tpanel{--trc:var(--pr);--trbg:rgba(47,91,216,.07);border:2px solid var(--trc);background:var(--trbg);border-radius:0 16px 16px 16px;padding:12px;margin-bottom:6px}
+.tpanel.p1{--trc:#0f9d8a;--trbg:rgba(15,157,138,.08);border-radius:16px 0 16px 16px}
+.tp-h{display:flex;flex-wrap:wrap;gap:2px 10px;align-items:baseline;margin:0 2px 10px}
+.tp-h b{font-size:15px;color:var(--trc)}
+.tp-h span{font-size:12.5px;color:var(--mu)}
+.tpanel .grid{margin-bottom:12px}
+.tpanel .card.stbl{margin-bottom:0}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -726,8 +740,8 @@ function render() {
 function viewStatus() {
   var h = liveHtml();
   var key = 'status|' + TRK, intro = STAT_KEY !== key; STAT_KEY = key;
-  h += '<div class="seg" style="margin-bottom:12px">' + TRACKS.map(function (t) {
-    return '<button class="' + (TRK === t ? 'on' : '') + '" onclick="TRK=\'' + t + '\';render()">' + t + (t !== TRK && anyFresh(t) ? '<span class="fdot" title="오늘 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '</div><div class="grid">';
+  h += '<div class="seg tseg">' + TRACKS.map(function (t) {
+    return '<button class="' + (TRK === t ? 'on' : '') + '" onclick="TRK=\'' + t + '\';render()">' + t + (t !== TRK && anyFresh(t) ? '<span class="fdot" title="오늘 새 입력·확정"></span>' : '') + '</button>'; }).join('') + '</div><div class="tpanel p' + TRACKS.indexOf(TRK) + '"><div class="tp-h"><b>' + TRK + ' 전형</b><span>계열을 누르면 아래에 지원 학생 목록이 나와요</span></div><div class="grid">';
   D.summary.filter(function (s) { return s.전형 === TRK; }).forEach(function (s, si) {
     var pct = s.정원 ? Math.min(100, Math.round(s.합계 / s.정원 * 100)) : 0, over = s.합계 > s.정원;
     var fz = deptFresh(s.전형, s.계열), ck = s.전형 + '|' + s.계열;
@@ -743,7 +757,7 @@ function viewStatus() {
       (fz ? '<div class="twk" aria-hidden="true"><i>✦</i><i>✦</i><i>✦</i><i>✦</i></div>' : '') +
       (fz && fz.el < 1200 ? '<div class="burst">' + sparks() + '</div>' : '') + '</div>';
   });
-  return h + '</div>' + statusTable() + '<p style="color:var(--mu);font-size:12px">1지망 기준 · 타교지원 제외 · 순위는 접수 완료/접수 전을 따로 내신(석차백분율)이 낮은 순으로 매김</p>';
+  return h + '</div>' + statusTable() + '</div><p style="color:var(--mu);font-size:12px;margin-top:10px">1지망 기준 · 타교지원 제외 · 순위는 접수 완료/접수 전을 따로 내신(석차백분율)이 낮은 순으로 매김</p>';
 }
 function pickDept(d) { SELDEPT = d; render(); }
 function statusTable() {
@@ -1905,7 +1919,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-19.8';
+var APP_VER = '2026-10-19.9';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
