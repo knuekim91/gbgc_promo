@@ -248,7 +248,7 @@ svg.chart .val{fill:var(--tx);font-size:12px;font-weight:700}
 td.nt{min-width:110px}
 #f_고민내용::placeholder{color:var(--mu);opacity:.45}
 
-/* ===== 움직임 (2026-10-19.2) ===== */
+/* ===== 움직임 (2026-10-19.3) ===== */
 :root{--fresh:#fff5d6;--freshbd:#f5b83d;--glow:rgba(245,184,61,.55);--glow2:rgba(232,80,138,.45)}
 @media (prefers-color-scheme:dark){:root{--fresh:#3d3216;--glow:rgba(245,184,61,.45);--glow2:rgba(244,114,182,.4)}}
 /* 디데이 배너: 색이 천천히 흐르고 빛이 가끔 스침 */
@@ -867,7 +867,7 @@ function bindHome() {
 }
 /* ---- 홍보자료 센터(허브): 항목을 고르면 해당 자료로 들어간다. 새 자료는 PHUB에 한 줄만 추가하면 된다 ---- */
 var PMODE = 'hub', LASTTAB = '';
-var IG_URL = '';   // 학교 인스타그램 주소를 여기에 넣으면 카드가 열립니다. 예: 'https://www.instagram.com/계정이름/'
+var IG_URL = 'https://www.instagram.com/gyeongbuk_gchs/';   // 학교 인스타그램 주소를 여기에 넣으면 카드가 열립니다. 예: 'https://www.instagram.com/계정이름/'
 var PHUB = [
   { id: 'book', ico: '📖', t: '홍보책자', d: '2027학년도 신입생 모집 홍보책자를 넘겨 보며 학교를 소개합니다.', tag: '24쪽', ready: true, c1: '#2f5bd8', c2: '#7b9cff' },
   { id: 'poster', ico: '🖼️', t: '설명회 포스터', d: '3차 입학설명회(11월 14일) 안내 포스터. 보기, PDF 내려받기, 인쇄.', tag: 'PDF', ready: true, c1: '#e8337f', c2: '#ff9ac1' },
@@ -1849,7 +1849,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-19.2';
+var APP_VER = '2026-10-19.3';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
