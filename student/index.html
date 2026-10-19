@@ -112,6 +112,7 @@ a{color:var(--pr)}
 .pc.c1{background:linear-gradient(135deg,#2f5bd8,#6d8cff)}
 .pc.c2{background:linear-gradient(135deg,#e8337f,#ff9ac1)}
 .pc.c3{background:linear-gradient(135deg,#c2185b,#ff6f91)}
+.pc.c4{background:linear-gradient(135deg,#8a3ab9,#e1306c 55%,#f77737);text-decoration:none}
 .pc .pi{width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.25);display:grid;place-items:center;font-size:28px}
 .pc b{font-size:21px;margin-top:4px}
 .pc small{font-size:13px;opacity:.95;line-height:1.4;flex:1}
@@ -249,6 +250,7 @@ function showTab(id) {
 
 /* ---- 홍보자료 센터: 홍보책자 · 설명회 포스터 · 홍보 유튜브 ---- */
 var PM = 'hub', YC = 'all', YQ = '', YMORE = {}, YSHOW = 6;
+var IG_URL = 'https://www.instagram.com/gyeongbuk_gchs/';
 var CH_URL = (window.PROMO_VIDEOS && PROMO_VIDEOS.channel) || 'https://www.youtube.com/';
 function ycats() { return (window.PROMO_VIDEOS && PROMO_VIDEOS.cats) || []; }
 function ycount() { return ycats().reduce(function (a, c) { return a + c.items.length; }, 0); }
@@ -260,7 +262,8 @@ function promoView() {
       '<div class="pg">' +
       '<button type="button" class="pc c1" onclick="showTab(\'s-book\')"><span class="pi">📖</span><b>홍보책자</b><small>학교·학과·취업 이야기를 책자로 넘겨 봐요</small><i>24쪽</i></button>' +
       '<button type="button" class="pc c2" onclick="pgo(\'poster\')"><span class="pi">🖼️</span><b>설명회 포스터</b><small>3차 입학설명회 11월 14일(토)</small><i>PDF</i></button>' +
-      '<button type="button" class="pc c3" onclick="pgo(\'yt\')"><span class="pi">▶</span><b>홍보 유튜브</b><small>학교 소개, 학과, 선배 이야기, 행사 영상</small><i>영상 ' + ycount() + '개</i></button></div>';
+      '<button type="button" class="pc c3" onclick="pgo(\'yt\')"><span class="pi">▶</span><b>홍보 유튜브</b><small>학교 소개, 학과, 선배 이야기, 행사 영상</small><i>영상 ' + ycount() + '개</i></button>' +
+      '<a class="pc c4" href="' + IG_URL + '" target="_blank" rel="noopener"><span class="pi">📷</span><b>인스타그램</b><small>학교 인스타그램의 새로운 소식과 사진</small><i>바로가기</i></a></div>';
   } else if (PM === 'poster') {
     h = '<button type="button" class="pbk" onclick="pgo(\'hub\')">← 홍보자료</button>' +
       '<div class="card posterc"><h3>3차 입학설명회 포스터</h3><p class="lead" style="margin-top:4px">11월 14일(토) 오전 10:00 · 학교 내 강당(우봉관)</p>' +
