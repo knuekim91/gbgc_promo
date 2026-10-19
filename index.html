@@ -872,7 +872,8 @@ var PHUB = [
   { id: 'book', ico: '📖', t: '홍보책자', d: '2027학년도 신입생 모집 홍보책자를 넘겨 보며 학교를 소개합니다.', tag: '24쪽', ready: true, c1: '#2f5bd8', c2: '#7b9cff' },
   { id: 'poster', ico: '🖼️', t: '설명회 포스터', d: '3차 입학설명회(11월 14일) 안내 포스터. 보기, PDF 내려받기, 인쇄.', tag: 'PDF', ready: true, c1: '#e8337f', c2: '#ff9ac1' },
   { id: 'yt', ico: '▶', t: '홍보 유튜브', d: '학교 소개, 학과, 취업 이야기, 행사 영상을 분류해 모았어요.', tag: '영상 ' + ytCount() + '개', ready: true, c1: '#e11d48', c2: '#fb7185' },
-  { id: 'ig', ico: '📷', t: '인스타그램', d: '학교 공식 인스타그램의 새로운 소식과 사진을 만나 보세요. 학교 WIFI에서는 열리지 않으니 참고하세요.', tag: IG_URL ? '바로가기' : '링크 준비 중', ready: !!IG_URL, url: IG_URL, c1: '#8a3ab9', c2: '#f77737' }
+  { id: 'ig', ico: '📷', t: '인스타그램', d: '학교 공식 인스타그램의 새로운 소식과 사진을 만나 보세요. 학교 WIFI에서는 열리지 않으니 참고하세요.', tag: IG_URL ? '바로가기' : '링크 준비 중', ready: !!IG_URL, url: IG_URL, c1: '#8a3ab9', c2: '#f77737' },
+  { id: 'wish', ico: '📝', t: '취업희망서', d: '3개 학과별 작성요령과 예시, 양식 내려받기. 중학생에게 안내할 때 쓰세요.', tag: '3개 학과', ready: true, url: 'student/#wish', c1: '#0f9d8a', c2: '#4fd1b0' }
 ];
 function bookIcon() {   // 책장이 계속 넘어가는 책 아이콘
   return '<span class="bk" aria-hidden="true"><i class="bk-l"></i><i class="bk-r"></i><i class="bk-p"></i><i class="bk-p" style="animation-delay:.45s"></i><i class="bk-p" style="animation-delay:.9s"></i></span>';
@@ -1849,7 +1850,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-19.4';
+var APP_VER = '2026-10-19.5';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {

@@ -147,6 +147,22 @@ a{color:var(--pr)}
 .ytit{font-weight:800;margin:10px 36px 8px 2px;line-height:1.35}
 .ya{display:flex;gap:8px;flex-wrap:wrap}
 .yx{position:absolute;right:8px;top:8px;z-index:2;width:30px;height:30px;border:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:14px;cursor:pointer}
+
+.pc.c5{background:linear-gradient(135deg,#0f9d8a,#4fd1b0)}
+.wnote ul{margin:6px 0 10px;padding-left:20px;line-height:1.7}
+.wnote .wdl{display:block;text-align:center;margin:4px 0 8px}
+.wnote small{color:var(--mu);font-size:12.5px;display:block}
+.wtabs{display:flex;gap:8px;margin:2px 0 12px;flex-wrap:wrap}
+.wtabs button{flex:1 1 30%;min-width:96px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:10px 6px;font:inherit;font-weight:800;font-size:15px;cursor:pointer}
+.wtabs button.on{background:#0f9d8a;border-color:#0f9d8a;color:#fff}
+.wh4{margin:4px 0 8px;font-size:15px}
+.wtip{margin:0;padding-left:22px;line-height:1.7}
+.wtip li{margin-bottom:6px}
+.wex{display:grid;gap:10px}
+.we{background:var(--prbg);border-radius:12px;padding:12px 14px}
+.we b{display:block;margin-bottom:4px;color:var(--pr)}
+.we p{margin:0;line-height:1.75;font-size:14.5px}
+.wwarn{margin:12px 2px 0;color:var(--ac);font-weight:700;font-size:13.5px}
 </style>
 <script src="../config.js"></script>
 <script src="../promo-data.js"></script>
@@ -263,7 +279,10 @@ function promoView() {
       '<button type="button" class="pc c1" onclick="showTab(\'s-book\')"><span class="pi">📖</span><b>홍보책자</b><small>학교·학과·취업 이야기를 책자로 넘겨 봐요</small><i>24쪽</i></button>' +
       '<button type="button" class="pc c2" onclick="pgo(\'poster\')"><span class="pi">🖼️</span><b>설명회 포스터</b><small>3차 입학설명회 11월 14일(토)</small><i>PDF</i></button>' +
       '<button type="button" class="pc c3" onclick="pgo(\'yt\')"><span class="pi">▶</span><b>홍보 유튜브</b><small>학교 소개, 학과, 선배 이야기, 행사 영상</small><i>영상 ' + ycount() + '개</i></button>' +
-      '<a class="pc c4" href="' + IG_URL + '" target="_blank" rel="noopener"><span class="pi">📷</span><b>인스타그램</b><small>학교 인스타그램의 새로운 소식과 사진을 만나 보세요. 학교 WIFI에서는 열리지 않으니 참고하세요.</small><i>바로가기</i></a></div>';
+      '<a class="pc c4" href="' + IG_URL + '" target="_blank" rel="noopener"><span class="pi">📷</span><b>인스타그램</b><small>학교 인스타그램의 새로운 소식과 사진을 만나 보세요. 학교 WIFI에서는 열리지 않으니 참고하세요.</small><i>바로가기</i></a>' +
+      '<button type="button" class="pc c5" onclick="pgo(\'wish\')"><span class="pi">📝</span><b>취업희망서</b><small>학과별 작성요령과 예시, 양식 내려받기</small><i>3개 학과</i></button></div>';
+  } else if (PM === 'wish') {
+    h = wishView();
   } else if (PM === 'poster') {
     h = '<button type="button" class="pbk" onclick="pgo(\'hub\')">← 홍보자료</button>' +
       '<div class="card posterc"><h3>3차 입학설명회 포스터</h3><p class="lead" style="margin-top:4px">11월 14일(토) 오전 10:00 · 학교 내 강당(우봉관)</p>' +
@@ -275,6 +294,23 @@ function promoView() {
       '<div class="ybar" id="ybar"><input id="yq" type="search" placeholder="영상 검색 (예: 3D, 은행, 체육대회)" value="' + esc(YQ) + '" oninput="ysearch(this.value)" autocomplete="off"><div class="ychips" id="ychips">' + ychips() + '</div></div><div id="ybody">' + ybody() + '</div>';
   }
   $('s-promo').innerHTML = h;
+}
+
+/* ---- 취업희망서: 학과별 작성요령 · 예시 · 양식 내려받기 ---- */
+var WISH = [{"id": "sang", "t": "상업정보", "ico": "💼", "d": "회계·금융·유통, 공무원·공기업·금융기관 취업이 목표라면", "tips": ["첫 문장에 경북여상 상업정보계열(또는 공무원반·금융반 등)에 지원한 이유를 써요.", "입학 후 계획은 구체적으로 써요. 자격증 이름, 전 교과 관리, 한국사능력검정시험 같은 하고 싶은 일을 적어요.", "졸업 후 목표(공무원, 공기업, 금융기관, 중견기업 등)와 학교생활 다짐으로 마무리해요."], "ex": [{"l": "상업계열 예시 1", "t": "상업계열에 입학하여 회계, 금융, 유통 등 상업 분야에서 필요한 전문지식과 실무 기술을 체계적으로 익히겠습니다. 자격증 취득과 현장 실습을 통해 실무 역량을 강화하며, 변화하는 경제 환경에 적응할 수 있는 준비된 인재로 성장하겠습니다."}, {"l": "상업계열 예시 2", "t": "상업계열에 입학하여 창의적 사고와 실무 역량을 겸비한 미래형 비즈니스 리더로 성장하고자 합니다. 회계, 마케팅, 창업 등 다양한 분야를 학습하며, 경영 마인드와 문제 해결 능력을 키우겠습니다. 학교생활에 성실히 임하며, 사회와 조직에 기여할 수 있는 상업 분야의 핵심 인재가 되기 위해 노력하겠습니다."}, {"l": "공무원이 목표인 경우", "t": "저는 고등학교 다니면서 국가직 공무원이 되는 것이 꿈이기 때문에 경북여상에 입학해서 공무원반에 선발되어 공부하는 것이 목표입니다. 입학하게 된다면 모든 교과를 A등급 받도록 수업 준비에 집중할 것이며 한국사능력검정시험 1급을 받기 위해서 계획을 세워서 꾸준하게 공부하겠습니다. 그리고 공무원 시험과목인 국어, 영어, 한국사 공부는 지도 선생님의 수업과 자율학습을 통해서 계획을 세워서 꾸준하게 노력할 계획입니다."}]}, {"id": "health", "t": "보건행정코디", "ico": "🩺", "d": "병원·보건 분야의 행정과 의료 서비스가 목표라면", "tips": ["첫 문장에 보건행정코디네이터과를 선택한 이유와 병원·의료 분야에 관심을 갖게 된 계기를 써요.", "전공 공부, 자격증, 실무 능력 중 무엇을 어떻게 준비할지 구체적으로 적어요.", "환자와 의료진에게 신뢰받는 직장인이 되겠다는 목표와 성실·책임 같은 다짐으로 마무리해요."], "ex": [{"l": "예시 1", "t": "보건행정코디네이터과에 입학하여 보건 행정과 의료 서비스 분야에서 필요한 전문지식과 실무능력을 갖추겠습니다. 꾸준한 학습과 자격증 취득을 통해 제 역량을 키우고, 환자와 의료진 모두에게 신뢰받는 보건 행정 전문가로 성장하고자 합니다. 성실과 책임감을 바탕으로 보건의료 현장에서 꼭 필요한 인재가 되기 위해 최선을 다하겠습니다."}, {"l": "예시 2", "t": "보건행정코디네이터과에 입학하여 체계적인 전공 지식을 익히고, 현장에서 요구되는 실무능력을 키우겠습니다. 적극적인 학습과 자격증 취득에 최선을 다하며, 보건 행정 분야에서 환자와 의료진을 효율적으로 연결하고 지원하는 전문 코디네이터로 성장하겠습니다. 도전과 성실함을 바탕으로 의료 현장에서 신뢰받는 인재가 되겠습니다."}, {"l": "예시 3", "t": "저는 병원행정 분야에 취업하여 제 능력을 발휘하고 싶어서 경북여상 보건행정코디네이터과에 지원하고자 합니다. 보건행정 업무를 잘하기 위해서 보건과 관련 전공과목에 집중하여 좋은 성적을 받을 것이며 행정을 잘하기 위해서 관련된 자격증을 취득하겠습니다. 그리고 실력있는 직장인이 되기 위해서는 학교생활에 모범적으로 행동하며 다양한 활동을 경험으로 해서 시험과 면접을 준비하겠습니다."}]}, {"id": "d3", "t": "3D융합콘텐츠", "ico": "🎬", "d": "디자인·영상·콘텐츠 제작이 목표라면", "tips": ["첫 문장에 3D융합콘텐츠과에 지원한 이유와 관심 분야(디자인, 영상, 스토리텔링 등)를 써요.", "공모전·대회 참가, 자격증, 편집·제작 기술처럼 입학 후 도전할 일을 구체적으로 적어요.", "콘텐츠 제작 회사 취업이나 관련 학과 진학 같은 앞으로의 목표로 마무리해요."], "ex": [{"l": "예시 1", "t": "3D융합콘텐츠학과에 입학하여 창의력과 실무 능력을 바탕으로 디지털 콘텐츠 제작 역량을 키우겠습니다. 영상 편집, 디자인, 스토리텔링 등 다양한 기술을 익히며, 시대의 흐름에 맞는 트렌디한 콘텐츠를 제작하는 전문가로 성장하겠습니다."}, {"l": "예시 2", "t": "3D융합콘텐츠학과에 입학하여 새로운 아이디어를 바탕으로 창의적인 콘텐츠를 제작하는 전문가로 성장하고자 합니다. 다양한 미디어 플랫폼과 기술을 배우고, 이를 통해 사람들에게 감동과 즐거움을 주는 작품을 만들겠습니다. 끊임없이 도전하고 학습하며, 변화하는 콘텐츠 산업을 선도하는 인재가 되기 위해 최선을 다하겠습니다."}, {"l": "예시 3", "t": "저는 디자인이나 영상을 제작하는 것에 관심이 많아서 경북여상 3D융합콘텐츠과에 지원하게 되었습니다. 입학하게 된다면 디자인이나 영상 분야 공모전이나 대회에 많이 참가하여 상도 받고 실력도 향상시키겠습니다. 그리고 취업에 필요한 자격증을 취득하고 전공 공부를 열심히 하여 디자인이나 영상을 제작하는 회사에 입사하여 경력을 쌓고 나중에 관련된 대학교 학과로 진학하여 전문가가 되겠습니다."}]}];
+var WD = 'sang';
+function wishView() {
+  var w = WISH.filter(function (x) { return x.id === WD; })[0] || WISH[0];
+  return '<button type="button" class="pbk" onclick="pgo(\'hub\')">← 홍보자료</button>' +
+    '<div class="ph wh"><div class="ph-k">CAREER WISH</div><h2>취업희망서 쓰기</h2><p>취업희망자 전형에 내는 서류예요. 학과를 골라 작성요령과 예시를 보세요.</p></div>' +
+    '<div class="card wnote"><b>꼭 알아 두세요</b><ul><li>손으로 직접 써서 내야 해요. (흑색 볼펜)</li><li>보호자의 동의와 서명이 필요해요.</li><li>내지 않으면 탈락이에요.</li></ul>' +
+    '<a class="pbtn wdl" href="../forms/career-wish-form.hwp" download>📥 취업희망서 양식 내려받기 (한글 파일)</a>' +
+    '<small>한글(HWP) 파일이에요. 컴퓨터의 한글 프로그램으로 열어 출력한 뒤, 손으로 써서 내요.</small></div>' +
+    '<div class="wtabs" role="tablist">' + WISH.map(function (x) { return '<button type="button" role="tab" aria-selected="' + (x.id === WD) + '" class="' + (x.id === WD ? 'on' : '') + '" onclick="WD=\'' + x.id + '\';promoView();window.scrollTo(0,0)">' + x.ico + ' ' + esc(x.t) + '</button>'; }).join('') + '</div>' +
+    '<div class="card"><h3>' + w.ico + ' ' + esc(w.t) + '</h3><p class="lead" style="margin:2px 0 10px">' + esc(w.d) + '</p>' +
+    '<h4 class="wh4">✍️ 작성요령 3가지</h4><ol class="wtip">' + w.tips.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol></div>' +
+    '<div class="card"><h4 class="wh4">📄 작성 예시 3개</h4><div class="wex">' + w.ex.map(function (e, i) { return '<div class="we"><b>' + (i + 1) + '. ' + esc(e.l) + '</b><p>' + esc(e.t) + '</p></div>'; }).join('') + '</div>' +
+    '<p class="wwarn">예시는 참고만 하세요. 내 이야기와 내 다짐을 내 말로 써야 해요.</p></div>';
 }
 function ychips() {
   return '<button type="button" class="' + (YC === 'all' ? 'on' : '') + '" onclick="ycat(\'all\')">전체 <b>' + ycount() + '</b></button>' +
@@ -454,6 +490,7 @@ function liveFaq() {   // 선생님용 QnA에서 공개한 질문이 있으면 �
 }
 
 showTab('s-book'); promoView(); bookShow(); dday(); orient(); quizInit(); faqInit(); liveFaq();
+if (location.hash === '#wish') { showTab('s-promo'); pgo('wish'); }
 </script>
 </body>
 </html>
