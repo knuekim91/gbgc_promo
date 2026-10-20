@@ -605,6 +605,14 @@ body.onhome #ddbar{display:none!important}
 .tp-h span{font-size:12.5px;color:var(--mu)}
 .tpanel .grid{margin-bottom:12px}
 .tpanel .card.stbl{margin-bottom:0}
+
+/* 입력 탭: 내가 입력한 학생(파랑) / 새 학생 입력(분홍) / 수정 중(주황)을 색과 머리띠로 구분 */
+.card.sec-mine{border:2px solid rgba(47,91,216,.45);padding-top:0;overflow:hidden}
+.card.sec-mine>h3{margin:0 -16px 12px;padding:12px 16px;background:rgba(47,91,216,.12);border-bottom:2px solid rgba(47,91,216,.35)}
+.card.sec-new{--nc:#e8508a;border:2px solid var(--nc);background:linear-gradient(180deg,rgba(232,80,138,.07),var(--card) 220px);padding-top:0;overflow:hidden;box-shadow:0 6px 18px rgba(232,80,138,.14);margin-top:18px}
+.card.sec-new.edit{--nc:#d97706;background:linear-gradient(180deg,rgba(217,119,6,.09),var(--card) 220px);box-shadow:0 6px 18px rgba(217,119,6,.18)}
+.card.sec-new>h3.fh{margin:0 -16px 12px;padding:13px 16px;background:var(--nc);color:#fff;font-size:17px}
+.card.sec-new .btn:not(.g){background:var(--nc)}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1209,7 +1217,7 @@ function viewForm() { return myListHtml() + formCardHtml(); }
 function myListHtml() {
   var me = D.me.name, rows = D.rows.filter(function (r) { return r.mine; }).reverse();   // 최근 입력이 위로
   var n = function (st) { return rows.filter(function (r) { return r.단계 === st; }).length; };
-  var h = '<div class="card stbl" id="mylist"><h3><span>내가 입력한 학생 <span class="mut" style="font-weight:400;color:var(--mu);font-size:13px">' + esc(me) + '</span> <span class="tag pr">' + rows.length + '명</span></span>' +
+  var h = '<div class="card stbl sec-mine" id="mylist"><h3><span>📋 내가 입력한 학생 <span class="mut" style="font-weight:400;color:var(--mu);font-size:13px">' + esc(me) + '</span> <span class="tag pr">' + rows.length + '명</span></span>' +
     '<span class="kv"><span>확정 <b>' + n('확정') + '</b></span><span>고민 <b>' + n('고민') + '</b></span>' + (n('타교지원') ? '<span>타교지원 <b>' + n('타교지원') + '</b></span>' : '') + '</span></h3>';
   if (!rows.length) return h + '<div class="empty">아직 입력한 학생이 없습니다. 아래에서 첫 학생을 입력해 주세요.</div></div>';
   h += '<div class="wrap" style="max-height:340px;overflow:auto"><table><thead><tr><th>중학교</th><th>이름</th><th>전형</th><th>1지망</th><th>내신</th><th>순위</th><th>단계</th><th>원서접수</th><th></th></tr></thead><tbody>';
@@ -1530,7 +1538,7 @@ function formCardHtml() {
   if (!e && !f.중학교 && mine.length === 1) f.중학교 = mine[0];   // 담당 학교가 하나면 미리 채움
   function v(k) { return esc(f[k] || ''); }
   function opt(list, k, blank) { return (blank ? '<option value="">선택 안 함</option>' : '') + list.map(function (x) { return '<option' + (f[k] === x ? ' selected' : '') + '>' + x + '</option>'; }).join(''); }
-  return '<div class="card" id="fcard"><h3 class="fh">' + (e ? '학생 정보 수정' : '학생 입력') + (e ? '' : ' <button type="button" class="gvb" onclick="guidePlay(\'input\')">▶ 입력 방법 영상</button>') + '</h3>' +
+  return '<div class="card sec-new' + (e ? ' edit' : '') + '" id="fcard"><h3 class="fh"><span>' + (e ? '✏️ 학생 정보 수정' : '✍️ 새 학생 입력') + '</span>' + (e ? '' : ' <button type="button" class="gvb" onclick="guidePlay(\'input\')">▶ 입력 방법 영상</button>') + '</h3>' +
     '<label>단계</label><div class="seg" id="stg">' + (e ? ['확정', '고민', '타교지원'] : ['확정', '고민']).map(function (st) {
       return '<button type="button" data-v="' + st + '" class="' + (f.단계 === st ? 'on ' + (st === '확정' ? 'ok' : st === '타교지원' ? 'gone' : '') : '') + '">' + (st === '고민' ? '고민 중' : st) + '</button>'; }).join('') + '</div>' +
     (f.단계 === '고민' ? '<label>고민 내용 <span style="color:var(--mu);font-weight:400">· 어느 학교와 고민하는지 등</span></label><input id="f_고민내용" maxlength="60" placeholder="예: 제일여상과 고민중" value="' + v('고민내용') + '">' : '') +
@@ -1925,7 +1933,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-20.1';
+var APP_VER = '2026-10-20.2';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
