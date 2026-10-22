@@ -1435,7 +1435,7 @@ function viewStat() {
   var h = '<div class="card"><div class="qtop"><div><h3 style="margin:0 0 4px">통계</h3><div class="mut" style="color:var(--mu);font-size:13px">지원자는 고민 중과 확정 학생이고, 총지원자는 지원자에 타교지원 학생을 더한 수입니다.</div></div></div>' +
     '<div class="chips" style="margin-top:10px"><button type="button" class="' + (STAT_VIEW === 'gu' ? 'on' : '') + '" onclick="STAT_VIEW=\'gu\';render()">중학교 소재 구별</button>' +
     '<button type="button" class="' + (STAT_VIEW === 'band' ? 'on' : '') + '" onclick="STAT_VIEW=\'band\';render()">내신 성적대별</button></div>' +
-    (STAT_VIEW === 'gu' ? '<div style="margin-top:10px"><button type="button" class="btn s" onclick="exportGu()">📥 구·군별 현황 내려받기 (전체·취업희망자·일반 3개 탭)</button><div class="mut" style="color:var(--mu);font-size:12px;margin-top:4px">엑셀 파일 1개에 탭 3개가 들어 있고, 구글 드라이브에 올리면 구글시트로 열립니다.</div></div>' : '') + '</div>';
+    (STAT_VIEW === 'gu' && D.me.role === '관리자' ? '<div style="margin-top:10px"><button type="button" class="btn s" onclick="exportGu()">📥 구·군별 현황 내려받기 (전체·취업희망자·일반 3개 탭)</button><div class="mut" style="color:var(--mu);font-size:12px;margin-top:4px">엑셀 파일 1개에 탭 3개가 들어 있고, 구글 드라이브에 올리면 구글시트로 열립니다.</div></div>' : '') + '</div>';
   return h + (STAT_VIEW === 'gu' ? statGu() : statBand());
 }
 
@@ -1522,6 +1522,7 @@ function buildGuBook() {
   return { wb: wb, name: '입학홍보_구군별현황_' + stamp.replace(' ', '_').replace(/[-:]/g, '') + '.xlsx' };
 }
 function exportGu() {
+  if (!D || !D.me || D.me.role !== '관리자') return toast('관리자만 내려받을 수 있습니다.');   // 관리자 전용
   xlsLoad(function () {
     try { var b = buildGuBook(); XLSX.writeFile(b.wb, b.name); toast('✓ 내려받았습니다: ' + b.name); }
     catch (e) { toast('내려받기에 실패했습니다: ' + (e.message || e)); }
@@ -2005,7 +2006,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-22.5';
+var APP_VER = '2026-10-23.1';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
