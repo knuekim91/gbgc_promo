@@ -613,6 +613,10 @@ body.onhome #ddbar{display:none!important}
 .card.sec-new.edit{--nc:#d97706;background:linear-gradient(180deg,rgba(217,119,6,.09),var(--card) 220px);box-shadow:0 6px 18px rgba(217,119,6,.18)}
 .card.sec-new>h3.fh{margin:0 -16px 12px;padding:13px 16px;background:var(--nc);color:#fff;font-size:17px}
 .card.sec-new .btn:not(.g){background:var(--nc)}
+.gut.three{font-size:13px}
+.gut.three th,.gut.three td{padding:7px 5px 7px 3px}
+.gut.three td:first-child,.gut.three th:first-child{padding-left:8px}
+.gut.three .caret{font-size:10px}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1427,36 +1431,36 @@ function viewStat() {
 function guAgg(trk) {
   var rows = statRows().filter(function (r) { return trk === '전체' || r.전형 === trk; });
   var by = {}, unk = {};
-  function slot(g) { return by[g] = by[g] || { schools: {}, n: 0, ok: 0, go: 0, acc: 0 }; }
+  function slot(g) { return by[g] = by[g] || { schools: {}, n: 0, tr: 0, ge: 0, ok: 0, go: 0, acc: 0 }; }
   rows.forEach(function (r) {
     var g = guOf(r.중학교), s = slot(g || '기타');
     if (!g) unk[r.중학교 || '(학교 미입력)'] = 1;
-    var sc = s.schools[r.중학교] = s.schools[r.중학교] || { n: 0, ok: 0, go: 0, acc: 0 };
-    [s, sc].forEach(function (t) { t.n++; if (r.단계 === '확정') t.ok++; else t.go++; if (r.원서접수 === '접수') t.acc++; });
+    var sc = s.schools[r.중학교] = s.schools[r.중학교] || { n: 0, tr: 0, ge: 0, ok: 0, go: 0, acc: 0 };
+    [s, sc].forEach(function (t) { t.n++; if (r.전형 === '취업희망자') t.tr++; else t.ge++; if (r.단계 === '확정') t.ok++; else t.go++; if (r.원서접수 === '접수') t.acc++; });
   });
   var order = GU_ORDER.concat(by['기타'] ? ['기타'] : []).filter(function (g) { return by[g]; });
-  var tot = { n: 0, ok: 0, go: 0, acc: 0, sch: 0 }, max = 0;
-  order.forEach(function (g) { var s = by[g]; tot.n += s.n; tot.ok += s.ok; tot.go += s.go; tot.acc += s.acc; tot.sch += Object.keys(s.schools).length; max = Math.max(max, s.n); });
+  var tot = { n: 0, tr: 0, ge: 0, ok: 0, go: 0, acc: 0, sch: 0 }, max = 0;
+  order.forEach(function (g) { var s = by[g]; tot.n += s.n; tot.tr += s.tr; tot.ge += s.ge; tot.ok += s.ok; tot.go += s.go; tot.acc += s.acc; tot.sch += Object.keys(s.schools).length; max = Math.max(max, s.n); });
   return { by: by, unk: unk, order: order, tot: tot, max: max };
 }
 function statGu() {
-  var A = guAgg(STAT_TRK), by = A.by, unk = A.unk, order = A.order, tot = A.tot, max = A.max;
+  var A = guAgg(STAT_TRK), by = A.by, unk = A.unk, order = A.order, tot = A.tot, max = A.max, all = STAT_TRK === '전체';   // 전체 탭은 취업희망자·일반 인원을 따로 보여준다
   var h = '<div class="card stbl"><h3><span>중학교 소재 구·군별 지원 현황</span><span class="chips">' + ['전체', '취업희망자', '일반(특별포함)'].map(function (t) {
     return '<button type="button" class="' + (STAT_TRK === t ? 'on' : '') + '" onclick="STAT_TRK=\'' + t + '\';render()">' + t.replace('(특별포함)', '') + '</button>'; }).join('') + '</span></h3>';
   if (!order.length) return h + '<div class="empty">아직 입력된 학생이 없습니다.</div></div>';
-  h += '<div class="wrap"><table class="gut"><thead><tr><th>구·군</th><th>학교 수</th><th>지원자</th><th>확정</th><th>고민 중</th><th>원서접수</th><th>접수율</th></tr></thead><tbody>';
+  h += '<div class="wrap"><table class="gut' + (all ? ' three' : '') + '"><thead><tr><th>구·군</th><th>학교 수</th><th>' + (all ? '전체' : '지원자') + '</th>' + (all ? '<th>취업</th><th>일반</th>' : '') + (all ? '<th>확정</th><th>고민</th><th>접수</th><th>접수율</th>' : '<th>확정</th><th>고민 중</th><th>원서접수</th><th>접수율</th>') + '</tr></thead><tbody>';
   order.forEach(function (g) {
     var s = by[g], open = STAT_OPEN === g;
     h += '<tr class="grow' + (open ? ' open' : '') + '" onclick="STAT_OPEN=STAT_OPEN===\'' + g + '\'?\'\':\'' + g + '\';render()"><td><b>' + g + '</b> <span class="caret">' + (open ? '▾' : '▸') + '</span></td><td>' + Object.keys(s.schools).length + '</td>' +
-      '<td class="nb"><span class="bar" style="width:' + Math.round(s.n / max * 100) + '%"></span><b>' + s.n + '</b></td><td>' + s.ok + '</td><td>' + s.go + '</td><td class="acc">' + s.acc + '</td><td>' + pct(s.acc, s.n) + '%</td></tr>';
+      '<td class="nb"><span class="bar" style="width:' + Math.round(s.n / max * 100) + '%"></span><b>' + s.n + '</b></td>' + (all ? '<td>' + s.tr + '</td><td>' + s.ge + '</td>' : '') + '<td>' + s.ok + '</td><td>' + s.go + '</td><td class="acc">' + s.acc + '</td><td>' + pct(s.acc, s.n) + '%</td></tr>';
     if (open) {
       Object.keys(s.schools).sort(function (a, b) { return s.schools[b].n - s.schools[a].n; }).forEach(function (n) {
         var t = s.schools[n];
-        h += '<tr class="sub"><td>· ' + esc(n) + '</td><td></td><td>' + t.n + '</td><td>' + t.ok + '</td><td>' + t.go + '</td><td class="acc">' + t.acc + '</td><td>' + pct(t.acc, t.n) + '%</td></tr>';
+        h += '<tr class="sub"><td>· ' + esc(n) + '</td><td></td><td>' + t.n + '</td>' + (all ? '<td>' + t.tr + '</td><td>' + t.ge + '</td>' : '') + '<td>' + t.ok + '</td><td>' + t.go + '</td><td class="acc">' + t.acc + '</td><td>' + pct(t.acc, t.n) + '%</td></tr>';
       });
     }
   });
-  h += '</tbody><tfoot><tr><td>합계</td><td>' + tot.sch + '</td><td>' + tot.n + '</td><td>' + tot.ok + '</td><td>' + tot.go + '</td><td class="acc">' + tot.acc + '</td><td>' + pct(tot.acc, tot.n) + '%</td></tr></tfoot></table></div>' +
+  h += '</tbody><tfoot><tr><td>합계</td><td>' + tot.sch + '</td><td>' + tot.n + '</td>' + (all ? '<td>' + tot.tr + '</td><td>' + tot.ge + '</td>' : '') + '<td>' + tot.ok + '</td><td>' + tot.go + '</td><td class="acc">' + tot.acc + '</td><td>' + pct(tot.acc, tot.n) + '%</td></tr></tfoot></table></div>' +
     '<p class="note" style="color:var(--mu);font-size:12px;margin:10px 2px 0">구·군 줄을 누르면 학교별 인원이 펼쳐집니다. 접수율 = 원서접수 ÷ 지원자. 구 구분은 위키백과 「대구광역시의 중학교 목록」 기준입니다.' +
     (unk && Object.keys(unk).length ? '<br><b>구를 확인하지 못한 학교(기타):</b> ' + Object.keys(unk).map(esc).join(', ') : '') + '</p></div>';
   return h;
@@ -1470,19 +1474,24 @@ function xlsLoad(cb) {
   document.head.appendChild(sc);
 }
 function guSheetRows(trk, label, stamp) {
-  var A = guAgg(trk), p = function (a, b) { return b ? Math.round(a / b * 1000) / 10 : 0; };
+  var A = guAgg(trk), all = trk === '전체', p = function (a, b) { return b ? Math.round(a / b * 1000) / 10 : 0; };
   var a = [['경북여상 2027 입학홍보 현황 · 중학교 소재 구·군별 지원 현황 (' + label + ')'],
-    ['기준 ' + stamp + ' · 지원자 = 고민 중 + 확정(타교지원 제외) · 접수율(%) = 원서접수 ÷ 지원자'], []];
+    ['기준 ' + stamp + ' · 지원자 = 고민 중 + 확정(타교지원 제외) · 접수율(%) = 원서접수 ÷ 지원자' + (all ? ' · 전체 = 취업희망자 + 일반' : '')], []];
   if (!A.order.length) { a.push(['아직 입력된 학생이 없습니다.']); return a; }
-  a.push(['■ 구·군별 요약'], ['구·군', '학교 수', '지원자', '확정', '고민 중', '원서접수', '접수율(%)']);
-  A.order.forEach(function (g) { var s = A.by[g]; a.push([g, Object.keys(s.schools).length, s.n, s.ok, s.go, s.acc, p(s.acc, s.n)]); });
-  a.push(['합계', A.tot.sch, A.tot.n, A.tot.ok, A.tot.go, A.tot.acc, p(A.tot.acc, A.tot.n)], [], ['■ 학교별 상세'], ['구·군', '중학교', '지원자', '확정', '고민 중', '원서접수', '접수율(%)']);
+  // 전체 탭: 구·군/중학교, 취업희망자, 일반, 전체(합계), 확정, 고민 중, 원서접수, 접수율
+  function line(first, second, t) { return all ? [first, second, t.tr, t.ge, t.n, t.ok, t.go, t.acc, p(t.acc, t.n)] : [first, second, t.n, t.ok, t.go, t.acc, p(t.acc, t.n)]; }
+  var headS = all ? ['구·군', '학교 수', '취업희망자', '일반', '전체', '확정', '고민 중', '원서접수', '접수율(%)'] : ['구·군', '학교 수', '지원자', '확정', '고민 중', '원서접수', '접수율(%)'];
+  var headD = all ? ['구·군', '중학교', '취업희망자', '일반', '전체', '확정', '고민 중', '원서접수', '접수율(%)'] : ['구·군', '중학교', '지원자', '확정', '고민 중', '원서접수', '접수율(%)'];
+  a.push(['■ 구·군별 요약'], headS);
+  A.order.forEach(function (g) { var s = A.by[g]; a.push(line(g, Object.keys(s.schools).length, s)); });
+  a.push(line('합계', A.tot.sch, A.tot), [], ['■ 학교별 상세'], headD);
   A.order.forEach(function (g) {
     var s = A.by[g];
     Object.keys(s.schools).sort(function (x, y) { return s.schools[y].n - s.schools[x].n || (x < y ? -1 : 1); }).forEach(function (n) {
-      var t = s.schools[n]; a.push([g, n, t.n, t.ok, t.go, t.acc, p(t.acc, t.n)]);
+      a.push(line(g, n, s.schools[n]));
     });
   });
+  a.push(line('합계', '', A.tot));
   return a;
 }
 function buildGuBook() {
@@ -1491,7 +1500,7 @@ function buildGuBook() {
   var wb = XLSX.utils.book_new();
   [['전체', '전체'], ['취업희망자', '취업희망자'], ['일반(특별포함)', '일반전형']].forEach(function (t) {
     var ws = XLSX.utils.aoa_to_sheet(guSheetRows(t[0], t[1], stamp));
-    ws['!cols'] = [{ wch: 12 }, { wch: 16 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 10 }, { wch: 11 }];
+    ws['!cols'] = [{ wch: 12 }, { wch: 16 }, { wch: 11 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 10 }, { wch: 11 }];
     XLSX.utils.book_append_sheet(wb, ws, t[1]);
   });
   return { wb: wb, name: '입학홍보_구군별현황_' + stamp.replace(' ', '_').replace(/[-:]/g, '') + '.xlsx' };
@@ -1980,7 +1989,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-22.1';
+var APP_VER = '2026-10-22.2';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
