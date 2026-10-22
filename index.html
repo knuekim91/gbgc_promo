@@ -617,6 +617,12 @@ body.onhome #ddbar{display:none!important}
 .gut.three th,.gut.three td{padding:7px 3px 7px 2px}
 .gut.three td:first-child,.gut.three th:first-child{padding-left:8px}
 .gut.three .caret{font-size:10px}
+.gut.three td.nb{min-width:40px}
+.gut.three{font-size:12px}
+.gut td.tt{font-weight:800}
+/* 맨 오른쪽 2열(총지원자·타교지원): 연한 음영과 얇은 구분선으로 살짝만 구분 */
+.gut th:nth-last-child(-n+2),.gut td:nth-last-child(-n+2){background-image:linear-gradient(rgba(127,127,127,.10),rgba(127,127,127,.10))}
+.gut th:nth-last-child(2),.gut td:nth-last-child(2){border-left:1px solid rgba(127,127,127,.28)}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1419,7 +1425,7 @@ function pct(a, b) { return b ? Math.round(a / b * 1000) / 10 : 0; }
 
 function viewStat() {
   if (D.me.role === '열람') return '<div class="card"><div class="qempty">열람 권한은 통계를 볼 수 없습니다.</div></div>';
-  var h = '<div class="card"><div class="qtop"><div><h3 style="margin:0 0 4px">통계</h3><div class="mut" style="color:var(--mu);font-size:13px">지원자는 고민 중과 확정 학생이며, 타교지원 학생은 지원자에 넣지 않고 따로 표시합니다.</div></div></div>' +
+  var h = '<div class="card"><div class="qtop"><div><h3 style="margin:0 0 4px">통계</h3><div class="mut" style="color:var(--mu);font-size:13px">지원자는 고민 중과 확정 학생이고, 총지원자는 지원자에 타교지원 학생을 더한 수입니다.</div></div></div>' +
     '<div class="chips" style="margin-top:10px"><button type="button" class="' + (STAT_VIEW === 'gu' ? 'on' : '') + '" onclick="STAT_VIEW=\'gu\';render()">중학교 소재 구별</button>' +
     '<button type="button" class="' + (STAT_VIEW === 'band' ? 'on' : '') + '" onclick="STAT_VIEW=\'band\';render()">내신 성적대별</button></div>' +
     (STAT_VIEW === 'gu' ? '<div style="margin-top:10px"><button type="button" class="btn s" onclick="exportGu()">📥 구·군별 현황 내려받기 (전체·취업희망자·일반 3개 탭)</button><div class="mut" style="color:var(--mu);font-size:12px;margin-top:4px">엑셀 파일 1개에 탭 3개가 들어 있고, 구글 드라이브에 올리면 구글시트로 열립니다.</div></div>' : '') + '</div>';
@@ -1451,20 +1457,20 @@ function statGu() {
   var h = '<div class="card stbl"><h3><span>중학교 소재 구·군별 지원 현황</span><span class="chips">' + ['전체', '취업희망자', '일반(특별포함)'].map(function (t) {
     return '<button type="button" class="' + (STAT_TRK === t ? 'on' : '') + '" onclick="STAT_TRK=\'' + t + '\';render()">' + t.replace('(특별포함)', '') + '</button>'; }).join('') + '</span></h3>';
   if (!order.length) return h + '<div class="empty">아직 입력된 학생이 없습니다.</div></div>';
-  h += '<div class="wrap"><table class="gut' + (all ? ' three' : '') + '"><thead><tr><th>구·군</th><th>학교 수</th><th>' + (all ? '전체' : '지원자') + '</th>' + (all ? '<th>취업</th><th>일반</th>' : '') + (all ? '<th>확정</th><th>고민</th><th>타교</th><th>접수</th><th>접수율</th>' : '<th>확정</th><th>고민 중</th><th>타교지원</th><th>원서접수</th><th>접수율</th>') + '</tr></thead><tbody>';
+  h += '<div class="wrap"><table class="gut three"><thead><tr><th>구·군</th><th>학교 수</th><th>' + (all ? '전체' : '지원자') + '</th>' + (all ? '<th>취업</th><th>일반</th>' : '') + '<th>확정</th><th>고민</th><th>접수</th><th>접수율</th><th>총지원</th><th>타교</th>' + '</tr></thead><tbody>';
   order.forEach(function (g) {
     var s = by[g], open = STAT_OPEN === g;
     h += '<tr class="grow' + (open ? ' open' : '') + '" onclick="STAT_OPEN=STAT_OPEN===\'' + g + '\'?\'\':\'' + g + '\';render()"><td><b>' + g + '</b> <span class="caret">' + (open ? '▾' : '▸') + '</span></td><td>' + Object.keys(s.schools).length + '</td>' +
-      '<td class="nb"><span class="bar" style="width:' + Math.round(s.n / max * 100) + '%"></span><b>' + s.n + '</b></td>' + (all ? '<td>' + s.tr + '</td><td>' + s.ge + '</td>' : '') + '<td>' + s.ok + '</td><td>' + s.go + '</td><td>' + s.ex + '</td><td class="acc">' + s.acc + '</td><td>' + pct(s.acc, s.n) + '%</td></tr>';
+      '<td class="nb"><span class="bar" style="width:' + Math.round(s.n / max * 100) + '%"></span><b>' + s.n + '</b></td>' + (all ? '<td>' + s.tr + '</td><td>' + s.ge + '</td>' : '') + '<td>' + s.ok + '</td><td>' + s.go + '</td><td class="acc">' + s.acc + '</td><td>' + pct(s.acc, s.n) + '%</td><td class="tt">' + (s.n + s.ex) + '</td><td>' + s.ex + '</td></tr>';
     if (open) {
       Object.keys(s.schools).sort(function (a, b) { return s.schools[b].n - s.schools[a].n; }).forEach(function (n) {
         var t = s.schools[n];
-        h += '<tr class="sub"><td>· ' + esc(n) + '</td><td></td><td>' + t.n + '</td>' + (all ? '<td>' + t.tr + '</td><td>' + t.ge + '</td>' : '') + '<td>' + t.ok + '</td><td>' + t.go + '</td><td>' + t.ex + '</td><td class="acc">' + t.acc + '</td><td>' + pct(t.acc, t.n) + '%</td></tr>';
+        h += '<tr class="sub"><td>· ' + esc(n) + '</td><td></td><td>' + t.n + '</td>' + (all ? '<td>' + t.tr + '</td><td>' + t.ge + '</td>' : '') + '<td>' + t.ok + '</td><td>' + t.go + '</td><td class="acc">' + t.acc + '</td><td>' + pct(t.acc, t.n) + '%</td><td class="tt">' + (t.n + t.ex) + '</td><td>' + t.ex + '</td></tr>';
       });
     }
   });
-  h += '</tbody><tfoot><tr><td>합계</td><td>' + tot.sch + '</td><td>' + tot.n + '</td>' + (all ? '<td>' + tot.tr + '</td><td>' + tot.ge + '</td>' : '') + '<td>' + tot.ok + '</td><td>' + tot.go + '</td><td>' + tot.ex + '</td><td class="acc">' + tot.acc + '</td><td>' + pct(tot.acc, tot.n) + '%</td></tr></tfoot></table></div>' +
-    '<p class="note" style="color:var(--mu);font-size:12px;margin:10px 2px 0">구·군 줄을 누르면 학교별 인원이 펼쳐집니다. 접수율 = 원서접수 ÷ 지원자. 타교지원은 지원자에 넣지 않고 따로 표시합니다. 구 구분은 위키백과 「대구광역시의 중학교 목록」 기준입니다.' +
+  h += '</tbody><tfoot><tr><td>합계</td><td>' + tot.sch + '</td><td>' + tot.n + '</td>' + (all ? '<td>' + tot.tr + '</td><td>' + tot.ge + '</td>' : '') + '<td>' + tot.ok + '</td><td>' + tot.go + '</td><td class="acc">' + tot.acc + '</td><td>' + pct(tot.acc, tot.n) + '%</td><td class="tt">' + (tot.n + tot.ex) + '</td><td>' + tot.ex + '</td></tr></tfoot></table></div>' +
+    '<p class="note" style="color:var(--mu);font-size:12px;margin:10px 2px 0">구·군 줄을 누르면 학교별 인원이 펼쳐집니다. 접수율 = 원서접수 ÷ 지원자. 총지원자 = 지원자 + 타교지원(타교지원은 지원자에 넣지 않고 맨 오른쪽에 따로 표시). 구 구분은 위키백과 「대구광역시의 중학교 목록」 기준입니다.' +
     (unk && Object.keys(unk).length ? '<br><b>구를 확인하지 못한 학교(기타):</b> ' + Object.keys(unk).map(esc).join(', ') : '') + '</p></div>';
   return h;
 }
@@ -1479,12 +1485,12 @@ function xlsLoad(cb) {
 function guSheetRows(trk, label, stamp) {
   var A = guAgg(trk), all = trk === '전체', p = function (a, b) { return b ? Math.round(a / b * 1000) / 10 : 0; };
   var a = [['경북여상 2027 입학홍보 현황 · 중학교 소재 구·군별 지원 현황 (' + label + ')'],
-    ['기준 ' + stamp + ' · 지원자 = 고민 중 + 확정(타교지원 제외) · 접수율(%) = 원서접수 ÷ 지원자 · 타교지원은 지원자에 포함하지 않고 따로 표시' + (all ? ' · 전체 = 취업희망자 + 일반' : '')], []];
+    ['기준 ' + stamp + ' · 지원자 = 고민 중 + 확정(타교지원 제외) · 접수율(%) = 원서접수 ÷ 지원자 · 총지원자수 = 지원자(고민 중 + 확정) + 타교지원' + (all ? ' · 전체 = 취업희망자 + 일반' : '')], []];
   if (!A.order.length) { a.push(['아직 입력된 학생이 없습니다.']); return a; }
   // 전체 탭: 구·군/중학교, 취업희망자, 일반, 전체(합계), 확정, 고민 중, 원서접수, 접수율
-  function line(first, second, t) { return all ? [first, second, t.tr, t.ge, t.n, t.ok, t.go, t.ex, t.acc, p(t.acc, t.n)] : [first, second, t.n, t.ok, t.go, t.ex, t.acc, p(t.acc, t.n)]; }
-  var headS = all ? ['구·군', '학교 수', '취업희망자', '일반', '전체', '확정', '고민 중', '타교지원', '원서접수', '접수율(%)'] : ['구·군', '학교 수', '지원자', '확정', '고민 중', '타교지원', '원서접수', '접수율(%)'];
-  var headD = all ? ['구·군', '중학교', '취업희망자', '일반', '전체', '확정', '고민 중', '타교지원', '원서접수', '접수율(%)'] : ['구·군', '중학교', '지원자', '확정', '고민 중', '타교지원', '원서접수', '접수율(%)'];
+  function line(first, second, t) { return all ? [first, second, t.tr, t.ge, t.n, t.ok, t.go, t.acc, p(t.acc, t.n), t.n + t.ex, t.ex] : [first, second, t.n, t.ok, t.go, t.acc, p(t.acc, t.n), t.n + t.ex, t.ex]; }
+  var headS = all ? ['구·군', '학교 수', '취업희망자', '일반', '전체', '확정', '고민 중', '원서접수', '접수율(%)', '총지원자수', '타교지원'] : ['구·군', '학교 수', '지원자', '확정', '고민 중', '원서접수', '접수율(%)', '총지원자수', '타교지원'];
+  var headD = all ? ['구·군', '중학교', '취업희망자', '일반', '전체', '확정', '고민 중', '원서접수', '접수율(%)', '총지원자수', '타교지원'] : ['구·군', '중학교', '지원자', '확정', '고민 중', '원서접수', '접수율(%)', '총지원자수', '타교지원'];
   a.push(['■ 구·군별 요약'], headS);
   A.order.forEach(function (g) { var s = A.by[g]; a.push(line(g, Object.keys(s.schools).length, s)); });
   a.push(line('합계', A.tot.sch, A.tot), [], ['■ 학교별 상세'], headD);
@@ -1503,7 +1509,7 @@ function buildGuBook() {
   var wb = XLSX.utils.book_new();
   [['전체', '전체'], ['취업희망자', '취업희망자'], ['일반(특별포함)', '일반전형']].forEach(function (t) {
     var ws = XLSX.utils.aoa_to_sheet(guSheetRows(t[0], t[1], stamp));
-    ws['!cols'] = [{ wch: 12 }, { wch: 16 }, { wch: 11 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 10 }, { wch: 10 }, { wch: 11 }];
+    ws['!cols'] = [{ wch: 12 }, { wch: 16 }, { wch: 11 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 10 }, { wch: 11 }, { wch: 11 }, { wch: 10 }];
     XLSX.utils.book_append_sheet(wb, ws, t[1]);
   });
   return { wb: wb, name: '입학홍보_구군별현황_' + stamp.replace(' ', '_').replace(/[-:]/g, '') + '.xlsx' };
@@ -1992,7 +1998,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-22.3';
+var APP_VER = '2026-10-22.4';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
