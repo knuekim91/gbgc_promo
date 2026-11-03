@@ -727,7 +727,7 @@ body.onhome #ddbar{display:none!important}
 .dk-slide{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;box-sizing:border-box;padding:46px 64px;overflow:hidden;
   background:radial-gradient(900px 520px at 88% -5%,rgba(214,51,108,.38),transparent 62%),radial-gradient(800px 520px at -5% 105%,rgba(47,91,216,.34),transparent 62%),#1a1224}
 .dk-h h2{font-size:44px;margin:0;letter-spacing:-.5px;line-height:1.25}
-.dk-h p{margin:6px 0 22px;color:#ffc2d6;font-size:22px}
+.dk-h p{margin:4px 0 14px;color:#ffc2d6;font-size:22px}
 .dk-t{width:100%;border-collapse:collapse;font-size:26px}
 .dk-t th,.dk-t td{padding:12px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.15)}
 .dk-t thead th{color:#ffc2d6;font-size:22px;font-weight:700;background:rgba(255,255,255,.06)}
@@ -801,7 +801,7 @@ body.dk-open{overflow:hidden}
 body.dk-open #smodal.sosm .sbox{max-width:640px;font-size:1.12em}
 @media (max-width:640px){.dk-keys{display:none}}
 .dk-t td{vertical-align:middle}
-.dk-t.cmp th,.dk-t.cmp td{padding:6px 12px}
+.dk-t.cmp th,.dk-t.cmp td{padding:5px 12px}
 .dk-t.cmp td b{font-size:27px}
 .dk-t.cmp td small,.dk-t.cmp th small{font-size:15px}
 .dk-t.cmp td.l{font-size:24px}
@@ -856,6 +856,100 @@ body.dk-open #smodal.sosm .sos-stat b{font-size:42px}
 .dk-senior .dk-p .sos-bd{font-size:17px;font-weight:900;margin-top:2px}
 .dk-tip{position:absolute;left:0;right:0;bottom:-2px;text-align:center;font-size:17px;color:rgba(255,255,255,.55)}
 @media (prefers-reduced-motion:reduce){.dk-senior *{animation:none!important}.dk-spark{display:none}.dk-senior .dk-h h2{color:#fff;background:none}}
+
+/* ---- 슬라이드 전반 애니메이션: 장이 바뀔 때마다 차례로 나타난다 ---- */
+@media (prefers-reduced-motion:no-preference){
+@keyframes dkInF{from{opacity:0;transform:translateX(70px)}to{opacity:1;transform:none}}
+@keyframes dkInB{from{opacity:0;transform:translateX(-70px)}to{opacity:1;transform:none}}
+@keyframes dkInU{from{opacity:0;transform:translateY(26px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes dkUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes dkRowIn{from{opacity:0;transform:translateX(-36px)}to{opacity:1;transform:none}}
+@keyframes dkPanL{from{opacity:0;transform:translateX(-80px)}to{opacity:1;transform:none}}
+@keyframes dkPanR{from{opacity:0;transform:translateX(80px)}to{opacity:1;transform:none}}
+@keyframes dkZoom{from{opacity:0;transform:translateY(34px) scale(.86)}to{opacity:1;transform:none}}
+@keyframes dkLineGrow{from{width:0}to{width:130px}}
+@keyframes dkBarGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes dkBlobA{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-90px,60px) scale(1.25)}}
+@keyframes dkBlobB{0%{transform:translate(0,0) scale(1.1)}100%{transform:translate(80px,-50px) scale(.9)}}
+@keyframes dkBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes dkPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.dk-slide::before,.dk-slide::after{content:'';position:absolute;border-radius:50%;pointer-events:none;filter:blur(70px);z-index:0}
+.dk-slide::before{width:520px;height:520px;right:-120px;top:-160px;background:rgba(214,51,108,.30);animation:dkBlobA 13s ease-in-out infinite alternate}
+.dk-slide::after{width:480px;height:480px;left:-140px;bottom:-190px;background:rgba(47,91,216,.28);animation:dkBlobB 16s ease-in-out infinite alternate}
+.dk-in{position:relative;z-index:1;height:100%}
+.dk-in.fwd{animation:dkInF .6s cubic-bezier(.2,.8,.2,1) both}
+.dk-in.back{animation:dkInB .6s cubic-bezier(.2,.8,.2,1) both}
+.dk-in.first{animation:dkInU .7s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-h h2{animation:dkUp .7s .1s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-h p{animation:dkUp .7s .28s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-h h2::after{content:'';display:block;height:4px;width:0;margin-top:6px;border-radius:2px;background:linear-gradient(90deg,#ff8fb1,#ffd75a);animation:dkLineGrow .9s .45s cubic-bezier(.2,.8,.2,1) forwards}
+.dk-in .dk-t thead th{animation:dkUp .6s .25s both}
+.dk-in .dk-t tbody tr>*{animation:dkRowIn .6s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-t tbody tr:nth-child(1)>*{animation-delay:490ms}
+.dk-in .dk-t tbody tr:nth-child(2)>*{animation-delay:600ms}
+.dk-in .dk-t tbody tr:nth-child(3)>*{animation-delay:710ms}
+.dk-in .dk-t tbody tr:nth-child(4)>*{animation-delay:820ms}
+.dk-in .dk-t tbody tr:nth-child(5)>*{animation-delay:930ms}
+.dk-in .dk-t tbody tr:nth-child(6)>*{animation-delay:1040ms}
+.dk-in .dk-t tbody tr:nth-child(7)>*{animation-delay:1150ms}
+.dk-in .dk-t tbody tr:nth-child(8)>*{animation-delay:1260ms}
+.dk-in .dk-t tbody tr:nth-child(9)>*{animation-delay:1370ms}
+.dk-in .dk-two>.dk-pn:nth-child(1){animation:dkPanL .75s .25s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-two>.dk-pn:nth-child(2){animation:dkPanR .75s .25s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-two .dk-t tbody tr>*{animation-name:dkUp}
+.dk-in .dk-warn{animation:dkUp .7s 1.1s both}
+.dk-in .dk-pass>.dk-pc{animation:dkZoom .75s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-pass>.dk-pc:nth-child(1){animation-delay:.3s}
+.dk-in .dk-pass>.dk-pc:nth-child(2){animation-delay:.5s}
+.dk-in .dk-pass>.dk-pc:nth-child(3){animation-delay:.7s}
+.dk-in .dk-pc .bar i{transform-origin:left;animation:dkBarGrow 1s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-pc:nth-child(1) .bar i{animation-delay:.9s}
+.dk-in .dk-pc:nth-child(2) .bar i{animation-delay:1.1s}
+.dk-in .dk-pc:nth-child(3) .bar i{animation-delay:1.3s}
+.dk-in .dk-pc .big{animation:dkPulse 3.2s 1.8s ease-in-out infinite}
+.dk-in .dk-sum{animation:dkUp .8s 1.4s both}
+.dk-in :not(.dk-senior)>.dk-grid>*{animation:dkZoom .6s cubic-bezier(.2,.8,.2,1) both}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(1){animation-delay:410ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(2){animation-delay:490ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(3){animation-delay:570ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(4){animation-delay:650ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(5){animation-delay:730ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(6){animation-delay:810ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(7){animation-delay:890ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(8){animation-delay:970ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(9){animation-delay:1050ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(10){animation-delay:1130ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(11){animation-delay:1210ms}
+.dk-in :not(.dk-senior)>.dk-grid>*:nth-child(12){animation-delay:1290ms}
+.dk-in .dk-wings>.dk-w{animation:dkZoom .75s cubic-bezier(.2,.8,.2,1) both}
+.dk-in .dk-wings>.dk-w:nth-child(1){animation-delay:.3s}
+.dk-in .dk-wings>.dk-w:nth-child(2){animation-delay:.5s}
+.dk-in .dk-wings>.dk-w:nth-child(3){animation-delay:.7s}
+.dk-in .dk-w .ic{display:inline-block;animation:dkBob 2.8s 1.2s ease-in-out infinite}
+.dk-in .dk-w li{animation:dkUp .6s both}
+.dk-in .dk-w li:nth-child(1){animation-delay:.9s}
+.dk-in .dk-w li:nth-child(2){animation-delay:1.05s}
+.dk-in .dk-w li:nth-child(3){animation-delay:1.2s}
+.dk-in .dk-w li:nth-child(4){animation-delay:1.35s}
+.dk-in .dk-how li{animation:dkUp .6s both}
+.dk-in .dk-how li:nth-child(1){animation-delay:1.3s}
+.dk-in .dk-how li:nth-child(2){animation-delay:1.5s}
+.dk-in .dk-how li:nth-child(3){animation-delay:1.7s}
+.dk-in .dk-cover>*:not(.dk-spark){position:relative;z-index:1}
+.dk-in .dk-cover .k{animation:dkUp .7s .1s both}
+.dk-in .dk-cover h1{animation:dkUp .9s .3s cubic-bezier(.2,.8,.2,1) both;background:linear-gradient(100deg,#fff 0%,#ffd1e1 35%,#fff 50%,#ffd75a 70%,#fff 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
+.dk-in .dk-cover p{animation:dkUp .8s .65s both}
+.dk-in .dk-cover .avs>*{animation:dkZoom .8s cubic-bezier(.2,.8,.2,1) both,dkBob 3.4s 1.4s ease-in-out infinite}
+.dk-in .dk-cover .avs>*:nth-child(1){animation-delay:.9s,1.6s}
+.dk-in .dk-cover .avs>*:nth-child(2){animation-delay:1.05s,1.9s}
+.dk-in .dk-cover .avs>*:nth-child(3){animation-delay:1.2s,2.2s}
+.dk-in .dk-cover .avs>*:nth-child(4){animation-delay:1.35s,2.5s}
+.dk-in .dk-cover .dk-spark{position:absolute;inset:0;z-index:0}
+}
+
+@media (prefers-reduced-motion:reduce){.dk-slide::before,.dk-slide::after{display:none}}
+.dk-pc .big i{font-style:normal}
+.dk-cnt-fix{}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1427,14 +1521,19 @@ function sosQuotaHtml() {
 
 /* ---- 소선여중 발표용(슬라이드): 1280x720 무대를 화면 크기에 맞춰 줄여서 보여 준다 ---- */
 /* ← → 키·화면 좌우 화살표·옆으로 밀기로 넘기고, ⛶ 로 전체 화면, ✕ 또는 Esc 로 닫는다 */
-var DK = { i: 0 }, DK_N = 14, DK_G = ['1학년', '2학년', '3학년', '졸업생'];
+var DK = { i: 0, dir: 0 }, DK_N = 14, DK_G = ['1학년', '2학년', '3학년', '졸업생'];
 function dkH(t, sub) { return '<div class="dk-h"><h2>' + t + '</h2>' + (sub ? '<p>' + sub + '</p>' : '') + '</div>'; }
 function dkCut(v) { return Number(v).toFixed(2); }
 
+function dkN(n, suf) { return '<span class="cnt" data-n="' + n + '">0</span>' + (suf || ''); }
+function dkSparks() {   // 표지·마무리 장의 은은한 반짝이
+  var sp = ''; for (var q = 0; q < 14; q++) sp += '<i style="left:' + (4 + q * 7) + '%;animation-delay:' + ((q * 0.7) % 7).toFixed(1) + 's;animation-duration:' + (6 + (q % 4)) + 's;font-size:' + (12 + (q % 3) * 7) + 'px">' + (q % 3 === 0 ? '✦' : q % 3 === 1 ? '★' : '✧') + '</i>';
+  return '<div class="dk-spark">' + sp + '</div>';
+}
 function dkSlide(i) {
   var Y = SOSUN.years, h = '';
   if (i === 0) {
-    return '<div class="dk-cover"><div class="k">2027학년도 경북여상 입학생 모집</div><h1>소선여자중학교<br>맞춤 입시 안내</h1><p>소선여중 출신 선배들의 이야기와 합격 현황으로<br>경북여상을 소개합니다.</p>' +
+    return '<div class="dk-cover">' + dkSparks() + '<div class="k">2027학년도 경북여상 입학생 모집</div><h1>소선여자중학교<br>맞춤 입시 안내</h1><p>소선여중 출신 선배들의 이야기와 합격 현황으로<br>경북여상을 소개합니다.</p>' +
       '<div class="avs">' + sosAvatar('봄', 150) + sosAvatar('여름', 150) + sosAvatar('가을', 150) + sosAvatar('겨울', 150) + '</div></div>';
   }
   if (i === 1) {
@@ -1465,11 +1564,11 @@ function dkSlide(i) {
     h = dkH('최근 3년간 소선여중 합격 현황', '소선여중 출신 경북여상 합격생') + '<div class="dk-pass">';
     P.forEach(function (p) {
       sum += p.w + p.n;
-      h += '<div class="dk-pc"><div class="y">' + p.y + '학년도 <small>' + p.g + '</small></div><div class="big">' + (p.w + p.n) + '<span>명</span></div>' +
+      h += '<div class="dk-pc"><div class="y">' + p.y + '학년도 <small>' + p.g + '</small></div><div class="big"><i class="cnt" data-n="' + (p.w + p.n) + '">0</i><span>명</span></div>' +
         '<div class="bar"><i class="w" style="width:' + Math.round(p.w / (p.w + p.n) * 100) + '%"></i><i class="g" style="width:' + Math.round(p.n / (p.w + p.n) * 100) + '%"></i></div>' +
         '<div class="sp"><span class="w">취업희망자 ' + p.w + '명</span><span class="g">일반 ' + p.n + '명</span></div></div>';
     });
-    return h + '</div><div class="dk-sum">최근 3년간 합격생 <b>' + sum + '명</b></div>';
+    return h + '</div><div class="dk-sum">최근 3년간 합격생 <b>' + dkN(sum, '명') + '</b></div>';
   }
   if (i >= 6 && i <= 9) {
     var gname = DK_G[i - 6];
@@ -1501,15 +1600,15 @@ function dkSlide(i) {
     var Q = SOSUN.quota;
     return dkH('2027학년도 모집 정원', '경북여자상업고등학교') + '<table class="dk-t"><thead><tr><th>계열 · 학과</th><th>학급</th><th>취업희망자 전형<small>(70% 이내)</small></th><th>일반전형<small>(30% 이상)</small></th><th>합계</th></tr></thead><tbody>' +
       Q.rows.map(function (r) { return '<tr><td class="l">' + esc(r[0]) + '</td><td>' + r[1] + '</td><td>' + r[2] + '명</td><td>' + r[3] + '명</td><td class="tot">' + r[4] + '명</td></tr>'; }).join('') +
-      '<tr class="sum"><th class="l">' + esc(Q.total[0]) + '</th><td><b>' + Q.total[1] + '</b></td><td><b>' + Q.total[2] + '명</b></td><td><b>' + Q.total[3] + '명</b></td><td class="tot"><b>' + Q.total[4] + '명</b></td></tr></tbody></table>' +
+      '<tr class="sum"><th class="l">' + esc(Q.total[0]) + '</th><td><b>' + dkN(Q.total[1]) + '</b></td><td><b>' + dkN(Q.total[2], '명') + '</b></td><td><b>' + dkN(Q.total[3], '명') + '</b></td><td class="tot"><b>' + dkN(Q.total[4], '명') + '</b></td></tr></tbody></table>' +
       '<ul class="dk-how"><li><b>취업희망자 전형</b> 1개 계열(학과)만 지원할 수 있습니다.</li><li><b>일반전형</b> 1·2순위 복수 지원이 가능합니다.</li><li>취업희망자 전형에서 불합격하면 일반전형에 지원할 수 있습니다.</li></ul>';
   }
-  return '<div class="dk-cover end"><div class="k">경북여자상업고등학교</div><h1>20살의 당당한 직장인,<br>대학생의 꿈을 응원합니다</h1><p>소선여중 후배 여러분, 경북여상에서 만나요!</p><div class="avs">' + sosAvatar('희망', 130) + sosAvatar('도전', 130) + sosAvatar('성장', 130) + '</div></div>';
+  return '<div class="dk-cover end">' + dkSparks() + '<div class="k">경북여자상업고등학교</div><h1>20살의 당당한 직장인,<br>대학생의 꿈을 응원합니다</h1><p>소선여중 후배 여러분, 경북여상에서 만나요!</p><div class="avs">' + sosAvatar('희망', 130) + sosAvatar('도전', 130) + sosAvatar('성장', 130) + '</div></div>';
 }
 
 function dkPaint() {
   var sl = $('dkSlide'); if (!sl) return;
-  sl.innerHTML = dkSlide(DK.i);
+  sl.innerHTML = '<div class="dk-in ' + (DK.dir > 0 ? 'fwd' : DK.dir < 0 ? 'back' : 'first') + '">' + dkSlide(DK.i) + '</div>'; DK.dir = 0;
   dkCountUp();
   var dots = $('dkDots'); if (dots) dots.innerHTML = '';
   var c = $('dkCount'); if (c) c.textContent = (DK.i + 1) + ' / ' + DK_N;
@@ -1532,8 +1631,8 @@ function dkFit() {
   sl.style.transform = 'translate(' + Math.round((W - 1280 * s) / 2) + 'px,' + Math.round((H - 720 * s) / 2) + 'px) scale(' + s + ')';
   var hn = $('dkHint'); if (hn) hn.style.display = H > W * 1.05 ? 'block' : 'none';
 }
-function dkGo(d) { var n = Math.max(0, Math.min(DK_N - 1, DK.i + d)); if (n !== DK.i) { DK.i = n; dkPaint(); } }
-function dkJump(n) { DK.i = Math.max(0, Math.min(DK_N - 1, n)); dkPaint(); }
+function dkGo(d) { var n = Math.max(0, Math.min(DK_N - 1, DK.i + d)); if (n !== DK.i) { DK.dir = d; DK.i = n; dkPaint(); } }
+function dkJump(n) { n = Math.max(0, Math.min(DK_N - 1, n)); DK.dir = n > DK.i ? 1 : n < DK.i ? -1 : 0; DK.i = n; dkPaint(); }
 function dkKey(e) {
   if (!$('sosdeck')) return;
   if ($('smodal')) { if (e.key === 'Escape') { e.stopPropagation(); closeStu(); } return; }   // 창이 떠 있으면 Esc는 창만 닫는다
@@ -2553,7 +2652,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-03.5';
+var APP_VER = '2026-11-03.6';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
