@@ -832,6 +832,30 @@ body.dk-open #smodal.sosm .sbox{max-width:640px;font-size:1.12em}
 .dk-p .sos-bd{font-size:17px;padding:3px 12px;margin-top:4px;color:#ffc2d6;background:rgba(214,51,108,.35)}
 body.dk-open #smodal.sosm .sos-act li{font-size:19px}
 body.dk-open #smodal.sosm .sos-stat b{font-size:42px}
+
+/* 3학년 슬라이드 강조 효과 */
+@keyframes dkPop{0%{opacity:0;transform:translateY(46px) scale(.7) rotate(-4deg)}60%{opacity:1;transform:translateY(-8px) scale(1.06) rotate(1deg)}100%{opacity:1;transform:none}}
+@keyframes dkGlow{0%,100%{box-shadow:0 0 0 0 rgba(255,143,177,0),0 0 16px rgba(214,51,108,.28)}50%{box-shadow:0 0 0 3px rgba(255,170,190,.4),0 0 40px rgba(255,205,120,.6)}}
+@keyframes dkShine{0%{background-position:0% 0}100%{background-position:200% 0}}
+@keyframes dkRise{0%{transform:translateY(0) scale(.5);opacity:0}15%{opacity:.95}100%{transform:translateY(-700px) scale(1.15) rotate(40deg);opacity:0}}
+@keyframes dkFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.dk-senior{position:relative;height:100%}
+.dk-senior .dk-h,.dk-senior .dk-grid,.dk-senior .dk-tip{position:relative;z-index:1}
+.dk-senior .dk-h h2{background:linear-gradient(100deg,#fff 0%,#ffd75a 25%,#ff8fb1 50%,#ffd75a 75%,#fff 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:dkShine 4s linear infinite}
+.dk-spark{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.dk-spark i{position:absolute;bottom:-30px;font-style:normal;color:#ffd75a;text-shadow:0 0 12px rgba(255,215,90,.9);opacity:0;animation:dkRise linear infinite}
+.dk-senior .dk-grid.c4{gap:12px}
+.dk-senior .dk-p.sr{background:linear-gradient(160deg,rgba(214,51,108,.28),rgba(255,255,255,.07));border-color:rgba(255,200,130,.55);padding:10px 6px 10px;animation:dkPop .75s cubic-bezier(.2,.9,.3,1.2) both,dkGlow 2.8s ease-in-out infinite;animation-delay:calc(var(--d) * .13s),calc(1s + var(--d) * .25s)}
+.dk-senior .dk-p.sr .sosav{animation:dkFloat 3.2s ease-in-out infinite;animation-delay:calc(var(--d) * .3s)}
+.dk-senior .dk-p.sr{gap:2px;padding:8px 6px 8px}
+.dk-senior .dk-p.sr b{font-size:24px;margin-top:0}
+.dk-senior .dk-p.sr span{font-size:16px}
+.dk-job.gold{background:linear-gradient(100deg,#f59e0b,#ffd75a 50%,#f59e0b);background-size:200% 100%;color:#3b2a00;text-shadow:none}
+.dk-job{display:block;font-style:normal;font-size:14px;line-height:1.35;font-weight:900;color:#fff;border-radius:99px;padding:3px 12px;margin-top:3px;background:linear-gradient(100deg,#d6336c 0%,#ff8fb1 25%,#ffc54d 50%,#ff8fb1 75%,#d6336c 100%);background-size:200% 100%;animation:dkShine 2.6s linear infinite;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.dk-nt{font-style:normal;font-size:15px;font-weight:800;color:#ffd75a}
+.dk-senior .dk-p .sos-bd{font-size:17px;font-weight:900;margin-top:2px}
+.dk-tip{position:absolute;left:0;right:0;bottom:-2px;text-align:center;font-size:17px;color:rgba(255,255,255,.55)}
+@media (prefers-reduced-motion:reduce){.dk-senior *{animation:none!important}.dk-spark{display:none}.dk-senior .dk-h h2{color:#fff;background:none}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1356,9 +1380,10 @@ function sosCount(r) {   // 자료의 "OO 외 N개 대회 수상", "자격증 �
   }
   return { aw: aw, ce: ce };
 }
-function sosBadge(r) {
+function sosBadge(r, anim) {
   var c = sosCount(r); if (!c.aw && !c.ce) return '';
-  return '<span class="sos-bd">' + (c.aw ? '🏅 ' + c.aw : '') + (c.aw && c.ce ? ' · ' : '') + (c.ce ? '📜 ' + c.ce : '') + '</span>';
+  var num = function (n) { return anim ? '<span class="cnt" data-n="' + n + '">0</span>' : n; };
+  return '<span class="sos-bd">' + (c.aw ? '🏅 ' + num(c.aw) : '') + (c.aw && c.ce ? ' · ' : '') + (c.ce ? '📜 ' + num(c.ce) : '') + '</span>';
 }
 function sosBar(lab, v) { return '<div class="sosb"><span>' + lab + '</span><div class="tr"><i style="width:' + Math.max(2, 100 - v) + '%"></i></div><b>' + v + '%</b></div>'; }
 function sosOpen(i) {
@@ -1454,6 +1479,13 @@ function dkSlide(i) {
     var list = [];
     SOS.rows.forEach(function (r, ix) { if (r.g === gname) list.push([r, ix]); });
     if (!list.length) return h + '<div class="dk-msg">이 학년의 자료가 아직 없습니다.</div>';
+    if (gname === '3학년') {   // 졸업을 앞둔 3학년은 등장 효과·반짝임·숫자 올라가기로 한 번 더 강조
+      var sp = ''; for (var q = 0; q < 16; q++) sp += '<i style="left:' + (3 + q * 6) + '%;animation-delay:' + ((q * 0.55) % 6).toFixed(1) + 's;animation-duration:' + (5 + (q % 4)) + 's;font-size:' + (14 + (q % 3) * 8) + 'px">' + (q % 3 === 0 ? '✦' : q % 3 === 1 ? '★' : '✧') + '</i>';
+      return '<div class="dk-senior"><div class="dk-spark">' + sp + '</div>' + dkH('🎓 소선여중 출신 3학년 선배들', '필기 합격 · 전교회장 · 다수의 대회 수상 — 취업을 앞둔 자랑스러운 선배들') + '<div class="dk-grid c4">' + list.map(function (p, k) {
+        var r = p[0], jobs = r.job ? r.job.split(/,\s*/).map(function (j) { return '<em class="dk-job">🏆 ' + esc(j) + '</em>'; }).join('') : '';
+        return '<button type="button" class="dk-p sr" style="--d:' + k + '" onclick="sosOpen(' + p[1] + ')">' + sosAvatar(r.n, 72) + '<b>' + esc(r.n) + '</b><span>' + (r.mid != null && r.now != null ? r.mid + '% → ' + r.now + '%' : '') + '</span>' + (r.note ? '<em class="dk-job gold">⭐ ' + esc(r.note) + '</em>' : '') + jobs + sosBadge(r, true) + '</button>';
+      }).join('') + '</div><div class="dk-tip">이름을 누르면 내신 성적 변화와 활동·수상 내역을 볼 수 있습니다</div></div>';
+    }
     return h + '<div class="dk-grid c' + (list.length > 8 ? 6 : list.length > 5 ? 4 : 4) + '">' + list.map(function (p) {
       var r = p[0], sub = r.g === '졸업생' ? esc(r.job || '') : (r.mid != null && r.now != null ? r.mid + '% → ' + r.now + '%' : '');
       var tag = r.g === '3학년' && r.job ? '<em>' + esc(r.job.split(/,\s*/)[0]) + '</em>' : '';
@@ -1478,11 +1510,21 @@ function dkSlide(i) {
 function dkPaint() {
   var sl = $('dkSlide'); if (!sl) return;
   sl.innerHTML = dkSlide(DK.i);
+  dkCountUp();
   var dots = $('dkDots'); if (dots) dots.innerHTML = '';
   var c = $('dkCount'); if (c) c.textContent = (DK.i + 1) + ' / ' + DK_N;
   var pg = $('dkProg'); if (pg) pg.style.width = ((DK.i + 1) / DK_N * 100) + '%';
   var pv = $('dkPrev'), nx = $('dkNext'); if (pv) pv.disabled = DK.i === 0; if (nx) nx.disabled = DK.i === DK_N - 1;
   dkFit();
+}
+function dkCountUp() {   // .cnt 숫자를 0에서 목표값까지 올린다(움직임 줄이기 설정이면 바로 최종값)
+  var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.forEach.call(document.querySelectorAll('#dkSlide .cnt'), function (el) {
+    var n = Number(el.getAttribute('data-n')) || 0, t0 = null;
+    if (calm) { el.textContent = n; return; }
+    function step(ts) { if (!t0) t0 = ts; var k = Math.min(1, (ts - t0) / 1200); el.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))); if (k < 1 && document.body.contains(el)) requestAnimationFrame(step); }
+    setTimeout(function () { requestAnimationFrame(step); }, 700);
+  });
 }
 function dkFit() {
   var st = $('dkStage'), sl = $('dkSlide'); if (!st || !sl) return;
@@ -2511,7 +2553,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-03.4';
+var APP_VER = '2026-11-03.5';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
