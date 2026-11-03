@@ -716,6 +716,99 @@ body.onhome #ddbar{display:none!important}
 .sos-t.cp th,.sos-t.cp td{padding:8px 4px;font-size:13px}
 .sos-t.cp td.sos-dn{min-width:70px;font-size:12.5px}
 .sos-bar{min-width:96px}
+
+/* ---- 소선여중 발표용 슬라이드 ---- */
+.sos-hero{position:relative}
+.sos-hero .row{display:flex;gap:12px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap}
+.sos-slide-btn{border:2px solid rgba(255,255,255,.85);background:rgba(255,255,255,.22);color:#fff;border-radius:99px;padding:10px 18px;font:inherit;font-size:14.5px;font-weight:800;cursor:pointer;white-space:nowrap;backdrop-filter:blur(2px)}
+.sos-slide-btn:hover{background:rgba(255,255,255,.38)}
+.dk{position:fixed;inset:0;z-index:25;background:#0d0913;display:flex;flex-direction:column;color:#fff;font-family:inherit}
+.dk-stage{flex:1;position:relative;overflow:hidden;min-height:0}
+.dk-slide{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;box-sizing:border-box;padding:46px 64px;overflow:hidden;
+  background:radial-gradient(900px 520px at 88% -5%,rgba(214,51,108,.38),transparent 62%),radial-gradient(800px 520px at -5% 105%,rgba(47,91,216,.34),transparent 62%),#1a1224}
+.dk-h h2{font-size:44px;margin:0;letter-spacing:-.5px;line-height:1.25}
+.dk-h p{margin:6px 0 22px;color:#ffc2d6;font-size:22px}
+.dk-t{width:100%;border-collapse:collapse;font-size:26px}
+.dk-t th,.dk-t td{padding:12px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.15)}
+.dk-t thead th{color:#ffc2d6;font-size:22px;font-weight:700;background:rgba(255,255,255,.06)}
+.dk-t th small,.dk-t td small{display:block;font-size:17px;font-weight:400;color:rgba(255,255,255,.62)}
+.dk-t td.l{text-align:left;font-weight:700}
+.dk-t td b{font-size:30px}
+.dk-t .trk{width:70px;font-size:20px;border-radius:12px;letter-spacing:4px;writing-mode:vertical-rl;text-orientation:upright;white-space:nowrap}
+.dk-t .trk.work{background:#2f5bd8}
+.dk-t .trk.gen{background:#d6336c}
+.dk-t tr.sum th,.dk-t tr.sum td{background:rgba(255,255,255,.08)}
+.dk-t td.tot{color:#ff8fb1;font-weight:800;font-size:28px}
+.dk-t.sm{font-size:23px}
+.dk-t.sm td b{font-size:27px;color:#ff8fb1}
+.dk-two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.dk-pn{border:3px solid;border-radius:20px;padding:18px 20px;background:rgba(255,255,255,.05)}
+.dk-pn.work{border-color:#5b83ff}
+.dk-pn.gen{border-color:#ff6f9f}
+.dk-pn h3{margin:0 0 8px;font-size:28px}
+.dk-pn h3 small{font-size:19px;color:rgba(255,255,255,.65);font-weight:400;margin-left:8px}
+.dk-warn{margin-top:20px;background:rgba(245,158,11,.18);color:#ffd58a;border-radius:14px;padding:14px 20px;font-size:22px}
+.dk-pass{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.dk-pc{background:rgba(255,255,255,.07);border-radius:24px;padding:26px 26px 24px;text-align:center}
+.dk-pc .y{font-size:26px;font-weight:700}
+.dk-pc .y small{display:block;font-size:18px;color:rgba(255,255,255,.6);font-weight:400}
+.dk-pc .big{font-size:110px;font-weight:800;color:#ff8fb1;line-height:1.1;margin:8px 0}
+.dk-pc .big span{font-size:34px;color:#fff;margin-left:4px}
+.dk-pc .bar{display:flex;height:22px;border-radius:11px;overflow:hidden;margin:6px 0 12px}
+.dk-pc .bar i{display:block;height:100%}
+.dk-pc .bar .w,.dk-pc .sp .w{background:#2f5bd8}
+.dk-pc .bar .g,.dk-pc .sp .g{background:#d6336c}
+.dk-pc .sp{display:flex;justify-content:center;gap:10px;font-size:19px}
+.dk-pc .sp span{border-radius:99px;padding:4px 14px}
+.dk-sum{margin-top:26px;text-align:center;font-size:32px}
+.dk-sum b{color:#ff8fb1;font-size:46px}
+.dk-msg{margin-top:60px;text-align:center;font-size:28px;color:rgba(255,255,255,.7)}
+.dk-grid{display:grid;gap:14px}
+.dk-grid.c6{grid-template-columns:repeat(6,1fr)}
+.dk-grid.c4{grid-template-columns:repeat(4,1fr)}
+.dk-p{display:flex;flex-direction:column;align-items:center;gap:4px;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.12);border-radius:20px;padding:12px 6px 10px;color:#fff;font:inherit;cursor:pointer;transition:transform .15s,border-color .15s}
+.dk-p:hover{transform:translateY(-4px);border-color:#ff8fb1}
+.dk-p b{font-size:25px;margin-top:2px}
+.dk-p span{font-size:18px;color:rgba(255,255,255,.7);text-align:center;line-height:1.3}
+.dk-p em{font-style:normal;font-size:15px;background:rgba(214,51,108,.3);color:#ffc2d6;border-radius:99px;padding:2px 10px;margin-top:2px}
+.dk-wings{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.dk-w{background:rgba(255,255,255,.07);border-radius:24px;padding:22px 24px;min-height:330px}
+.dk-w .ic{font-size:56px;line-height:1.1}
+.dk-w h3{margin:6px 0 0;font-size:32px}
+.dk-w .s{color:#ff8fb1;font-weight:700;font-size:20px;margin-bottom:10px}
+.dk-w ul{margin:0;padding-left:22px;font-size:21px;line-height:1.55}
+.dk-how{margin:22px 0 0;padding-left:28px;font-size:23px;line-height:1.8}
+.dk-cover{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.dk-cover .k{font-size:26px;font-weight:700;color:#ffc2d6;letter-spacing:.08em}
+.dk-cover h1{font-size:76px;line-height:1.2;margin:14px 0 18px;letter-spacing:-1px}
+.dk-cover p{font-size:28px;line-height:1.6;color:rgba(255,255,255,.82);margin:0 0 26px}
+.dk-cover .avs{display:flex;gap:26px}
+.dk-cover.end h1{font-size:62px}
+.dk-nav{position:absolute;top:50%;margin-top:-34px;width:60px;height:68px;border:0;border-radius:16px;background:rgba(255,255,255,.13);color:#fff;font-size:42px;line-height:1;cursor:pointer;opacity:.55;z-index:2}
+.dk-nav:hover{opacity:1;background:rgba(255,255,255,.25)}
+.dk-nav:disabled{opacity:.12;cursor:default}
+.dk-nav.l{left:8px}
+.dk-nav.r{right:8px}
+.dk-hint{display:none;position:absolute;left:0;right:0;bottom:10px;text-align:center;font-size:13px;color:#ffc2d6;z-index:2;pointer-events:none}
+.dk-bar{position:relative;display:flex;align-items:center;gap:12px;height:46px;padding:0 14px;background:#0a0710;border-top:1px solid rgba(255,255,255,.1)}
+.dk-bar span{font-size:13px;color:rgba(255,255,255,.7)}
+.dk-bar .dk-keys{margin-left:auto}
+.dk-bar button{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:10px;width:36px;height:32px;font-size:17px;cursor:pointer}
+.dk-bar button:hover{background:rgba(255,255,255,.25)}
+.dk-prog{position:absolute;left:0;top:-3px;right:0;height:3px;background:rgba(255,255,255,.1)}
+.dk-prog i{display:block;height:100%;background:linear-gradient(90deg,#6d8cff,#d6336c);transition:width .25s}
+body.dk-open{overflow:hidden}
+body.dk-open #smodal.sosm .sbox{max-width:640px;font-size:1.12em}
+@media (max-width:640px){.dk-keys{display:none}}
+.dk-t td{vertical-align:middle}
+.dk-t.cmp th,.dk-t.cmp td{padding:6px 12px}
+.dk-t.cmp td b{font-size:27px}
+.dk-t.cmp td small,.dk-t.cmp th small{font-size:15px}
+.dk-t.cmp td.l{font-size:24px}
+.dk-t.cmp thead th{font-size:21px}
+.dk-t.sm th,.dk-t.sm td{padding:10px 8px}
+.dk-t.sm thead th{white-space:nowrap;font-size:19px}
+.dk-t.sm td.l{font-size:21px}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -817,6 +910,7 @@ function onBack() {
   if (!D) { history.back(); return; }   // 로그인 전에는 그대로
   var now = Date.now();
   if ($('smodal')) { closeStu(); history.pushState({ g: 1 }, ''); return; }
+  if ($('sosdeck')) { dkClose(); history.pushState({ g: 1 }, ''); return; }
   if (document.fullscreenElement) { document.exitFullscreen(); history.pushState({ g: 1 }, ''); return; }
   if (TAB === 'promo' && PMODE !== 'hub') { PMODE = 'hub'; render(); history.pushState({ g: 1 }, ''); return; }
   if (TAB !== 'home') { TAB = 'home'; render(); window.scrollTo(0, 0); history.pushState({ g: 1 }, ''); return; }
@@ -1200,7 +1294,7 @@ function sosLoad() {
     SOS.busy = false; SOS.err = String((e && e.message) || e); sosPaintStu();
   });
 }
-function sosPaintStu() { var e = $('sosStu'); if (e) e.innerHTML = sosStuHtml(); }
+function sosPaintStu() { var e = $('sosStu'); if (e) e.innerHTML = sosStuHtml(); if ($('sosdeck')) dkPaint(); }
 function sosGrade(i) { SOS.g = i; sosPaintStu(); }
 function sosStuHtml() {
   if (SOS.err) {
@@ -1256,10 +1350,136 @@ function sosQuotaHtml() {
     '<ul class="sos-how"><li><b>취업희망자 전형</b> 1개 계열(학과)만 지원할 수 있습니다.</li><li><b>일반전형</b> 1·2순위 복수 지원이 가능합니다.</li><li>취업희망자 전형에서 불합격하면 일반전형에 지원할 수 있습니다.</li></ul>';
 }
 
+/* ---- 소선여중 발표용(슬라이드): 1280x720 무대를 화면 크기에 맞춰 줄여서 보여 준다 ---- */
+/* ← → 키·화면 좌우 화살표·옆으로 밀기로 넘기고, ⛶ 로 전체 화면, ✕ 또는 Esc 로 닫는다 */
+var DK = { i: 0 }, DK_N = 14, DK_G = ['1학년', '2학년', '3학년', '졸업생'];
+function dkH(t, sub) { return '<div class="dk-h"><h2>' + t + '</h2>' + (sub ? '<p>' + sub + '</p>' : '') + '</div>'; }
+function dkCut(v) { return Number(v).toFixed(2); }
+
+function dkSlide(i) {
+  var Y = SOSUN.years, h = '';
+  if (i === 0) {
+    return '<div class="dk-cover"><div class="k">2027학년도 경북여상 입학생 모집</div><h1>소선여자중학교<br>맞춤 입시 안내</h1><p>소선여중 출신 선배들의 이야기와 합격 현황으로<br>경북여상을 소개합니다.</p>' +
+      '<div class="avs">' + sosAvatar('봄', 150) + sosAvatar('여름', 150) + sosAvatar('가을', 150) + sosAvatar('겨울', 150) + '</div></div>';
+  }
+  if (i === 1) {
+    var names = ['상업정보', '보건행정코디', '3D융합콘텐츠'], rows = '';
+    [['work', '취업희망자 전형'], ['gen', '일반전형']].forEach(function (k) {
+      names.forEach(function (nm, di) {
+        rows += '<tr>' + (di === 0 ? '<th rowspan="3" class="trk ' + k[0] + '">' + k[1] + '</th>' : '') + '<td class="l">' + nm + '</td>' +
+          Y.map(function (y) { var r = y[k[0]].rows[di]; return '<td><b>' + dkCut(r[3]) + '</b><small>' + r[2] + '명</small></td>'; }).join('') + '</tr>';
+      });
+    });
+    return dkH('최근 3년간 합격선(커트라인)', '3개년 한눈에 보기') + '<table class="dk-t cmp"><thead><tr><th colspan="2">전형 · 계열</th>' + Y.map(function (y) { return '<th>' + y.y + '학년도<small>' + y.now + '</small></th>'; }).join('') + '</tr></thead><tbody>' + rows +
+      '<tr class="sum"><th colspan="2">전체 입학생</th>' + Y.map(function (y) { return '<td><b>' + y.total + '명</b></td>'; }).join('') + '</tr></tbody></table>';
+  }
+  if (i >= 2 && i <= 4) {
+    var y = Y[i - 2];
+    h = dkH(y.y + '학년도 합격선(커트라인)', y.y + '학년도 입학생(' + y.now + ') · 전체 ' + y.total + '명') + '<div class="dk-two">';
+    [['work', '취업희망자 전형'], ['gen', '일반전형']].forEach(function (k) {
+      var g = y[k[0]];
+      h += '<div class="dk-pn ' + k[0] + '"><h3>' + k[1] + ' <small>모집인원 ' + g.total + '명</small></h3><table class="dk-t sm"><thead><tr><th>계열</th><th>정원</th><th>모집인원</th><th>커트라인</th></tr></thead><tbody>' +
+        g.rows.map(function (r) { return '<tr><td class="l">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td><b>' + dkCut(r[3]) + '</b></td></tr>'; }).join('') + '</tbody></table></div>';
+    });
+    h += '</div>';
+    if (y.note) h += '<div class="dk-warn">※ ' + esc(y.note) + '</div>';
+    return h;
+  }
+  if (i === 5) {
+    var P = SOSUN.pass, sum = 0;
+    h = dkH('최근 3년간 소선여중 합격 현황', '소선여중 출신 경북여상 합격생') + '<div class="dk-pass">';
+    P.forEach(function (p) {
+      sum += p.w + p.n;
+      h += '<div class="dk-pc"><div class="y">' + p.y + '학년도 <small>' + p.g + '</small></div><div class="big">' + (p.w + p.n) + '<span>명</span></div>' +
+        '<div class="bar"><i class="w" style="width:' + Math.round(p.w / (p.w + p.n) * 100) + '%"></i><i class="g" style="width:' + Math.round(p.n / (p.w + p.n) * 100) + '%"></i></div>' +
+        '<div class="sp"><span class="w">취업희망자 ' + p.w + '명</span><span class="g">일반 ' + p.n + '명</span></div></div>';
+    });
+    return h + '</div><div class="dk-sum">최근 3년간 합격생 <b>' + sum + '명</b></div>';
+  }
+  if (i >= 6 && i <= 9) {
+    var gname = DK_G[i - 6];
+    h = dkH('소선여중 출신 ' + (gname === '졸업생' ? '졸업생' : '재학생 · ' + gname), '이름을 누르면 내신 성적 변화와 활동·수상 내역을 볼 수 있습니다');
+    if (SOS.err) return h + '<div class="dk-msg">학생 자료를 불러오지 못했습니다. 서버 코드 업데이트(새 버전 배포)나 로그인 권한을 확인해 주세요.</div>';
+    if (!SOS.rows) return h + '<div class="dk-msg">학생 자료를 불러오는 중입니다…</div>';
+    var list = [];
+    SOS.rows.forEach(function (r, ix) { if (r.g === gname) list.push([r, ix]); });
+    if (!list.length) return h + '<div class="dk-msg">이 학년의 자료가 아직 없습니다.</div>';
+    return h + '<div class="dk-grid c' + (list.length > 8 ? 6 : list.length > 5 ? 4 : 4) + '">' + list.map(function (p) {
+      var r = p[0], sub = r.g === '졸업생' ? esc(r.job || '') : (r.mid != null && r.now != null ? r.mid + '% → ' + r.now + '%' : '');
+      var tag = r.g === '3학년' && r.job ? '<em>' + esc(r.job.split(/,\s*/)[0]) + '</em>' : '';
+      return '<button type="button" class="dk-p" onclick="sosOpen(' + p[1] + ')">' + sosAvatar(r.n, 84) + '<b>' + esc(r.n) + '</b><span>' + sub + '</span>' + tag + '</button>';
+    }).join('') + '</div>';
+  }
+  if (i === 10 || i === 11) {
+    var W = SOSUN.wings, cs = i === 10 ? W.cards.slice(0, 3) : W.cards.slice(3);
+    return dkH(i === 10 ? W.title : '꿈에 맞는 길을 학교가 함께 만듭니다', i === 10 ? W.lead : '선취업 후학습 · 우수 취업처 · 부사관') + '<div class="dk-wings">' + cs.map(function (c) {
+      return '<div class="dk-w"><div class="ic">' + c.ico + '</div><h3>' + esc(c.t) + '</h3><div class="s">' + esc(c.sub) + '</div><ul>' + c.b.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>'; }).join('') + '</div>';
+  }
+  if (i === 12) {
+    var Q = SOSUN.quota;
+    return dkH('2027학년도 모집 정원', '경북여자상업고등학교') + '<table class="dk-t"><thead><tr><th>계열 · 학과</th><th>학급</th><th>취업희망자 전형<small>(70% 이내)</small></th><th>일반전형<small>(30% 이상)</small></th><th>합계</th></tr></thead><tbody>' +
+      Q.rows.map(function (r) { return '<tr><td class="l">' + esc(r[0]) + '</td><td>' + r[1] + '</td><td>' + r[2] + '명</td><td>' + r[3] + '명</td><td class="tot">' + r[4] + '명</td></tr>'; }).join('') +
+      '<tr class="sum"><th class="l">' + esc(Q.total[0]) + '</th><td><b>' + Q.total[1] + '</b></td><td><b>' + Q.total[2] + '명</b></td><td><b>' + Q.total[3] + '명</b></td><td class="tot"><b>' + Q.total[4] + '명</b></td></tr></tbody></table>' +
+      '<ul class="dk-how"><li><b>취업희망자 전형</b> 1개 계열(학과)만 지원할 수 있습니다.</li><li><b>일반전형</b> 1·2순위 복수 지원이 가능합니다.</li><li>취업희망자 전형에서 불합격하면 일반전형에 지원할 수 있습니다.</li></ul>';
+  }
+  return '<div class="dk-cover end"><div class="k">경북여자상업고등학교</div><h1>20살의 당당한 직장인,<br>대학생의 꿈을 응원합니다</h1><p>소선여중 후배 여러분, 경북여상에서 만나요!</p><div class="avs">' + sosAvatar('희망', 130) + sosAvatar('도전', 130) + sosAvatar('성장', 130) + '</div></div>';
+}
+
+function dkPaint() {
+  var sl = $('dkSlide'); if (!sl) return;
+  sl.innerHTML = dkSlide(DK.i);
+  var dots = $('dkDots'); if (dots) dots.innerHTML = '';
+  var c = $('dkCount'); if (c) c.textContent = (DK.i + 1) + ' / ' + DK_N;
+  var pg = $('dkProg'); if (pg) pg.style.width = ((DK.i + 1) / DK_N * 100) + '%';
+  var pv = $('dkPrev'), nx = $('dkNext'); if (pv) pv.disabled = DK.i === 0; if (nx) nx.disabled = DK.i === DK_N - 1;
+  dkFit();
+}
+function dkFit() {
+  var st = $('dkStage'), sl = $('dkSlide'); if (!st || !sl) return;
+  var W = st.clientWidth, H = st.clientHeight, s = Math.min(W / 1280, H / 720);
+  sl.style.transform = 'translate(' + Math.round((W - 1280 * s) / 2) + 'px,' + Math.round((H - 720 * s) / 2) + 'px) scale(' + s + ')';
+  var hn = $('dkHint'); if (hn) hn.style.display = H > W * 1.05 ? 'block' : 'none';
+}
+function dkGo(d) { var n = Math.max(0, Math.min(DK_N - 1, DK.i + d)); if (n !== DK.i) { DK.i = n; dkPaint(); } }
+function dkJump(n) { DK.i = Math.max(0, Math.min(DK_N - 1, n)); dkPaint(); }
+function dkKey(e) {
+  if (!$('sosdeck')) return;
+  if ($('smodal')) { if (e.key === 'Escape') { e.stopPropagation(); closeStu(); } return; }   // 창이 떠 있으면 Esc는 창만 닫는다
+  var k = e.key;
+  if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); dkGo(1); }
+  else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); dkGo(-1); }
+  else if (k === 'Home') dkJump(0);
+  else if (k === 'End') dkJump(DK_N - 1);
+  else if (k === 'f' || k === 'F') dkFull();
+  else if (k === 'Escape' && !document.fullscreenElement) dkClose();
+}
+function dkFull() {
+  var e = $('sosdeck'); if (!e) return;
+  try { if (document.fullscreenElement) document.exitFullscreen(); else if (e.requestFullscreen) e.requestFullscreen(); } catch (x) {}
+}
+function dkClose() {
+  var e = $('sosdeck'); if (e) e.remove();
+  document.body.classList.remove('dk-open');
+  window.removeEventListener('resize', dkFit); document.removeEventListener('keydown', dkKey, true);
+  try { if (document.fullscreenElement) document.exitFullscreen(); } catch (x) {}
+}
+function dkOpen(i) {
+  closeStu(); dkClose();
+  var d = document.createElement('div'); d.id = 'sosdeck'; d.className = 'dk';
+  d.innerHTML = '<div class="dk-stage" id="dkStage"><div class="dk-slide" id="dkSlide"></div><button type="button" class="dk-nav l" id="dkPrev" onclick="dkGo(-1)" aria-label="이전">‹</button><button type="button" class="dk-nav r" id="dkNext" onclick="dkGo(1)" aria-label="다음">›</button><div class="dk-hint" id="dkHint">가로 화면에서 보면 더 크게 보여요</div></div>' +
+    '<div class="dk-bar"><div class="dk-prog"><i id="dkProg"></i></div><span id="dkCount"></span><span class="dk-keys">← → 로 넘기기 · F 전체화면</span><button type="button" onclick="dkFull()" title="전체 화면(F)" aria-label="전체 화면">⛶</button><button type="button" onclick="dkClose()" title="닫기(Esc)" aria-label="닫기">✕</button></div>';
+  document.body.appendChild(d); document.body.classList.add('dk-open');
+  var x0 = null; var st = $('dkStage');
+  st.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  st.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 60) dkGo(dx < 0 ? 1 : -1); }, { passive: true });
+  window.addEventListener('resize', dkFit); document.addEventListener('keydown', dkKey, true);
+  DK.i = Math.max(0, Math.min(DK_N - 1, i || 0)); dkPaint(); sosLoad();
+}
+
 function viewSosun() {
   var nav = ['합격선', '합격 현황', '재학생·졸업생', '날개를 달아 주는 학교', '모집 정원'];
   return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button>' +
-    '<div class="sos-hero"><div class="k">2027학년도 경북여상 입학생 모집</div><h2>소선여자중학교 맞춤 입시 안내</h2><p>소선여중 출신 선배들의 이야기와 합격 현황으로 경북여상을 소개합니다.</p></div>' +
+    '<div class="sos-hero"><div class="row"><div><div class="k">2027학년도 경북여상 입학생 모집</div><h2>소선여자중학교 맞춤 입시 안내</h2><p>소선여중 출신 선배들의 이야기와 합격 현황으로 경북여상을 소개합니다.</p></div><button type="button" class="sos-slide-btn" onclick="dkOpen(0)">▶ 발표용(슬라이드)으로 보기</button></div></div>' +
     '<div class="sos-nav">' + nav.map(function (t, i) { return '<button type="button" onclick="sosJump(' + (i + 1) + ')">' + (i + 1) + ' ' + t + '</button>'; }).join('') + '</div>' +
     '<section class="card sos-sec" id="sos1"><h3><span>1</span>최근 3년간 합격선(커트라인)</h3><div id="sosCut">' + sosCutHtml() + '</div></section>' +
     '<section class="card sos-sec" id="sos2"><h3><span>2</span>최근 3년간 소선여중 합격 현황</h3>' + sosPassHtml() + '</section>' +
@@ -2241,7 +2461,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-03.1';
+var APP_VER = '2026-11-03.2';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
