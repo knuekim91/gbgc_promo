@@ -1777,7 +1777,7 @@ function dkSlide(i) {
     var C = SOSUN.certs, tt = C.rows[3];
     return dkH('🎓 경북여상의 자격증 취득 현황', '학교 전체 · ' + C.asof + ' 기준') + '<div class="dk-cert"><div class="hero"><div class="ring"><b>' + dkN(tt[3], '%', 1) + '</b><span>재학생 ' + dkN(tt[1], '명') + ' 중<br>' + dkN(tt[2], '명') + ' 취득</span></div></div><div class="bars">' +
       C.rows.slice(0, 3).map(function (r) { return '<div class="rw"><div class="l">' + r[0] + '</div><div class="bar"><i style="width:' + r[3] + '%"></i><b>' + dkN(r[3], '%', 1) + '</b></div><div class="m">' + r[2] + '명 / ' + r[1] + '명 · 자격증 ' + r[4] + '개</div></div>'; }).join('') +
-      '<div class="chips2"><span>📜 자격증 총 <b>' + dkN(tt[4], '개') + '</b></span><span>👩‍🎓 1인당 평균 <b>' + dkN(tt[5], '개', 1) + '</b></span></div></div></div>';
+      '<div class="chips2"><span>📜 자격증 총 <b>' + dkN(tt[4], '개') + '</b></span><span>👩‍🎓 1인당 평균 <b>' + dkN(tt[5], '개', 1) + '</b></span><span>🏅 취득자 ' + tt[2] + '명 평균 <b>' + dkN(tt[4] / tt[2], '개', 1) + '</b></span></div></div></div>';
   }
   if (i === 11 || i === 12) {
     var W = SOSUN.wings, cs = i === 11 ? W.cards.slice(0, 3) : W.cards.slice(3);
@@ -1866,7 +1866,7 @@ function sosCertHtml() {   // 학교 전체 숫자(학생 이름 없음)
   C.rows.slice(0, 3).forEach(function (r) {
     h += '<div class="rw"><div class="l">' + r[0] + '</div><div class="bar"><i style="width:' + r[3] + '%"></i><b>' + r[3] + '%</b></div><div class="m">' + r[2] + '명 / ' + r[1] + '명 · 자격증 ' + r[4] + '개 · 1인당 ' + r[5] + '개</div></div>';
   });
-  return h + '<div class="chips2"><span>📜 자격증 총 <b>' + t[4] + '개</b></span><span>👩‍🎓 1인당 평균 <b>' + t[5] + '개</b></span></div><p class="sos-note">학년이 올라갈수록 취득률이 높아집니다. ' + C.asof + ' 기준 반별 취득 현황을 집계한 값입니다.</p></div>';
+  return h + '<div class="chips2"><span>📜 자격증 총 <b>' + t[4] + '개</b></span><span>👩‍🎓 1인당 평균 <b>' + t[5] + '개</b></span><span>🏅 취득자 ' + t[2] + '명 평균 <b>' + (t[4] / t[2]).toFixed(1) + '개</b></span></div><p class="sos-note">학년이 올라갈수록 취득률이 높아집니다. ' + C.asof + ' 기준 반별 취득 현황을 집계한 값입니다.</p></div>';
 }
 function viewSosun() {
   var nav = ['합격선', '합격 현황', '재학생·졸업생', '날개를 달아 주는 학교', '모집 정원'];
@@ -2854,7 +2854,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-04.4';
+var APP_VER = '2026-11-04.5';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
