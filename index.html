@@ -1073,6 +1073,38 @@ body.dk-open #smodal.sosm .sos-stat b{font-size:42px}
 .dk-senior .dk-g{background:linear-gradient(160deg,rgba(214,51,108,.22),rgba(255,255,255,.06));border-color:rgba(255,200,130,.45);animation:dkPop .7s cubic-bezier(.2,.9,.3,1.2) both,dkGlow 3.2s ease-in-out infinite;animation-delay:calc(var(--d) * .07s),calc(1.2s + var(--d) * .18s)}
 .dk-senior .dk-g .sosav{animation:dkFloat 3.4s ease-in-out infinite;animation-delay:calc(var(--d) * .25s)}
 .dk-senior .dk-g span{color:#ffd9e6}
+
+/* 수상·자격증 박스: 낮은 가로형(왼쪽 이름, 오른쪽 숫자) */
+.sos-stat{gap:8px;margin:0 0 6px}
+.sos-stat div{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;border-radius:12px;text-align:left}
+.sos-stat span{font-size:17px;letter-spacing:.02em}
+.sos-stat b{display:flex;align-items:baseline;gap:4px;font-size:30px;line-height:1}
+.sos-stat b i{font-style:normal}
+.sos-stat b small{font-size:14px;font-weight:800;opacity:.9}
+body.dk-open #smodal.sosm .sos-stat b{font-size:34px}
+@media (max-width:640px),(max-height:520px){
+#smodal.sosm .sos-stat div,body.dk-open #smodal.sosm .sos-stat div{padding:4px 12px}
+#smodal.sosm .sos-stat span,body.dk-open #smodal.sosm .sos-stat span{font-size:14px}
+#smodal.sosm .sos-stat b,body.dk-open #smodal.sosm .sos-stat b{font-size:23px}
+#smodal.sosm .sos-stat b small,body.dk-open #smodal.sosm .sos-stat b small{font-size:12px}
+}
+@media (max-width:640px) and (max-height:660px){
+#smodal.sosm .sos-stat div,body.dk-open #smodal.sosm .sos-stat div{padding:3px 12px}
+#smodal.sosm .sos-stat b,body.dk-open #smodal.sosm .sos-stat b{font-size:20px}
+}
+/* 슬라이드 제목 밑줄: 제목 글자 길이만큼 그린다 */
+@keyframes dkLineScale{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.dk-in .dk-h h2{display:inline-block;max-width:100%}
+.dk-in .dk-h h2::after{content:'';display:block;width:100%;height:4px;margin-top:6px;border-radius:2px;background:linear-gradient(90deg,#ff8fb1,#ffd75a);transform-origin:left}
+@media (prefers-reduced-motion:no-preference){.dk-in .dk-h h2::after{transform:scaleX(0);animation:dkLineScale 1s .45s cubic-bezier(.2,.8,.2,1) forwards}}
+
+/* 글씨 대비 보강: 자격증 칩은 진하게(밝은 테마) / 밝게(어두운 테마), 슬라이드 보기 버튼은 흰 바탕에 진한 분홍 글씨 */
+.sos-act .chips i,.sos-act li.cert .chips i{color:#1e3a8a;background:rgba(47,91,216,.18);font-weight:900}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sos-act .chips i,:root:not([data-theme="light"]) .sos-act li.cert .chips i{color:#dbe5ff;background:rgba(123,156,255,.28)}}
+:root[data-theme="dark"] .sos-act .chips i,:root[data-theme="dark"] .sos-act li.cert .chips i{color:#dbe5ff;background:rgba(123,156,255,.28)}
+.sos-act li.cert{border-left-color:#2f5bd8}
+.sos-slide-btn{background:#fff;color:#c2185b;border:2px solid #fff;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.sos-slide-btn:hover{background:#fff0f6;color:#a3124b}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1610,6 +1642,15 @@ function sosMedals(rk) {   // "1위 3건 · 2위 3건 · 3위 6건" → 🥇3 �
   return o ? '<div class="sos-medals">' + o + '</div>' : '';
 }
 function sosBar(lab, v) { return '<div class="sosb"><span>' + lab + '</span><div class="tr"><i style="width:' + Math.max(2, 100 - v) + '%"></i></div><b>' + v + '%</b></div>'; }
+function sosCountUp(root) {   // 상세 창의 .cnt 숫자를 0에서 올린다(움직임 줄이기 설정이면 바로 최종값)
+  var calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.forEach.call(root.querySelectorAll('.cnt'), function (el) {
+    var n = Number(el.getAttribute('data-n')) || 0, t0 = null;
+    if (calm) { el.textContent = n; return; }
+    function step(ts) { if (!t0) t0 = ts; var k = Math.min(1, (ts - t0) / 1000); el.textContent = Math.round(n * (1 - Math.pow(1 - k, 3))); if (k < 1 && document.body.contains(el)) requestAnimationFrame(step); }
+    setTimeout(function () { requestAnimationFrame(step); }, 250);
+  });
+}
 function sosOpen(i) {
   var r = SOS.rows && SOS.rows[i]; if (!r) return;
   closeStu();
@@ -1627,9 +1668,10 @@ function sosOpen(i) {
   if (acts.length || r.etc || r.top || r.cert) {
     var cn = sosCount(r);
     h += '<h4 class="sos-h4 big">🏅 활동 · 수상 · 자격증</h4>';
-    if (cn.aw || cn.ce) h += '<div class="sos-stat">' + (cn.aw ? '<div><b>' + cn.aw + '</b><span>수상</span></div>' : '') + (cn.ce ? '<div><b>' + cn.ce + '</b><span>자격증</span></div>' : '') + '</div>';
+    if (cn.aw || cn.ce) h += '<div class="sos-stat">' + (cn.aw ? '<div><span>🏅 수상</span><b><i class="cnt" data-n="' + cn.aw + '">0</i><small>건</small></b></div>' : '') + (cn.ce ? '<div><span>📜 자격증</span><b><i class="cnt" data-n="' + cn.ce + '">0</i><small>개</small></b></div>' : '') + '</div>';
     h += sosMedals(r.rk);
     var tops = r.top ? r.top.split(/\s*\/\s*/) : [];
+    tops = tops.slice(0, Math.min(tops.length, Math.max(1, Math.round(cn.aw * 2 / 3))));   // 대표 수상은 전체 수상 건수의 2/3 정도만
     h += '<ul class="sos-act">' + acts.map(function (a) { return '<li><em>' + a[0] + '</em><span>' + sosHi(a[1]) + '</span></li>'; }).join('') +
       (tops.length ? '<li class="top' + (acts.length ? '' : ' only') + '"><em>대표 수상</em><span>' + tops.map(function (t) { return sosHi(t); }).join('<br>') + '</span></li>' : '') +
       (r.cert ? '<li class="cert"><em>자격증</em><span class="chips">' + r.cert.split(/,\s*/).map(function (c) { return '<i>' + esc(c) + '</i>'; }).join('') + '</span></li>' : (r.etc ? '<li class="cert"><em>자격·기타</em><span>' + sosHi(r.etc) + '</span></li>' : '')) + '</ul>';
@@ -1639,7 +1681,7 @@ function sosOpen(i) {
   var m = document.createElement('div'); m.id = 'smodal'; m.className = 'sosm';
   m.innerHTML = '<div class="sbox" role="dialog" aria-modal="true" aria-label="' + esc(r.n) + ' 학생 정보">' + h + '</div>';
   m.onclick = function (e) { if (e.target === m || e.target.classList.contains('sx')) closeStu(); };
-  (document.getElementById('sosdeck') || document.body).appendChild(m);   // 전체화면에서는 슬라이드 영역만 보이므로, 슬라이드가 열려 있으면 그 안에 창을 만든다
+  (document.getElementById('sosdeck') || document.body).appendChild(m); sosCountUp(m);   // 전체화면에서는 슬라이드 영역만 보이므로, 슬라이드가 열려 있으면 그 안에 창을 만든다
 }
 
 /* 4) 날개를 달아 주는 학교, 5) 모집 정원 */
@@ -2812,7 +2854,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-04.2';
+var APP_VER = '2026-11-04.4';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
