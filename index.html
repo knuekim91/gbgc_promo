@@ -809,6 +809,29 @@ body.dk-open #smodal.sosm .sbox{max-width:640px;font-size:1.12em}
 .dk-t.sm th,.dk-t.sm td{padding:10px 8px}
 .dk-t.sm thead th{white-space:nowrap;font-size:19px}
 .dk-t.sm td.l{font-size:21px}
+
+/* 활동·수상·자격증 강조 */
+.sos-h4.big{font-size:19px;margin:18px 0 8px}
+.sos-stat{display:flex;gap:10px;margin:0 0 10px}
+.sos-stat div{flex:1;background:linear-gradient(135deg,#d6336c,#ff8fb1);color:#fff;border-radius:14px;padding:10px 6px;text-align:center;box-shadow:0 5px 14px rgba(214,51,108,.28)}
+.sos-stat b{display:block;font-size:34px;line-height:1.1}
+.sos-stat span{font-size:14px;font-weight:800;letter-spacing:.04em}
+.sos-act{gap:8px}
+.sos-act li{display:flex;gap:10px;align-items:flex-start;font-size:17px;font-weight:700;line-height:1.55;padding:11px 14px;border-left:5px solid #d6336c;background:linear-gradient(90deg,rgba(214,51,108,.13),var(--bg) 70%);border-radius:10px}
+.sos-act li.cert{border-left-color:#2f5bd8;background:linear-gradient(90deg,rgba(47,91,216,.14),var(--bg) 70%)}
+.sos-act li.cert em{background:#2f5bd8}
+.sos-act em{flex:none;background:#d6336c;color:#fff;border-radius:99px;padding:2px 10px;font-size:13px;margin-right:0;margin-top:3px;line-height:1.5}
+.sos-act strong{font-weight:900}
+.sos-act mark{border-radius:6px;padding:0 6px;font-weight:900;color:#3b2a00;background:#e5e7eb}
+.sos-act mark.r1{background:linear-gradient(135deg,#ffd75a,#ffb300)}
+.sos-act mark.r2{background:linear-gradient(135deg,#eef1f5,#bfc7d1)}
+.sos-act mark.r3{background:linear-gradient(135deg,#f3c29a,#d9884a)}
+.sos-act b.ex{color:#d6336c;font-size:1.12em;font-weight:900}
+.sos-act li.cert b.ex{color:#2f5bd8}
+.sos-bd{margin-top:3px;font-size:12.5px;font-weight:900;color:#d6336c;background:rgba(214,51,108,.12);border-radius:99px;padding:2px 9px}
+.dk-p .sos-bd{font-size:17px;padding:3px 12px;margin-top:4px;color:#ffc2d6;background:rgba(214,51,108,.35)}
+body.dk-open #smodal.sosm .sos-act li{font-size:19px}
+body.dk-open #smodal.sosm .sos-stat b{font-size:42px}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1309,9 +1332,33 @@ function sosStuHtml() {
   if (!list.length) return h + '<div class="sos-msg">이 학년의 자료가 아직 없습니다.</div>';
   h += '<div class="sos-grid">' + list.map(function (p) {
     var r = p[0], sub = r.g === '졸업생' ? esc(r.job || '') : (r.mid != null && r.now != null ? r.mid + '% → ' + r.now + '%' : '');
-    return '<button type="button" class="sos-p" onclick="sosOpen(' + p[1] + ')">' + sosAvatar(r.n, 54) + '<b>' + esc(r.n) + '</b><small>' + sub + '</small></button>';
+    return '<button type="button" class="sos-p" onclick="sosOpen(' + p[1] + ')">' + sosAvatar(r.n, 54) + '<b>' + esc(r.n) + '</b><small>' + sub + '</small>' + sosBadge(r) + '</button>';
   }).join('') + '</div><p class="sos-note">이름을 누르면 내신 성적 변화와 활동·수상 내역을 볼 수 있습니다. 학생 사진은 준비 중이라 일러스트로 대신합니다.</p>';
   return h;
+}
+/* 활동·수상·자격증을 눈에 띄게: 순위·개수·핵심 낱말을 굵고 진하게, 수상·자격증 건수를 크게 보여 준다 */
+function sosHi(t) {
+  return esc(t).replace(/(\d+)위/g, function (m, n) { return '<mark class="rk r' + (n <= 3 ? n : 'x') + '">' + n + '위</mark>'; })
+    .replace(/외\s*(\d+)개/g, '외 <b class="ex">$1개</b>').replace(/(수상|취득|합격)/g, '<strong>$1</strong>');
+}
+function sosCount(r) {   // 자료의 "OO 외 N개 대회 수상", "자격증 외 N개 취득" 표현에서 건수를 센다
+  var aw = 0, ce = 0, m;
+  [r.a1, r.a2, r.a3].forEach(function (t) {
+    if (!t) return;
+    m = t.match(/외\s*(\d+)개\s*대회/); aw += m ? Number(m[1]) + 1 : 1;
+  });
+  var e = r.etc || '';
+  if (e) {
+    if ((m = e.match(/자격증\s*외\s*(\d+)개/)) || (m = e.match(/외\s*(\d+)개\s*자격증/))) ce += Number(m[1]) + 1;
+    else if ((m = e.match(/(\d+)개\s*자격증/))) ce += Number(m[1]);
+    else if (/자격증/.test(e)) ce += 1;
+    else if (/수상/.test(e)) aw += 1;
+  }
+  return { aw: aw, ce: ce };
+}
+function sosBadge(r) {
+  var c = sosCount(r); if (!c.aw && !c.ce) return '';
+  return '<span class="sos-bd">' + (c.aw ? '🏅 ' + c.aw : '') + (c.aw && c.ce ? ' · ' : '') + (c.ce ? '📜 ' + c.ce : '') + '</span>';
 }
 function sosBar(lab, v) { return '<div class="sosb"><span>' + lab + '</span><div class="tr"><i style="width:' + Math.max(2, 100 - v) + '%"></i></div><b>' + v + '%</b></div>'; }
 function sosOpen(i) {
@@ -1327,7 +1374,10 @@ function sosOpen(i) {
   }
   var acts = [['1학년', r.a1], ['2학년', r.a2], ['3학년', r.a3]].filter(function (a) { return a[1]; });
   if (acts.length || r.etc) {
-    h += '<h4 class="sos-h4">🏅 활동 · 수상 · 자격증</h4><ul class="sos-act">' + acts.map(function (a) { return '<li><em>' + a[0] + '</em>' + esc(a[1]) + '</li>'; }).join('') + (r.etc ? '<li><em>자격·기타</em>' + esc(r.etc) + '</li>' : '') + '</ul>';
+    var cn = sosCount(r);
+    h += '<h4 class="sos-h4 big">🏅 활동 · 수상 · 자격증</h4>';
+    if (cn.aw || cn.ce) h += '<div class="sos-stat">' + (cn.aw ? '<div><b>' + cn.aw + '</b><span>수상</span></div>' : '') + (cn.ce ? '<div><b>' + cn.ce + '</b><span>자격증</span></div>' : '') + '</div>';
+    h += '<ul class="sos-act">' + acts.map(function (a) { return '<li><em>' + a[0] + '</em><span>' + sosHi(a[1]) + '</span></li>'; }).join('') + (r.etc ? '<li class="cert"><em>자격·기타</em><span>' + sosHi(r.etc) + '</span></li>' : '') + '</ul>';
   } else if (!grad) h += '<p class="sos-note">활동·수상 내역은 곧 정리해서 채워 드리겠습니다.</p>';
   h += '<p class="sos-note">※ 학생 사진은 준비 중이라 일러스트로 대신했습니다. 이 정보는 로그인한 선생님께만 보입니다.</p>';
   var m = document.createElement('div'); m.id = 'smodal'; m.className = 'sosm';
@@ -1407,7 +1457,7 @@ function dkSlide(i) {
     return h + '<div class="dk-grid c' + (list.length > 8 ? 6 : list.length > 5 ? 4 : 4) + '">' + list.map(function (p) {
       var r = p[0], sub = r.g === '졸업생' ? esc(r.job || '') : (r.mid != null && r.now != null ? r.mid + '% → ' + r.now + '%' : '');
       var tag = r.g === '3학년' && r.job ? '<em>' + esc(r.job.split(/,\s*/)[0]) + '</em>' : '';
-      return '<button type="button" class="dk-p" onclick="sosOpen(' + p[1] + ')">' + sosAvatar(r.n, 84) + '<b>' + esc(r.n) + '</b><span>' + sub + '</span>' + tag + '</button>';
+      return '<button type="button" class="dk-p" onclick="sosOpen(' + p[1] + ')">' + sosAvatar(r.n, 84) + '<b>' + esc(r.n) + '</b><span>' + sub + '</span>' + tag + sosBadge(r) + '</button>';
     }).join('') + '</div>';
   }
   if (i === 10 || i === 11) {
@@ -2461,7 +2511,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-03.3';
+var APP_VER = '2026-11-03.4';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
