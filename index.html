@@ -950,6 +950,7 @@ body.dk-open #smodal.sosm .sos-stat b{font-size:42px}
 @media (prefers-reduced-motion:reduce){.dk-slide::before,.dk-slide::after{display:none}}
 .dk-pc .big i{font-style:normal}
 .dk-cnt-fix{}
+@media (max-width:640px){body.dk-open #smodal.sosm .sbox{font-size:1em}body.dk-open #smodal.sosm .sos-act li{font-size:16px}body.dk-open #smodal.sosm .sos-stat b{font-size:34px}}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
@@ -1502,7 +1503,7 @@ function sosOpen(i) {
   var m = document.createElement('div'); m.id = 'smodal'; m.className = 'sosm';
   m.innerHTML = '<div class="sbox" role="dialog" aria-modal="true" aria-label="' + esc(r.n) + ' 학생 정보">' + h + '</div>';
   m.onclick = function (e) { if (e.target === m || e.target.classList.contains('sx')) closeStu(); };
-  document.body.appendChild(m);
+  (document.getElementById('sosdeck') || document.body).appendChild(m);   // 전체화면에서는 슬라이드 영역만 보이므로, 슬라이드가 열려 있으면 그 안에 창을 만든다
 }
 
 /* 4) 날개를 달아 주는 학교, 5) 모집 정원 */
@@ -2652,7 +2653,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-03.6';
+var APP_VER = '2026-11-03.7';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
