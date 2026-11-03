@@ -630,11 +630,98 @@ body.onhome #ddbar{display:none!important}
 .allbtn{margin-left:8px;border:1px solid var(--pr);background:var(--card);color:var(--pr);border-radius:99px;padding:4px 12px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;vertical-align:middle}
 .allbtn.on{background:var(--pr);color:#fff}
 .gut tr.grow.noclick{cursor:default}
+
+/* ---- 소선여중 맞춤 홍보 ---- */
+.sos-hero{background:linear-gradient(135deg,#d6336c,#ff8fb1 60%,#ffc2d6);color:#fff;border-radius:18px;padding:20px 18px;margin-bottom:12px;box-shadow:0 8px 22px rgba(214,51,108,.25)}
+.sos-hero .k{font-size:12px;font-weight:800;letter-spacing:.08em;opacity:.92}
+.sos-hero h2{margin:4px 0 6px;font-size:24px;line-height:1.25}
+.sos-hero p{margin:0;font-size:14px;opacity:.95}
+.sos-nav{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
+.sos-nav button{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:7px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.sos-sec{scroll-margin-top:64px}
+.sos-sec>h3{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:17px}
+.sos-sec>h3 span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#d6336c;color:#fff;font-size:14px;flex:none}
+.sos-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.sos-chips button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:99px;padding:7px 14px;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+.sos-chips button.on{background:#d6336c;border-color:#d6336c;color:#fff}
+.sos-chips button b{opacity:.85;margin-left:2px}
+.sos-wrap{overflow-x:auto}
+.sos-t{width:100%;border-collapse:collapse;font-size:14px}
+.sos-t th,.sos-t td{padding:9px 8px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.sos-t thead th{background:var(--bg);color:var(--mu);font-size:12.5px}
+.sos-t th small,.sos-t td small{display:block;color:var(--mu);font-weight:400;font-size:11.5px}
+.sos-t td.sos-dn{text-align:left;font-weight:700;white-space:normal;min-width:84px}
+.sos-t td.sos-c b{display:block;font-size:16px}
+.sos-t td.sos-cut b{font-size:16px;color:#d6336c}
+.sos-trk{writing-mode:vertical-rl;text-orientation:upright;letter-spacing:2px;font-size:13px;color:#fff;border-radius:8px;width:30px;padding:6px 4px!important;white-space:nowrap}
+.sos-trk.work{background:#2f5bd8}
+.sos-trk.gen{background:#d6336c}
+.sos-t tr.sos-sum th,.sos-t tr.sos-sum td{background:var(--bg)}
+.sos-t td.sos-tot{font-weight:800;color:#d6336c}
+.sos-t.sm{font-size:13.5px}
+.sos-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.sos-card{border:2px solid var(--bd);border-radius:14px;padding:10px 12px}
+.sos-card.work{border-color:rgba(47,91,216,.5)}
+.sos-card.gen{border-color:rgba(214,51,108,.5)}
+.sos-card h4{margin:0 0 6px;font-size:15px}
+.sos-card h4 small{color:var(--mu);font-weight:400;font-size:12.5px;margin-left:4px}
+.sos-sub{margin:0 0 8px;font-weight:800}
+.sos-note{margin:10px 2px 0;color:var(--mu);font-size:12.5px;line-height:1.6}
+.sos-warn{margin:10px 2px 0;color:#b45309;background:rgba(245,158,11,.12);border-radius:10px;padding:8px 12px;font-size:13px}
+.sos-bar-h{width:34%}
+.sos-bar{text-align:left!important}
+.sos-bar span{display:inline-block;height:16px;vertical-align:middle}
+.sos-bar .w{background:#2f5bd8;border-radius:5px 0 0 5px}
+.sos-bar .g{background:#d6336c;border-radius:0 5px 5px 0}
+.sos-note i{display:inline-block;width:10px;height:10px;border-radius:3px;margin:0 4px 0 6px;vertical-align:baseline}
+.sos-note i.dw{background:#2f5bd8;margin-left:0}
+.sos-note i.dg{background:#d6336c}
+.sos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+.sos-p{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:14px;padding:10px 6px;font:inherit;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.sos-p:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(214,51,108,.18);border-color:#d6336c}
+.sos-p b{font-size:15px;margin-top:2px}
+.sos-p small{color:var(--mu);font-size:11.5px;text-align:center;line-height:1.35}
+.sosav{border-radius:50%;flex:none}
+.sos-msg{padding:16px;text-align:center;color:var(--mu);background:var(--bg);border-radius:12px;line-height:1.8}
+.sos-lead{background:linear-gradient(135deg,rgba(214,51,108,.1),rgba(47,91,216,.08));border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.sos-lead b{display:block;font-size:17px;line-height:1.45}
+.sos-lead p{margin:6px 0 0;color:var(--mu);font-size:13.5px}
+.sos-wings{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.sos-w{border:1px solid var(--bd);border-radius:14px;padding:12px 14px;background:var(--card)}
+.sos-w .ic{font-size:28px}
+.sos-w h4{margin:2px 0 0;font-size:16px}
+.sos-w .s{color:#d6336c;font-weight:800;font-size:12.5px;margin-bottom:6px}
+.sos-w ul{margin:0;padding-left:18px;line-height:1.65;font-size:13.5px}
+.sos-how{margin:12px 0 0;padding-left:18px;line-height:1.8;font-size:13.5px}
+#smodal.sosm .sbox{max-width:460px;max-height:90vh;overflow:auto}
+.sos-hd{display:flex;gap:14px;align-items:center;margin:2px 0 10px}
+.sos-nm{font-size:22px;font-weight:800}
+.sos-gr{color:var(--mu);font-size:13px;margin-top:2px}
+.sos-jobs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.sos-jobs span{background:rgba(214,51,108,.12);color:#d6336c;border-radius:99px;padding:5px 12px;font-size:13px;font-weight:800}
+.sos-h4{margin:14px 0 6px;font-size:15px}
+.sos-h4 small{color:var(--mu);font-weight:400;font-size:11.5px}
+.sos-chg{background:var(--bg);border-radius:12px;padding:10px 12px}
+.sosb{display:flex;align-items:center;gap:8px;margin:5px 0}
+.sosb span{width:56px;font-size:12.5px;color:var(--mu);flex:none}
+.sosb .tr{flex:1;height:14px;background:rgba(127,127,127,.2);border-radius:7px;overflow:hidden}
+.sosb .tr i{display:block;height:100%;background:linear-gradient(90deg,#6d8cff,#d6336c);border-radius:7px}
+.sosb b{width:44px;text-align:right;font-size:14px}
+.sos-d{margin-top:6px;text-align:right;font-weight:800;color:var(--mu);font-size:13.5px}
+.sos-d.up{color:#16a34a}
+.sos-act{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sos-act li{background:var(--bg);border-radius:10px;padding:8px 12px;font-size:13.5px;line-height:1.55}
+.sos-act em{font-style:normal;font-weight:800;color:#d6336c;margin-right:8px}
+.sos-t td.sos-yr{text-align:left;white-space:nowrap}
+.sos-t.cp th,.sos-t.cp td{padding:8px 4px;font-size:13px}
+.sos-t.cp td.sos-dn{min-width:70px;font-size:12.5px}
+.sos-bar{min-width:96px}
 </style>
 <script src="config.js"></script>
 <script src="promo-data.js"></script>
 <script src="promo/videos.js"></script>
 <script src="promo/wish-data.js"></script>
+<script src="promo/sosun-data.js"></script>
 <script src="school-gu.js"></script>
 </head>
 <body>
@@ -754,7 +841,7 @@ function render() {
   if (TAB === 'home') { $('main').innerHTML = viewHome(); bindHome(); }
   else if (TAB === 'status') { $('main').innerHTML = viewStatus(); animStatus(); }
   else if (TAB === 'form') { $('main').innerHTML = viewForm(); bindForm(); }
-  else if (TAB === 'promo') { if (PMODE === 'hub') { $('main').innerHTML = viewHub(); bindHub(); } else if (PMODE === 'poster') { $('main').innerHTML = viewPosters(); } else if (PMODE === 'yt') { $('main').innerHTML = viewYt(); } else if (PMODE === 'wish') { $('main').innerHTML = viewWish(); } else { $('main').innerHTML = viewPromo(); bindPromo(); } }
+  else if (TAB === 'promo') { if (PMODE === 'hub') { $('main').innerHTML = viewHub(); bindHub(); } else if (PMODE === 'poster') { $('main').innerHTML = viewPosters(); } else if (PMODE === 'yt') { $('main').innerHTML = viewYt(); } else if (PMODE === 'wish') { $('main').innerHTML = viewWish(); } else if (PMODE === 'sosun') { $('main').innerHTML = viewSosun(); sosLoad(); } else { $('main').innerHTML = viewPromo(); bindPromo(); } }
   else if (TAB === 'stat') { $('main').innerHTML = viewStat(); }
   else if (TAB === 'stu') { $('main').innerHTML = viewStu(); bindStu(); }
   else if (TAB === 'qna') { $('main').innerHTML = viewQna(); bindQna(); if (!QNA) loadQna(); }
@@ -947,7 +1034,8 @@ var PHUB = [
   { id: 'poster', ico: '🖼️', t: '설명회 포스터', d: '3차 입학설명회(11월 14일) 안내 포스터. 보기, PDF 내려받기, 인쇄.', tag: 'PDF', ready: true, c1: '#e8337f', c2: '#ff9ac1' },
   { id: 'yt', ico: '▶', t: '홍보 유튜브', d: '학교 소개, 학과, 취업 이야기, 행사 영상을 분류해 모았어요.', tag: '영상 ' + ytCount() + '개', ready: true, c1: '#e11d48', c2: '#fb7185' },
   { id: 'ig', ico: '📷', t: '인스타그램', d: '학교 공식 인스타그램의 새로운 소식과 사진을 만나 보세요. 학교 WIFI에서는 열리지 않으니 참고하세요.', tag: IG_URL ? '바로가기' : '링크 준비 중', ready: !!IG_URL, url: IG_URL, c1: '#8a3ab9', c2: '#f77737' },
-  { id: 'wish', ico: '📝', t: '취업희망서', d: '3개 학과별 작성요령과 예시, 양식 내려받기. 중학생에게 안내할 때 쓰세요.', tag: '3개 학과', ready: true, c1: '#0f9d8a', c2: '#4fd1b0' }
+  { id: 'wish', ico: '📝', t: '취업희망서', d: '3개 학과별 작성요령과 예시, 양식 내려받기. 중학생에게 안내할 때 쓰세요.', tag: '3개 학과', ready: true, c1: '#0f9d8a', c2: '#4fd1b0' },
+  { id: 'sosun', ico: '🎀', t: '소선여중', d: '소선여자중학교 맞춤 입시 홍보: 3개년 합격선, 합격 현황, 출신 선배 이야기, 모집 정원', tag: '맞춤 홍보', ready: true, c1: '#d6336c', c2: '#ff8fb1' }
 ];
 function bookIcon() {   // 책장이 계속 넘어가는 책 아이콘
   return '<span class="bk" aria-hidden="true"><i class="bk-l"></i><i class="bk-r"></i><i class="bk-p"></i><i class="bk-p" style="animation-delay:.45s"></i><i class="bk-p" style="animation-delay:.9s"></i></span>';
@@ -970,6 +1058,7 @@ function hubGo(i, el) {
   if (x.id === 'poster') { PMODE = 'poster'; render(); window.scrollTo(0, 0); }
   if (x.id === 'yt') { PMODE = 'yt'; render(); window.scrollTo(0, 0); }
   if (x.id === 'wish') { PMODE = 'wish'; render(); window.scrollTo(0, 0); }
+  if (x.id === 'sosun') { PMODE = 'sosun'; render(); window.scrollTo(0, 0); }
 }
 function bindHub() {   // 마우스를 올리면 카드가 살짝 기울고 빛이 따라온다
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -1033,6 +1122,152 @@ function viewWish() {
     '<div class="card"><h4 class="wh4">📄 작성 예시 3개</h4><div class="wex">' + w.ex.map(function (e, i) { return '<div class="we"><b>' + (i + 1) + '. ' + esc(e.l) + '</b><p>' + esc(e.t) + '</p></div>'; }).join('') + '</div>' +
     '<p class="wwarn">예시는 참고만 하도록 안내해 주세요. 학생 본인의 이야기와 다짐을 직접 써야 합니다.</p></div>';
 }
+/* ---- 소선여중 맞춤 홍보: 3개년 합격선·합격 현황·재학생/졸업생·날개를 달아 주는 학교·모집 정원 ---- */
+/* 숫자·홍보 문구는 promo/sosun-data.js, 학생 정보는 시트 [소선여중] 탭에서 로그인한 교사에게만 불러온다(getSosun) */
+var SOS = { y: 3, g: 0, rows: null, err: '', busy: false };
+var SOS_G = ['1학년', '2학년', '3학년', '졸업생'];
+
+function sosAvatar(seed, px) {   // 사진이 없는 학생을 위한 여학생 일러스트(이름으로 머리·색을 정한다)
+  var h = 7; for (var i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  var hair = ['#3b2a20', '#5a3825', '#2b2233', '#7a4a2a', '#1f1b2e', '#8b5e3c'][h % 6];
+  var skin = ['#ffe3d3', '#fbd9c3', '#f7ceb4', '#ffe9dc'][(h >> 3) % 4];
+  var bg = [['#ffe3ee', '#ffc3da'], ['#e3eeff', '#c3d8ff'], ['#e3f7ee', '#bfead4'], ['#fff0d6', '#ffdca0'], ['#efe6ff', '#d6c3ff']][(h >> 5) % 5];
+  var st = (h >> 7) % 3, rb = ['#e8508a', '#2f5bd8', '#0f9d8a'][(h >> 9) % 3], id = 'av' + (h % 100000);
+  var back = st === 2 ? '<path d="M27 46C27 20 73 20 73 46L77 88C77 92 66 92 64 86L36 86C34 92 23 92 23 88Z" fill="' + hair + '"/>'
+    : st === 1 ? '<path d="M28 45C28 21 72 21 72 45L73 62C73 66 66 66 64 61L36 61C34 66 27 66 27 62Z" fill="' + hair + '"/><ellipse cx="78" cy="58" rx="7" ry="14" fill="' + hair + '" transform="rotate(12 78 58)"/><circle cx="73" cy="40" r="4" fill="' + rb + '"/>'
+    : '<path d="M27 46C27 21 73 21 73 46L75 66C75 71 66 71 64 64L36 64C34 71 25 71 25 66Z" fill="' + hair + '"/>';
+  return '<svg class="sosav" width="' + px + '" height="' + px + '" viewBox="0 0 100 100" role="img" aria-label="학생 사진 준비 중(일러스트)"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + bg[0] + '"/><stop offset="1" stop-color="' + bg[1] + '"/></linearGradient></defs>' +
+    '<circle cx="50" cy="50" r="50" fill="url(#' + id + ')"/>' + back +
+    '<path d="M16 100C16 80 32 72 50 72C68 72 84 80 84 100Z" fill="#ffffff"/><path d="M36 74L50 88L64 74L58 72L50 80L42 72Z" fill="#2a3b6e"/><path d="M44 83L50 80L56 83L50 90Z" fill="' + rb + '"/>' +
+    '<rect x="44" y="62" width="12" height="12" rx="4" fill="' + skin + '"/><ellipse cx="50" cy="46" rx="18" ry="20" fill="' + skin + '"/>' +
+    '<path d="M31 44C31 24 69 24 69 44C62 34 56 32 50 32C44 34 36 37 31 44Z" fill="' + hair + '"/>' +
+    '<ellipse cx="43" cy="48" rx="2.2" ry="3" fill="#2b2233"/><ellipse cx="57" cy="48" rx="2.2" ry="3" fill="#2b2233"/><circle cx="43.8" cy="47" r=".9" fill="#fff"/><circle cx="57.8" cy="47" r=".9" fill="#fff"/>' +
+    '<circle cx="37.5" cy="54" r="3.6" fill="#ff9fb8" opacity=".55"/><circle cx="62.5" cy="54" r="3.6" fill="#ff9fb8" opacity=".55"/><path d="M45.5 56.5Q50 61 54.5 56.5" fill="none" stroke="#c8556f" stroke-width="1.6" stroke-linecap="round"/></svg>';
+}
+
+function sosJump(n) { var e = document.getElementById('sos' + n); if (e) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
+/* 1) 최근 3년 합격선: 연도별 / 3개년 한눈에 */
+function sosYear(i) { SOS.y = i; var e = $('sosCut'); if (e) e.innerHTML = sosCutHtml(); }
+function sosFmt(v) { return Number(v).toFixed(2); }
+function sosCutHtml() {
+  var Y = SOSUN.years, h = '<div class="sos-chips">' + Y.map(function (y, i) { return '<button type="button" class="' + (SOS.y === i ? 'on' : '') + '" onclick="sosYear(' + i + ')">' + y.y + '학년도</button>'; }).join('') +
+    '<button type="button" class="' + (SOS.y === 3 ? 'on' : '') + '" onclick="sosYear(3)">3개년 한눈에</button></div>';
+  if (SOS.y === 3) {
+    var rows = '', names = ['상업정보', '보건행정코디', '3D융합콘텐츠'];
+    [['work', '취업희망자 전형'], ['gen', '일반전형']].forEach(function (k) {
+      names.forEach(function (nm, di) {
+        rows += '<tr>' + (di === 0 ? '<th rowspan="3" class="sos-trk ' + k[0] + '">' + k[1] + '</th>' : '') + '<td class="sos-dn">' + nm + '</td>' +
+          Y.map(function (y) { var r = y[k[0]].rows[di]; return '<td class="sos-c"><b>' + sosFmt(r[3]) + '</b><small>' + r[2] + '명</small></td>'; }).join('') + '</tr>';
+      });
+    });
+    h += '<div class="sos-wrap"><table class="sos-t"><thead><tr><th colspan="2">전형 · 계열</th>' + Y.map(function (y) { return '<th>' + y.y + '<small>' + y.now + '</small></th>'; }).join('') + '</tr></thead><tbody>' + rows +
+      '<tr class="sos-sum"><th colspan="2">전체 입학생</th>' + Y.map(function (y) { return '<td class="sos-c"><b>' + y.total + '명</b></td>'; }).join('') + '</tr></tbody></table></div>' +
+      '<p class="sos-note">숫자는 커트라인(굵은 글씨)과 모집인원입니다. 2026학년도의 모집인원은 자료에 적힌 값 그대로입니다.</p>';
+    var nt = Y.filter(function (y) { return y.note; })[0];
+    if (nt) h += '<p class="sos-warn">※ ' + nt.y + '학년도: ' + esc(nt.note) + '</p>';
+    return h;
+  }
+  var y = Y[SOS.y];
+  h += '<p class="sos-sub">' + y.y + '학년도 입학생(' + y.now + ') · 전체 ' + y.total + '명</p><div class="sos-two">';
+  [['work', '취업희망자 전형'], ['gen', '일반전형']].forEach(function (k) {
+    var g = y[k[0]];
+    h += '<div class="sos-card ' + k[0] + '"><h4>' + k[1] + ' <small>모집인원 ' + g.total + '명</small></h4><table class="sos-t sm"><thead><tr><th>계열</th><th>정원</th><th>모집인원</th><th>커트라인</th></tr></thead><tbody>' +
+      g.rows.map(function (r) { return '<tr><td class="sos-dn">' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td class="sos-cut"><b>' + sosFmt(r[3]) + '</b></td></tr>'; }).join('') + '</tbody></table></div>';
+  });
+  h += '</div>';
+  if (y.note) h += '<p class="sos-warn">※ ' + esc(y.note) + '</p>';
+  return h;
+}
+
+/* 2) 최근 3년 합격 현황 */
+function sosPassHtml() {
+  var P = SOSUN.pass, mx = 15, sum = 0;
+  var h = '<div class="sos-wrap"><table class="sos-t cp"><thead><tr><th>입학 연도</th><th>취업희망자</th><th>일반전형</th><th>합계</th><th class="sos-bar-h">비교</th></tr></thead><tbody>';
+  P.forEach(function (p) {
+    sum += p.w + p.n;
+    h += '<tr><td class="sos-yr"><b>' + p.y + '학년도</b><small>' + p.g + '</small></td><td>' + p.w + '명</td><td>' + p.n + '명</td><td class="sos-tot">' + (p.w + p.n) + '명</td>' +
+      '<td class="sos-bar"><span class="w" style="width:' + Math.round(p.w / mx * 100) + '%"></span><span class="g" style="width:' + Math.round(p.n / mx * 100) + '%"></span></td></tr>';
+  });
+  return h + '</tbody></table></div><p class="sos-note"><i class="dw"></i>취업희망자 전형 <i class="dg"></i>일반전형 · 최근 3년간 소선여중 출신 합격생은 모두 <b>' + sum + '명</b>입니다.</p>';
+}
+
+/* 3) 소선여중 출신 재학생·졸업생 (학생 정보는 로그인한 교사에게만) */
+function sosLoad() {
+  if (SOS.rows || SOS.busy) return;
+  SOS.busy = true; SOS.err = '';
+  call('getSosun').then(function (d) { SOS.rows = (d && d.rows) || []; SOS.busy = false; sosPaintStu(); }, function (e) {
+    SOS.busy = false; SOS.err = String((e && e.message) || e); sosPaintStu();
+  });
+}
+function sosPaintStu() { var e = $('sosStu'); if (e) e.innerHTML = sosStuHtml(); }
+function sosGrade(i) { SOS.g = i; sosPaintStu(); }
+function sosStuHtml() {
+  if (SOS.err) {
+    var old = SOS.err.indexOf('알 수 없는') >= 0;
+    return '<div class="sos-msg">' + (old ? '학생 자료를 불러오려면 서버 코드 업데이트(새 버전 배포)가 필요합니다.' : '학생 자료를 불러오지 못했습니다. ' + esc(SOS.err)) + '<br><button type="button" class="btn s" onclick="SOS.err=\'\';SOS.rows=null;sosLoad();sosPaintStu()">다시 불러오기</button></div>';
+  }
+  if (!SOS.rows) return '<div class="sos-msg">학생 자료를 불러오는 중입니다…</div>';
+  var cnt = SOS_G.map(function (g) { return SOS.rows.filter(function (r) { return r.g === g; }).length; });
+  var h = '<div class="sos-chips">' + SOS_G.map(function (g, i) { return '<button type="button" class="' + (SOS.g === i ? 'on' : '') + '" onclick="sosGrade(' + i + ')">' + g + ' <b>' + cnt[i] + '</b></button>'; }).join('') + '</div>';
+  var list = [];
+  SOS.rows.forEach(function (r, i) { if (r.g === SOS_G[SOS.g]) list.push([r, i]); });
+  if (!list.length) return h + '<div class="sos-msg">이 학년의 자료가 아직 없습니다.</div>';
+  h += '<div class="sos-grid">' + list.map(function (p) {
+    var r = p[0], sub = r.g === '졸업생' ? esc(r.job || '') : (r.mid != null && r.now != null ? r.mid + '% → ' + r.now + '%' : '');
+    return '<button type="button" class="sos-p" onclick="sosOpen(' + p[1] + ')">' + sosAvatar(r.n, 54) + '<b>' + esc(r.n) + '</b><small>' + sub + '</small></button>';
+  }).join('') + '</div><p class="sos-note">이름을 누르면 내신 성적 변화와 활동·수상 내역을 볼 수 있습니다. 학생 사진은 준비 중이라 일러스트로 대신합니다.</p>';
+  return h;
+}
+function sosBar(lab, v) { return '<div class="sosb"><span>' + lab + '</span><div class="tr"><i style="width:' + Math.max(2, 100 - v) + '%"></i></div><b>' + v + '%</b></div>'; }
+function sosOpen(i) {
+  var r = SOS.rows && SOS.rows[i]; if (!r) return;
+  closeStu();
+  var grad = r.g === '졸업생', h = '<button type="button" class="sx" aria-label="닫기">✕</button>' +
+    '<div class="sos-hd">' + sosAvatar(r.n, 92) + '<div><div class="sos-nm">' + esc(r.n) + '</div><div class="sos-gr">소선여중 출신 · ' + (grad ? '졸업생' : '본교 ' + r.g) + (r.note ? ' · ' + esc(r.note) : '') + '</div></div></div>';
+  if (r.job) h += '<div class="sos-jobs">' + r.job.split(/,\s*/).map(function (j) { return '<span>🏆 ' + esc(j) + '</span>'; }).join('') + '</div>';
+  if (r.mid != null) {
+    var d = r.now != null ? r.mid - r.now : null;
+    h += '<h4 class="sos-h4">📈 내신 성적 변화 <small>(석차백분율, 막대가 길수록 상위)</small></h4><div class="sos-chg">' + sosBar('중학교', r.mid) + (r.now != null ? sosBar(grad ? '고등학교' : '본교', r.now) : '') +
+      (d != null ? '<div class="sos-d ' + (d > 0 ? 'up' : '') + '">' + (d > 0 ? '▲ ' + d + '%p 상승' : d < 0 ? '변동 ' + d + '%p' : '유지') + '</div>' : '') + '</div>';
+  }
+  var acts = [['1학년', r.a1], ['2학년', r.a2], ['3학년', r.a3]].filter(function (a) { return a[1]; });
+  if (acts.length || r.etc) {
+    h += '<h4 class="sos-h4">🏅 활동 · 수상 · 자격증</h4><ul class="sos-act">' + acts.map(function (a) { return '<li><em>' + a[0] + '</em>' + esc(a[1]) + '</li>'; }).join('') + (r.etc ? '<li><em>자격·기타</em>' + esc(r.etc) + '</li>' : '') + '</ul>';
+  } else if (!grad) h += '<p class="sos-note">활동·수상 내역은 곧 정리해서 채워 드리겠습니다.</p>';
+  h += '<p class="sos-note">※ 학생 사진은 준비 중이라 일러스트로 대신했습니다. 이 정보는 로그인한 선생님께만 보입니다.</p>';
+  var m = document.createElement('div'); m.id = 'smodal'; m.className = 'sosm';
+  m.innerHTML = '<div class="sbox" role="dialog" aria-modal="true" aria-label="' + esc(r.n) + ' 학생 정보">' + h + '</div>';
+  m.onclick = function (e) { if (e.target === m || e.target.classList.contains('sx')) closeStu(); };
+  document.body.appendChild(m);
+}
+
+/* 4) 날개를 달아 주는 학교, 5) 모집 정원 */
+function sosWingsHtml() {
+  var W = SOSUN.wings;
+  return '<div class="sos-lead"><b>' + esc(W.title) + '</b><p>' + esc(W.lead) + '</p></div><div class="sos-wings">' + W.cards.map(function (c) {
+    return '<div class="sos-w"><div class="ic">' + c.ico + '</div><h4>' + esc(c.t) + '</h4><div class="s">' + esc(c.sub) + '</div><ul>' + c.b.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>'; }).join('') + '</div>';
+}
+function sosQuotaHtml() {
+  var Q = SOSUN.quota;
+  return '<div class="sos-wrap"><table class="sos-t cp"><thead><tr><th>계열 · 학과</th><th>학급</th><th>취업희망자<small>(70% 이내)</small></th><th>일반전형<small>(30% 이상)</small></th><th>합계</th></tr></thead><tbody>' +
+    Q.rows.map(function (r) { return '<tr><td class="sos-dn">' + esc(r[0]) + '</td><td>' + r[1] + '</td><td>' + r[2] + '명</td><td>' + r[3] + '명</td><td class="sos-tot">' + r[4] + '명</td></tr>'; }).join('') +
+    '<tr class="sos-sum"><th>' + esc(Q.total[0]) + '</th><td><b>' + Q.total[1] + '</b></td><td><b>' + Q.total[2] + '명</b></td><td><b>' + Q.total[3] + '명</b></td><td class="sos-tot"><b>' + Q.total[4] + '명</b></td></tr></tbody></table></div>' +
+    '<ul class="sos-how"><li><b>취업희망자 전형</b> 1개 계열(학과)만 지원할 수 있습니다.</li><li><b>일반전형</b> 1·2순위 복수 지원이 가능합니다.</li><li>취업희망자 전형에서 불합격하면 일반전형에 지원할 수 있습니다.</li></ul>';
+}
+
+function viewSosun() {
+  var nav = ['합격선', '합격 현황', '재학생·졸업생', '날개를 달아 주는 학교', '모집 정원'];
+  return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button>' +
+    '<div class="sos-hero"><div class="k">2027학년도 경북여상 입학생 모집</div><h2>소선여자중학교 맞춤 입시 안내</h2><p>소선여중 출신 선배들의 이야기와 합격 현황으로 경북여상을 소개합니다.</p></div>' +
+    '<div class="sos-nav">' + nav.map(function (t, i) { return '<button type="button" onclick="sosJump(' + (i + 1) + ')">' + (i + 1) + ' ' + t + '</button>'; }).join('') + '</div>' +
+    '<section class="card sos-sec" id="sos1"><h3><span>1</span>최근 3년간 합격선(커트라인)</h3><div id="sosCut">' + sosCutHtml() + '</div></section>' +
+    '<section class="card sos-sec" id="sos2"><h3><span>2</span>최근 3년간 소선여중 합격 현황</h3>' + sosPassHtml() + '</section>' +
+    '<section class="card sos-sec" id="sos3"><h3><span>3</span>소선여중 출신 재학생·졸업생 이야기</h3><div id="sosStu">' + sosStuHtml() + '</div></section>' +
+    '<section class="card sos-sec" id="sos4"><h3><span>4</span>날개를 달아 주는 학교</h3>' + sosWingsHtml() + '</section>' +
+    '<section class="card sos-sec" id="sos5"><h3><span>5</span>2027학년도 모집 정원</h3>' + sosQuotaHtml() + '</section>';
+}
+
 function viewYt() {
   if (!ytData().length) return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button><div class="card">영상 목록을 불러오지 못했습니다.</div>';
   return '<button type="button" class="pback" onclick="PMODE=\'hub\';render()">← 홍보자료 센터</button>' +
@@ -2006,7 +2241,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-10-23.1';
+var APP_VER = '2026-11-03.1';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
