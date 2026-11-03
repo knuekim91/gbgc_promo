@@ -40,3 +40,4 @@ window.SOSUN = {
     total: ['합계 (학급당 24명)', 8, 133, 59, 192]
   }
 };
+window.SOSUN.years.reverse();   // 합격선은 최신 연도부터(2026, 2025, 2024) 보여 준다
