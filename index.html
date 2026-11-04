@@ -1759,10 +1759,10 @@ function dkSlide(i) {
     if (!list.length) return h + '<div class="dk-msg">이 학년의 자료가 아직 없습니다.</div>';
     // 학년마다 등장 효과·반짝임·숫자 올라가기로 강조한다(3학년과 같은 방식)
     var sp = ''; for (var q = 0; q < 16; q++) sp += '<i style="left:' + (3 + q * 6) + '%;animation-delay:' + ((q * 0.55) % 6).toFixed(1) + 's;animation-duration:' + (5 + (q % 4)) + 's;font-size:' + (14 + (q % 3) * 8) + 'px">' + (q % 3 === 0 ? '✦' : q % 3 === 1 ? '★' : '✧') + '</i>';
-    var T = { '1학년': ['🌱 소선여중 출신 1학년 후배들', '입학 첫 해부터 대회 수상과 자격증에 도전하고 있습니다'],
-      '2학년': ['✨ 소선여중 출신 2학년 선배들', '자격증과 다수의 대회 수상으로 꾸준히 성장하고 있습니다'],
-      '3학년': ['🎓 소선여중 출신 3학년 선배들', '필기 합격 · 전교회장 · 다수의 대회 수상 — 취업을 앞둔 자랑스러운 선배들'],
-      '졸업생': ['🏢 소선여중 출신 졸업생 선배들', '공기업 · 금융기관 · 공무원… 당당한 직장인이 되었습니다'] }[gname];
+    var T = { '1학년': ['🌱 소선여중 출신 1학년 재학생들', '입학 첫 해부터 대회 수상과 자격증에 도전하고 있습니다'],
+      '2학년': ['✨ 소선여중 출신 2학년 재학생들', '자격증과 다수의 대회 수상으로 꾸준히 성장하고 있습니다'],
+      '3학년': ['🎓 소선여중 출신 3학년 재학생들', '필기 합격 · 전교회장 · 다수의 대회 수상 — 취업을 앞둔 자랑스러운 선배들'],
+      '졸업생': ['🏢 소선여중 출신 졸업생들', '공기업 · 금융기관 · 공무원… 당당한 직장인이 되었습니다'] }[gname];
     var head = '<div class="dk-senior"><div class="dk-spark">' + sp + '</div>' + dkH(T[0], T[1]), tip = '<div class="dk-tip">이름을 누르면 내신 성적 변화와 활동·수상 내역을 볼 수 있습니다</div></div>';
     if (gname === '졸업생') {   // 졸업생은 많아서 사진 없이 이름·취업처 목록으로
       return head + '<div class="dk-grads">' + list.map(function (p, k) { var r = p[0]; return '<button type="button" class="dk-g" style="--d:' + k + '" onclick="sosOpen(' + p[1] + ')">' + sosAvatar(r.n, 44) + '<div><b>' + esc(r.n) + '</b><span>' + esc(r.job || '') + '</span>' + (r.note ? '<em>' + esc(r.note) + '</em>' : '') + '</div></button>'; }).join('') + '</div>' + tip;
@@ -2854,7 +2854,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-04.7';
+var APP_VER = '2026-11-04.8';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
