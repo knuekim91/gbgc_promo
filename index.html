@@ -1740,7 +1740,7 @@ function dkSlide(i) {
   }
   if (i === 5) {
     var P = SOSUN.pass, sum = 0;
-    h = dkH('최근 3년간 소선여중 합격 현황', '소선여중 출신 경북여상 합격생') + '<div class="dk-pass">';
+    h = dkH('최근 3년간 소선여중 출신 합격 현황', '소선여중 출신 경북여상 합격생') + '<div class="dk-pass">';
     P.forEach(function (p) {
       sum += p.w + p.n;
       h += '<div class="dk-pc"><div class="y">' + p.y + '학년도 <small>' + p.g + '</small></div><div class="big"><i class="cnt" data-n="' + (p.w + p.n) + '">0</i><span>명</span></div>' +
@@ -1874,7 +1874,7 @@ function viewSosun() {
     '<div class="sos-hero"><div class="row"><div><div class="k">2027학년도 경북여상 입학생 모집</div><h2>소선여자중학교 맞춤 입시 안내</h2><p>소선여중 출신 선배들의 이야기와 합격 현황으로 경북여상을 소개합니다.</p></div><button type="button" class="sos-slide-btn" onclick="dkOpen(0)">▶ 발표용(슬라이드)으로 보기</button></div></div>' +
     '<div class="sos-nav">' + nav.map(function (t, i) { return '<button type="button" onclick="sosJump(' + (i + 1) + ')">' + (i + 1) + ' ' + t + '</button>'; }).join('') + '</div>' +
     '<section class="card sos-sec" id="sos1"><h3><span>1</span>최근 3년간 합격선(커트라인)</h3><div id="sosCut">' + sosCutHtml() + '</div></section>' +
-    '<section class="card sos-sec" id="sos2"><h3><span>2</span>최근 3년간 소선여중 합격 현황</h3>' + sosPassHtml() + '</section>' +
+    '<section class="card sos-sec" id="sos2"><h3><span>2</span>최근 3년간 소선여중 출신 합격 현황</h3>' + sosPassHtml() + '</section>' +
     '<section class="card sos-sec" id="sos3"><h3><span>3</span>소선여중 출신 재학생·졸업생 이야기</h3><div id="sosStu">' + sosStuHtml() + '</div></section>' +
     '<section class="card sos-sec" id="sos3b"><h3><span>3-1</span>학교 전체 자격증 취득 현황 <small class="mut">(' + SOSUN.certs.asof + ' 기준)</small></h3>' + sosCertHtml() + '</section>' +
     '<section class="card sos-sec" id="sos4"><h3><span>4</span>날개를 달아 주는 학교</h3>' + sosWingsHtml() + '</section>' +
@@ -2854,7 +2854,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-04.6';
+var APP_VER = '2026-11-04.7';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
