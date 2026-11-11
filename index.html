@@ -2727,6 +2727,9 @@ function ingest(rows) {
     EVENTS.unshift({ id: e.id, type: e.type, t: now, who: e.r.담당교사, dept: e.r['1지망'], trk: e.r.전형, isNew: true });
   });
   mergeServerEvents(rows);
+  var alive = {}; rows.forEach(function (r) { alive[r.ID] = 1; });
+  EVENTS = EVENTS.filter(function (e) { return !e.id || alive[e.id]; });   // 삭제된 학생의 소식은 실시간 바에서도 지운다
+  Object.keys(FRESH).forEach(function (k) { if (!alive[k]) delete FRESH[k]; });
   EVENTS.forEach(function (e) { if (e.id && e.t >= dayStart() && !FRESH[e.id]) FRESH[e.id] = { type: e.type, t: e.t }; });   // 다른 기기에서 막 들어온 학생도 같이 강조
   // 기기마다 다르지 않도록 시트에 기록된 시각으로 최근 소식을 채움
   EVENTS.sort(function (a, b) { return b.t - a.t; });
@@ -2872,7 +2875,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-04.9';
+var APP_VER = '2026-11-11.1';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
