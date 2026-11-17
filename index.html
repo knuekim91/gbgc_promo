@@ -441,7 +441,7 @@ body.onhome #ddbar{display:none!important}
 .hs-w.over .hs-v{color:#ff8f9f;text-shadow:0 0 18px rgba(255,80,110,.55)}
 .hs-r{color:#7dffb0;text-shadow:0 0 18px rgba(34,197,94,.5)}
 .hs-g.hs-tot{background:rgba(255,255,255,.08);border-radius:12px;border-top:0;margin-top:4px;padding-inline:8px}
-.hs-tot .hs-v{font-size:clamp(22px,6vw,38px)}
+.hs-tot .hs-v{font-size:clamp(30px,8vw,56px)}.hs-tot .hs-n{font-size:clamp(20px,5vw,30px)}.hs-tot .hs-w small{font-size:clamp(13px,3.2vw,17px)}
 @media (prefers-reduced-motion:reduce){.hm-sum{animation:none}}
 
 .hm-ne{margin-left:8px;border:0;border-radius:99px;padding:3px 12px;font:inherit;font-size:12.5px;font-weight:800;background:rgba(255,255,255,.2);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);cursor:pointer}
@@ -2875,7 +2875,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-11.1';
+var APP_VER = '2026-11-17.1';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
