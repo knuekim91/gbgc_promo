@@ -1025,6 +1025,24 @@ body.dk-open #smodal.sosm .sos-stat b{font-size:42px}
 .sos-act li.cert .chips i{color:#7b9cff}
 .sos-cert .hero{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#d6336c,#ff8fb1);color:#fff;border-radius:16px;padding:12px 16px;margin-bottom:12px;box-shadow:0 6px 16px rgba(214,51,108,.25)}
 .sos-cert .hero b{font-size:44px;line-height:1}
+/* 학교 둘러보기 갤러리 */
+.sos-tour h4{margin:14px 0 8px;font-size:14px}
+.sos-tour .tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.sos-tour button,.dk-tour button{position:relative;border:0;padding:0;border-radius:14px;overflow:hidden;cursor:pointer;background:var(--bd);aspect-ratio:3/2;display:block}
+.sos-tour img,.dk-tour img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.sos-tour button:hover img,.dk-tour button:hover img{transform:scale(1.06)}
+.sos-tour button span,.dk-tour button span{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 7px;background:linear-gradient(transparent,rgba(0,0,0,.78));color:#fff;font-weight:800;font-size:13px;text-align:left;line-height:1.25}
+.sos-tour button span small,.dk-tour button span small{display:block;font-weight:600;font-size:11px;opacity:.9}
+#smodal.tourm .sbox{max-width:900px;padding:10px;background:#111;color:#fff}
+#smodal.tourm img{width:100%;max-height:72vh;object-fit:contain;display:block;border-radius:10px}
+#smodal.tourm .tc{padding:10px 6px 2px;font-weight:800;font-size:17px}
+#smodal.tourm .tc small{font-weight:600;opacity:.8;margin-left:8px}
+#smodal.tourm .tn{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:50%;background:rgba(255,255,255,.88);color:#111;font-size:20px;cursor:pointer}
+#smodal.tourm .tn.p{left:8px}#smodal.tourm .tn.n{right:8px}
+.dk-tour{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.dk-tour button{border-radius:20px}
+.dk-tour button span{font-size:22px;padding:30px 14px 10px}.dk-tour button span small{font-size:16px}
+.dk-tour button.sr{animation:dkPop .7s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--d) * .09s)}
 .sos-cert .hero span{font-size:15px;font-weight:700;line-height:1.5}
 .sos-cert .hero strong{font-size:1.2em}
 .sos-cert .rw{margin:8px 0}
@@ -1718,7 +1736,7 @@ function sosQuotaHtml() {
 
 /* ---- 소선여중 발표용(슬라이드): 1280x720 무대를 화면 크기에 맞춰 줄여서 보여 준다 ---- */
 /* ← → 키·화면 좌우 화살표·옆으로 밀기로 넘기고, ⛶ 로 전체 화면, ✕ 또는 Esc 로 닫는다 */
-var DK = { i: 0, dir: 0 }, DK_N = 15, DK_G = ['1학년', '2학년', '3학년', '졸업생'];
+var DK = { i: 0, dir: 0 }, DK_N = 16, DK_G = ['1학년', '2학년', '3학년', '졸업생'];
 function dkH(t, sub) { return '<div class="dk-h"><h2>' + t + '</h2>' + (sub ? '<p>' + sub + '</p>' : '') + '</div>'; }
 function dkCut(v) { return Number(v).toFixed(2); }
 
@@ -1797,12 +1815,15 @@ function dkSlide(i) {
       C.rows.slice(0, 3).map(function (r) { return '<div class="rw"><div class="l">' + r[0] + '</div><div class="bar"><i style="width:' + r[3] + '%"></i><b>' + dkN(r[3], '%', 1) + '</b></div><div class="m">' + r[2] + '명 / ' + r[1] + '명 · 자격증 ' + r[4] + '개 · <b>취득자 평균 ' + (r[4] / r[2]).toFixed(1) + '개</b></div></div>'; }).join('') +
       '<div class="chips2"><span>📜 자격증 총 <b>' + dkN(tt[4], '개') + '</b></span><span>👩‍🎓 1인당 평균 <b>' + dkN(tt[5], '개', 1) + '</b></span><span>🏅 취득자 ' + tt[2] + '명 평균 <b>' + dkN(tt[4] / tt[2], '개', 1) + '</b></span></div></div></div>';
   }
-  if (i === 11 || i === 12) {
-    var W = SOSUN.wings, cs = i === 11 ? W.cards.slice(0, 3) : W.cards.slice(3);
-    return dkH(i === 11 ? W.title : '꿈에 맞는 길을 학교가 함께 만듭니다', i === 11 ? W.lead : '선취업 후학습 · 우수 취업처 · 부사관') + '<div class="dk-wings">' + cs.map(function (c) {
+  if (i === 11) {
+    return dkH('🏫 경북여상, 이렇게 생겼어요', '실습실 · 도서관 · 급식실 · 면접실 — 사진을 누르면 크게 볼 수 있어요') + '<div class="dk-tour">' + TOUR_DECK.map(function (n, k) { return tourBtn(n, 'sr', k); }).join('') + '</div>';
+  }
+  if (i === 12 || i === 13) {
+    var W = SOSUN.wings, cs = i === 12 ? W.cards.slice(0, 3) : W.cards.slice(3);
+    return dkH(i === 12 ? W.title : '꿈에 맞는 길을 학교가 함께 만듭니다', i === 12 ? W.lead : '선취업 후학습 · 우수 취업처 · 부사관') + '<div class="dk-wings">' + cs.map(function (c) {
       return '<div class="dk-w"><div class="ic">' + c.ico + '</div><h3>' + esc(c.t) + '</h3><div class="s">' + esc(c.sub) + '</div><ul>' + c.b.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>'; }).join('') + '</div>';
   }
-  if (i === 13) {
+  if (i === 14) {
     var Q = SOSUN.quota;
     return dkH('2027학년도 모집 정원', '경북여자상업고등학교') + '<table class="dk-t"><thead><tr><th>계열 · 학과</th><th>학급</th><th>취업희망자 전형<small>(70% 이내)</small></th><th>일반전형<small>(30% 이상)</small></th><th>합계</th></tr></thead><tbody>' +
       Q.rows.map(function (r) { return '<tr><td class="l">' + esc(r[0]) + '</td><td>' + r[1] + '</td><td>' + r[2] + '명</td><td>' + r[3] + '명</td><td class="tot">' + r[4] + '명</td></tr>'; }).join('') +
@@ -1878,6 +1899,36 @@ function dkOpen(i) {
   DK.i = Math.max(0, Math.min(DK_N - 1, i || 0)); dkPaint(); sosLoad();
 }
 
+var TOUR_DECK = [1, 3, 8, 10, 12, 14, 0, 15];   // 슬라이드에 보여 줄 8장 (SOSUN.tour 번호)
+function tourImg(t) { return '<img src="img/school/' + t[0] + '.jpg" alt="' + esc(t[1]) + '" loading="lazy">'; }
+function tourBtn(i, cls, d) {
+  var t = SOSUN.tour[i]; if (!t) return '';
+  return '<button type="button"' + (cls ? ' class="' + cls + '"' : '') + (d != null ? ' style="--d:' + d + '"' : '') + ' onclick="tourOpen(' + i + ')">' + tourImg(t) + '<span>' + esc(t[1]) + (t[2] ? '<small>' + esc(t[2]) + '</small>' : '') + '</span></button>';
+}
+function sosTourHtml() {
+  var T = SOSUN.tour; if (!T || !T.length) return '';
+  var h = '<div class="sos-tour">';
+  SOSUN.tourGroups.forEach(function (g, gi) {
+    h += '<h4>' + esc(g) + '</h4><div class="tg">';
+    T.forEach(function (t, i) { if (t[3] === gi) h += tourBtn(i); });
+    h += '</div>';
+  });
+  return h + '<p class="sos-note">사진을 누르면 크게 볼 수 있습니다. 2027 홍보책자의 교육환경 사진입니다.</p></div>';
+}
+function tourOpen(i) {
+  var T = SOSUN.tour, n = T.length; i = (i + n) % n; var t = T[i];
+  closeStu();
+  var m = document.createElement('div'); m.id = 'smodal'; m.className = 'tourm';
+  m.innerHTML = '<div class="sbox" role="dialog" aria-modal="true" aria-label="' + esc(t[1]) + '"><button type="button" class="sx" aria-label="닫기">✕</button><img src="img/school/' + t[0] + '.jpg" alt="' + esc(t[1]) + '">' +
+    '<div class="tc">' + esc(t[1]) + (t[2] ? '<small>' + esc(t[2]) + '</small>' : '') + '</div>' +
+    '<button type="button" class="tn p" aria-label="이전 사진" data-i="' + (i - 1) + '">‹</button><button type="button" class="tn n" aria-label="다음 사진" data-i="' + (i + 1) + '">›</button></div>';
+  m.onclick = function (e) {
+    var b = e.target.closest ? e.target.closest('.tn') : null;
+    if (b) { e.stopPropagation(); tourOpen(+b.dataset.i); return; }
+    if (e.target === m || e.target.classList.contains('sx') || e.target.tagName === 'IMG') closeStu();
+  };
+  (document.getElementById('sosdeck') || document.body).appendChild(m);
+}
 function sosCertHtml() {   // 학교 전체 숫자(학생 이름 없음)
   var C = SOSUN.certs; if (!C) return '';
   var t = C.rows[3], h = '<div class="sos-cert"><div class="hero"><b>' + t[3] + '%</b><span>재학생 ' + t[1] + '명 중 <strong>' + t[2] + '명</strong>이 자격증을 취득했습니다</span></div>';
@@ -1895,6 +1946,7 @@ function viewSosun() {
     '<section class="card sos-sec" id="sos2"><h3><span>2</span>최근 3년간 소선여중 출신 합격 현황</h3>' + sosPassHtml() + '</section>' +
     '<section class="card sos-sec" id="sos3"><h3><span>3</span>소선여중 출신 재학생·졸업생 이야기</h3><div id="sosStu">' + sosStuHtml() + '</div></section>' +
     '<section class="card sos-sec" id="sos3b"><h3><span>3-1</span>학교 전체 자격증 취득 현황 <small class="mut">(' + SOSUN.certs.asof + ' 기준)</small></h3>' + sosCertHtml() + '</section>' +
+    '<section class="card sos-sec" id="sos3c"><h3><span>3-2</span>교육환경 둘러보기 <small class="mut">(실습실 · 도서관 · 급식실)</small></h3>' + sosTourHtml() + '</section>' +
     '<section class="card sos-sec" id="sos4"><h3><span>4</span>날개를 달아 주는 학교</h3>' + sosWingsHtml() + '</section>' +
     '<section class="card sos-sec" id="sos5"><h3><span>5</span>2027학년도 모집 정원</h3>' + sosQuotaHtml() + '</section>';
 }
@@ -2877,7 +2929,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-17.2';
+var APP_VER = '2026-11-17.3';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
