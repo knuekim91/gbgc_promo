@@ -1026,6 +1026,12 @@ body.dk-open #smodal.sosm .sos-stat b{font-size:42px}
 .sos-cert .hero{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#d6336c,#ff8fb1);color:#fff;border-radius:16px;padding:12px 16px;margin-bottom:12px;box-shadow:0 6px 16px rgba(214,51,108,.25)}
 .sos-cert .hero b{font-size:44px;line-height:1}
 /* 학교 둘러보기 갤러리 */
+.dup-hint{margin:8px 0 0;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5;background:#fff4e5;color:#7a4b00;border:1px solid #f5c36b}
+.dup-hint:empty{display:none}
+.dup-hint.bad{background:#fde8e8;color:#8a1c1c;border-color:#f1a3a3}
+:root[data-theme="dark"] .dup-hint{background:#3b2d12;color:#fde7b0;border-color:#8a6a24}
+:root[data-theme="dark"] .dup-hint.bad{background:#3b1d1d;color:#fecaca;border-color:#8a3a3a}
+.dup-hint button{margin-left:6px;border:0;border-radius:8px;padding:5px 10px;background:var(--pr);color:#fff;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
 .sos-tour h4{margin:14px 0 8px;font-size:14px}
 .sos-tour .tg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .sos-tour button,.dk-tour button{position:relative;border:0;padding:0;border-radius:14px;overflow:hidden;cursor:pointer;background:var(--bd);aspect-ratio:3/2;display:block}
@@ -2541,6 +2547,7 @@ function formCardHtml() {
       return '<button type="button" class="' + (f.중학교 === s2 ? 'on' : '') + '" onclick="pickSchool(this.textContent)">' + esc(s2) + '</button>'; }).join('') + '</div>' : '') +
     '<div class="two"><div><label>학생 이름</label><input id="f_이름" value="' + v('이름') + '"></div>' +
     '<div><label>내신 <span style="color:var(--er);font-weight:700">*필수</span> <span>· 석차백분율</span></label><input id="f_내신" type="number" step="0.001" inputmode="decimal" value="' + v('내신') + '" placeholder="예: 28.04"></div></div>' +
+    '<div id="dupHint" class="dup-hint" aria-live="polite"></div>' +
     '<div class="two"><div><label>학생 연락처 (선택)</label><input id="f_학생연락처" type="tel" onblur="this.value=fmtTel(this.value)" value="' + v('학생연락처') + '" placeholder="010-0000-0000"></div>' +
     '<div><label>보호자 연락처 (선택)</label><input id="f_보호자연락처" type="tel" onblur="this.value=fmtTel(this.value)" value="' + v('보호자연락처') + '"></div></div>' +
     '<div class="two"><div><label>중학교 담임 성함 (선택)</label><input id="f_담임성함" value="' + v('담임성함') + '"></div>' +
@@ -2558,6 +2565,31 @@ function bindForm() {
     b.onclick = function () { readForm(); FORM.단계 = b.dataset.v; render(); };
   });
   $('saveBtn').onclick = function () { save(false); };
+  ['f_이름', 'f_학생연락처', 'f_중학교'].forEach(function (id) { var el = $(id); if (el) { el.addEventListener('input', dupCheck); el.addEventListener('change', dupCheck); } });
+  dupCheck();
+}
+/* 같은 학생이 이미 입력돼 있으면 입력 중에 바로 알려 준다 (서버가 공백·학교 이름 차이도 무시하고 비교) */
+var DUP = null, DUP_TM = null, DUP_SEQ = 0;
+function dupHintHtml(r) {
+  var st = (r.단계 === '고민' ? '고민 중' : r.단계) + (r.입력일시 ? ' · ' + r.입력일시 : '');
+  if (r.mine) return '⚠ 이미 입력하신 학생입니다 (' + esc(st) + '). 새로 저장하지 말고 기존 기록을 수정하세요. <button type="button" onclick="edit(\'' + esc(r.id) + '\')">기존 기록 수정하기</button>';
+  return '⛔ ' + esc(r.담당교사) + ' 선생님이 이미 입력한 학생입니다 (' + esc(st) + '). ' + (r.canForce ? '관리자는 확인 후 새로 저장할 수 있습니다.' : '새로 저장할 수 없습니다. 이름이 같은 다른 학생이면 관리자에게 알려 주세요.');
+}
+function dupCheck() {
+  if (DUP_TM) clearTimeout(DUP_TM);
+  DUP_TM = setTimeout(function () {
+    var h = $('dupHint'); if (!h) return;
+    if (EDIT) { DUP = null; h.className = 'dup-hint'; h.innerHTML = ''; return; }
+    var sc = ($('f_중학교') || {}).value || '', nm = ($('f_이름') || {}).value || '', tl = ($('f_학생연락처') || {}).value || '';
+    if (!sc.trim() || (!nm.trim() && tl.replace(/\D/g, '').length < 8)) { DUP = null; h.className = 'dup-hint'; h.innerHTML = ''; return; }
+    var seq = ++DUP_SEQ;
+    call('checkDup', { 중학교: sc, 이름: nm, 학생연락처: tl }).then(function (r) {
+      var el = $('dupHint'); if (seq !== DUP_SEQ || !el) return;
+      DUP = r && r.duplicate ? r : null;
+      el.className = 'dup-hint' + (DUP && !DUP.mine ? ' bad' : '');
+      el.innerHTML = DUP ? dupHintHtml(DUP) : '';
+    }, function () {});   // 서버가 아직 새 버전이 아니거나 연결이 불안하면 조용히 넘어가고, 저장할 때 서버가 다시 확인한다
+  }, 450);
 }
 /* 내신(석차백분율) 표시: 소수 둘째 자리까지, 셋째 자리에서 반올림 (28.834 → 28.83). 저장된 값은 그대로 두고 화면에서만 바꾼다. */
 function fmtNae(v) {
@@ -2607,6 +2639,7 @@ function save(force) {
   if (!FORM.단계) return toast('단계(고민 중 / 확정' + (EDIT ? ' / 타교지원' : '') + ')를 선택하세요.');
   var nv = String(FORM.내신 == null ? '' : FORM.내신).trim();
   if (nv === '' || isNaN(Number(nv)) || Number(nv) < 0 || Number(nv) > 100) { var ne = $('f_내신'); if (ne) ne.focus(); return toast('내신(석차백분율)을 0~100 사이 숫자로 입력하세요. (필수)'); }
+  if (!EDIT && DUP && !DUP.canForce) { return toast(DUP.mine ? '이미 입력하신 학생입니다. 위의 "기존 기록 수정하기"를 눌러 수정하세요.' : DUP.담당교사 + ' 선생님이 이미 입력한 학생이라 새로 저장할 수 없습니다.'); }
   var o = JSON.parse(JSON.stringify(FORM)); if (EDIT) o.ID = EDIT;
   ['학생연락처', '보호자연락처', '담임연락처'].forEach(function (k) { o[k] = fmtTel(o[k]); });
   if ((o.전형 || defTrack()) === '취업희망자') o['2지망'] = '';
@@ -2616,7 +2649,9 @@ function save(force) {
     SAVING = false; idle();
     if (r.duplicate) {
       $('saveBtn').disabled = false; $('saveBtn').textContent = EDIT ? '수정 저장' : '저장';
-      if (confirm('이미 입력된 학생입니다.\n담당교사: ' + r.담당교사 + ' / ' + r.전형 + ' / ' + r.단계 + ' (' + r.입력일시 + ')\n\n그래도 새로 저장할까요?')) save(true);
+      if (r.mine) { if (confirm('이미 입력하신 학생입니다. (' + r.전형 + ' / ' + r.단계 + ', ' + r.입력일시 + ')\n\n기존 기록을 열어 수정할까요?')) edit(r.id); return; }
+      if (!r.canForce) { alert('다른 선생님이 이미 입력한 학생이라 새로 저장하지 않았습니다.\n담당교사: ' + r.담당교사 + ' / ' + r.전형 + ' / ' + r.단계 + ' (' + r.입력일시 + ')\n\n이름이 같은 다른 학생이면 관리자에게 알려 주세요.'); return; }
+      if (confirm('이미 입력된 학생입니다.\n담당교사: ' + r.담당교사 + ' / ' + r.전형 + ' / ' + r.단계 + ' (' + r.입력일시 + ')\n\n관리자 권한으로 그래도 새로 저장할까요?')) save(true);
       return;
     }
     showDone(true, o);
@@ -2929,7 +2964,7 @@ setInterval(function () { Array.prototype.forEach.call(document.querySelectorAll
 
 FORM = { 단계: '' };
 /* 새 버전 확인: 브라우저가 옛 화면을 붙들고 있으면 알려준다 */
-var APP_VER = '2026-11-17.5';
+var APP_VER = '2026-11-18.1';
 function checkUpdate() {
   try {
     fetch(location.pathname + '?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
